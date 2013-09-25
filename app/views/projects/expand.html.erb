@@ -1,0 +1,92 @@
+<style>
+   ul li
+  {
+  display:inline;
+  padding-left:10px;
+  }
+ 
+  </style>
+
+
+<%= render :partial => "menu" %>
+<% if !@projects.blank? %>
+<%= render :partial => "projects/esearch_form", locals: {q: @q} %>
+<% end %>
+<% if @projects.blank? %>
+  <div class="well">You don't currently have any projects </div>
+<div id="whole">
+<div style="float:left">
+<h1>Expanded Project View</h1>
+</div>
+<div style="float:left;margin-top:10px;">
+
+        <ul style="padding-left:50px;">
+        <form name="projectfilters" action="/expand" >
+        <li id="icon">
+   <%= radio_button_tag 'FILTER', 'CLOSED', @chosen == 'CLOSED' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Active
+           </li>
+                        
+          <li id="icon">
+  <%= radio_button_tag 'FILTER', 'OPEN', @chosen == 'OPEN' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Inactive
+            </li>
+           <li id="icon">
+  <%= radio_button_tag 'FILTER', 'ALL', @chosen == 'ALL' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;All
+           </li>
+          </form>
+        </ul>  
+		 
+      
+  </div>
+   
+</div>
+<% else %>
+  
+  
+<div id="whole">
+<div style="float:left">
+<h1>Expanded Project View</h1>
+</div>
+<div style="float:left;margin-top:10px;">
+
+        <ul style="padding-left:50px;">
+        <form name="projectfilters" action="/expand" >
+        <li id="icon">
+   <%= radio_button_tag 'FILTER', 'CLOSED', @chosen == 'CLOSED' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Active
+           </li>
+                        
+          <li id="icon">
+  <%= radio_button_tag 'FILTER', 'OPEN', @chosen == 'OPEN' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Inactive
+            </li>
+           <li id="icon">
+  <%= radio_button_tag 'FILTER', 'ALL', @chosen == 'ALL' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;All
+           </li>
+          </form>
+        </ul>  
+		 
+      
+  </div>
+   
+</div>
+ 
+  <table class="table table-striped">
+    
+    <tr>
+    <th><%= sort_link(@q, :title, "Title") %></th>
+     
+      <th><%= sort_link(@q, :notes, "Description") %></th>
+     
+      
+    </tr>
+
+  <% @projects.each do |project| %>
+    <tr>
+    <td style="width:200px;"><%= project.title %></td>
+	  
+			
+      <td><%= project.notes %></td>
+      
+      
+    </tr>
+  <% end %>
+  </table>
+<% end %>

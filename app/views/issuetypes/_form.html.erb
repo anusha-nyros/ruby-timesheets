@@ -1,0 +1,14 @@
+<%= render :partial => "menu" %><br/><br/>
+<%= simple_form_for(@issuetype , :html => {:multipart => true , class: 'form-horizontal'}) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :issuetype %>
+    <%= f.input :usage, input_html: {rows: '5', class: 'span9'} %>
+  </div>
+
+  <div class="form-actions">
+    <%= link_to 'Back', issuetypes_path ,class: 'btn' %>
+    <%= f.button :submit ,class:'btn btn-primary' %>
+  </div>
+<% end %>

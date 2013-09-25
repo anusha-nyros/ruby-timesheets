@@ -1,0 +1,94 @@
+<style>
+   ul li
+  {
+  display:inline;
+  padding-left:10px;
+  }
+.last span{
+  display:inline;
+}
+.last {
+  width:80px;
+}
+#up {
+ float:right;
+}
+ 
+  </style>
+<%#= render :partial => "menu1" if current_user.admin? %><br/>
+<%= render :partial => "menu" %>
+<%= render :partial => "start_end_search_form", locals: {q: @q} %>
+<div id="search-result">
+  <% if @projects.blank? %>
+    <% if params[:q] %>
+      <p class="well">Your search does not generate a result</p>
+    <% end %>
+<div style="float:left;">
+<% if @projects.blank? %>
+<b style="color:red;">No Records Found </b>
+<% end %>
+</div>
+  <% else %>
+<div style="float:left;margin-bottom:10px"><b><% unless @projects.blank? %>(<%= @projects.count %>) Records Found<% end %></b></div>
+	
+   <% if controller.action_name != "index" %>     
+     <select name="sel" class="s <%= @secret if !@secret.blank? %> span1" id="up" >
+                 <option value= "">--</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+     </select>
+    <% end %>
+   <span class="pull-right" style="padding:5px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+   </span>
+ 
+
+
+
+<br/>
+<table class="table table-striped">
+    
+    <tr>
+    <th class="span4" ><%= sort_link(@q, :title, "Title & Description") %></th>
+    <th><%= sort_link(@q, :project_name, "Type") %></th>       
+      <th><%= sort_link(@q, :action_required, "Status") %></th>
+      <th><%= sort_link(@q, :priority, "Priority") %></th>
+      <th><%= sort_link(@q, :owner, "Owner") %></th>
+      <th><%= sort_link(@q, :start_date, "Start Date") %></th>
+      <th><%= sort_link(@q, :end_date, "End Date") %></th>
+                 
+      <th></th>
+    </tr>
+
+  <% @projects.each do |project| %>
+    <tr>
+        <td>
+          <span ><b><%= project.title %></b></span><br/>
+          <span  ><%=  project.notes %></span>
+          
+      </td>
+         
+         <td><%= project.project_name %></td> 
+	  <td><%= project.action_required %></td>
+          <td><%= project.priority %></td>
+          <td><%= project.owner %></td>
+	  <td><%= project.start_date.strftime("%b-%d-%Y") if !project.start_date.blank? %></td>
+          <td><%= project.end_date.strftime("%b-%d-%Y") if !project.end_date.blank? %></td>
+      <td>
+        <div class='last'>
+        <span><%= link_to 'Show', project, class: 'btn btn-mini' %> </span>
+        <span><%= link_to 'Edit', edit_project_path(project), class: 'btn btn-mini' %></span>
+        </div>
+      </td> 
+          </tr>
+<% end %>
+</table>
+<%= paginate @projects %> 
+ 
+    </table>
+    <%#= paginate @projects %>
+  <% end %>
+  
+</div>

@@ -1,0 +1,42 @@
+
+<h1>Users</h1>
+<% if @users.blank? %>
+  <div class="well">
+    There is currently no user!
+  </div>
+<% else %>  
+  <table class="table table-striped">
+      <tr>
+        <th><%= sort_link(@q, :organization_id, "Account ID") %></th>
+        <th><%= sort_link(@q, :username) %></th>
+        <th><%= sort_link(@q, :email) %></th>
+        <th><%= sort_link(@q, :created_at, 'Created Date') %></th>
+        <th><%= sort_link(@q, :last_login_at, 'Last Login') %></th>
+        <th><%= sort_link(@q, :organization_id, "No.of Users") %></th>
+        <th><%= sort_link(@q, :expiry_date, "Expiry") %></th>
+        <th><%= sort_link(@q, :active) %></th>
+        <th></th>
+      </tr>
+    <% for user in @users %>
+      <tr>
+        <td><%= user.organization_id %></td>
+        <td><%= user.username %></td>
+        <td><%= user.email %></td>
+        <td><%= user.created_at.strftime("%b-%d-%Y %H:%M:%S") %></td>
+        <td><%= user.last_login_at.strftime("%b-%d-%Y %H:%M:%S") if !user.last_login_at.blank? %></td>
+        <td><%= user.organization.users.count %></td>
+        <td><%= user.expiry_date.strftime("%b-%d-%Y") if !user.expiry_date.blank? %></td>
+        <% if user.active == true  %>
+	  <td>Active</td>
+	  <% else %>
+	  <td>Inactive</td>
+	  <% end %>
+        <td>
+          <%= link_to "Edit","/users_edit/#{user.id}", class: 'btn btn-primary' %>
+          <%#= link_to "delete", admin_user_path(user), class: 'btn btn-mini btn-danger', method: 'delete', confirm: "Delete this record?" %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>

@@ -1,0 +1,55 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Source:</b>
+  <%= @link_account.source %>
+</p>
+
+<p>
+  <b>Target:</b>
+  <%= @link_account.target %>
+</p>
+
+<p>
+  <b>Source:</b>
+  <%= @link_account.source_id %>
+</p>
+
+<p>
+  <b>Target:</b>
+  <%= @link_account.target_id %>
+</p>
+
+<p>
+  <b>Source admin:</b>
+  <%= @link_account.source_admin_id %>
+</p>
+
+<p>
+  <b>Target admin:</b>
+  <%= @link_account.target_admin_id %>
+</p>
+
+<p>
+  <b>Accept:</b>
+  <%= @link_account.accept %>
+</p>
+
+<p>
+  <b>Request:</b>
+  <%= @link_account.request %>
+</p>
+
+<p>
+  <b>Ignor:</b>
+  <%= @link_account.ignor %>
+</p>
+
+<p>
+  <b>Remove:</b>
+  <%= @link_account.remove %>
+</p>
+
+
+<%= link_to 'Edit', edit_link_account_path(@link_account) %> |
+<%= link_to 'Back', link_accounts_path %>

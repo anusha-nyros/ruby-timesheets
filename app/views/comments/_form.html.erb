@@ -1,0 +1,39 @@
+
+<%= simple_form_for(@comment)  do |f| %>
+  <%= f.error_notification %>
+    <div class="form-inputs">
+<table class="table table-striped">
+<p>
+  <b>Project Description:</b>
+  <div style="width:820px;"><%= @project.notes %></div>
+</p>
+<br>
+<% @project.comments.each   do |c| %>
+
+<tr><td><div style="width:500px;"><%= c.coment %></div></td>
+<td>  By : <%=  c.uname  %> on <%= c.created_at.strftime("%b-%d-%Y %H:%M:%S") %></td> 
+<td>
+<% if c.uname == current_user.name %>
+
+<div>
+<%= link_to 'Edit', {:action=>'edit',:controller=>'comments',:id=>c.id},class: 'btn btn-mini'  %>
+<%= link_to "Delete", c, method: :delete, confirm: "Delete this record?", class: 'btn btn-mini btn-danger' %> 
+</div>
+
+<% end %>
+
+</td>   
+</tr>
+<% end %>
+</table>
+    <%= f.input :coment, :label=>"Add Your Comment Here" ,input_html: {rows: '5', class: 'span9'} %>
+    <%= f.input :project_id, :as =>"hidden", input_html: { value: "#{@project.id}" } %>
+    <%= f.input :uname, :as =>"hidden", input_html: { value: "#{current_user.name}" } %>
+    <%#= f.input :project_id %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, class: 'btn btn-primary'  %>
+  </div>
+
+<% end %>

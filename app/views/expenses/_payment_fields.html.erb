@@ -1,0 +1,53 @@
+<%= javascript_include_tag 'prototype' %>
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat:  'yy-dd-mm'
+});				
+});
+</script>
+
+<%= simple_nested_form_for @payment, :html=>{:multipart => true, class: 'form-horizontal' }, :url=>{:action => "update_payment"} do |f| %>
+  <%= f.error_notification %>
+
+ <table>
+      <tr>
+        <td><%= f.input :vendor  %></td>
+        <td><%= f.input :project_type_id,:collection => current_user.organization.project_types.find(:all, :order => 'type_name').map {|p| [p.type_name,p.id]} , :label => " Project", :prompt => "Choose a Project",:input_html => { class: 'fav'} %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+      <%= f.input :paymethod %>
+      </td>
+        
+        <td>
+         <%= f.input :project_id,:collection => current_user.organization.projects.find(:all, :order => 'title').map {|p| [p.title,p.id]} ,:label => "Task", :prompt => "Choose a Task",:input_html => { class: 'fav'} %>         
+        </td>
+      </tr>
+      <tr>
+         <td><%= f.input :date ,:as => :string, :input_html => { :id => 'datepicker'} %> </td>
+        <td><%= f.input :amount %></td> 
+       
+      </tr>
+      <% if current_user.admin? && controller.action_name == "ed" %>
+      <tr>
+        <td><%= f.input :approved_amt  %> </td>
+          <td>
+           <%= f.input :pay_amount %> 
+           
+         </td>
+      </tr> 
+      <% end %> 
+      <tr>
+        <td colspan="2"><%= f.input :exp_description , input_html: {rows: '5', class: 'span9'} %> </td>
+      </tr>  
+     </table>
+
+  <div class="form-actions">
+    <%= f.button :submit, class: 'btn btn-primary' %>
+  </div>
+<% end %>
+

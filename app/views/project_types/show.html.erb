@@ -1,0 +1,65 @@
+<%#= render :partial => "menu" %>
+
+<p>
+  <h2>Project Title:
+  <%= @project_type.type_name %>
+  </h2>
+</p>
+
+<p>
+  <b>Description: </b>
+  <%= @project_type.proj_desc %>
+  
+</p>
+<br/><br/>
+
+<table class="table table-striped">
+     <tr>
+         
+          
+          <th>Task Title</th>
+          <th>Status</th>
+          <th>Schedule Date</th>
+          <th>Amount</th>
+          <th>Active</th>
+          <th>Task#</th>
+          
+       
+      </tr>
+
+ <% @tasks.each do |task| %>
+  <tr>
+   
+      <td><p>
+          <span style="display:block" class="proj_title"><%= task.title %></span>
+          <span style="display:none;text-indent:10px" class="proj_notes"><%=  task.notes %></span>
+          </p>
+      </td>
+      
+	  <td><%= task.action_required %></td>
+	  <td><%= task.schedule_date.strftime("%b-%d-%Y") if !task.schedule_date.blank? %></td>
+         <td><%= number_with_precision(task.amount,:precision => 1, :strip_insignificant_zeros => true) %></td>
+
+         <%= simple_form_for :task, url: "/project_types/taskstatus/#{task.id}" do |f| %>
+	   <% if task.active == true  %><td><input type="checkbox" name="active"  checked='checked' onclick="this.form.submit();"  ></td>   <% else  %>
+		<td> <input type="checkbox" name="inactive"  onclick="this.form.submit();" ></td>
+		<% end %>
+		
+		<% end %>
+ 
+	  <td><%= task.prq_number %></td>
+       
+    </tr>
+ 
+   <% end %>
+<%#= link_to 'Edit', edit_project_type_path(@project_type) %> 
+</table>
+
+<div>
+<%= link_to 'Back', project_types_path ,class:'btn' %>
+
+</div>
+
+
+
+

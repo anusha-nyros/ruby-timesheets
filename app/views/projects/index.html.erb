@@ -1,0 +1,221 @@
+<head>
+<style type="text/css">
+.last span{
+  display:inline;
+}
+.last {
+  width:80px;
+}
+  ul li
+  {
+  display:inline;
+  
+  }
+#side span{
+  display:inline;
+}
+</style>
+
+
+<script type="text/javascript">
+    $('document').ready(function(){
+
+        var n= $('#myid').val();        
+        $('#paginatevalues').val(n);
+        
+    });
+</script>
+
+<script type="text/javascript" >
+//for selecting all checkboxes
+function update_project_id() {         
+     var allVals = [];
+     $('.searched_result :checked').each(function() {
+       allVals.push($(this).val());
+     });
+     $('#project_check').val(allVals);
+     $('#project_chec').val(allVals);
+  }
+//for selecting individual checkboxes 
+$(function() {
+   $('.searched_result input').click(update_project_id);
+   update_project_id();
+ });
+
+ $(document).ready(function (){
+  $(".check_all_or_none").click(function(){
+  $('.searched_result :checkbox').attr('checked', $( this ).is( ':checked' ) ? true : false );
+  update_project_id();  
+  });
+});
+</script>
+</head>
+<% if current_user.admin? %>
+<%#= render :partial => "menu1" if current_user.admin? %><br/>
+<% end %>
+<%= render :partial => "menu" %>
+<% if !@projects.blank? %>
+<%= render :partial => "projects/search_form", locals: {q: @q} %>
+<% end %>
+<% if @projects.blank? %>
+   <% if params[:due] == "past" %>
+  <div class="well">Currently, you don't have any Past Due Tasks</div>
+  <% elsif params[:scheduled] == "this_week" %>
+ <div class="well">Currently, you don't have any scheduled tasks for this week.</div>
+   <% elsif params[:scheduled] == "today" %>
+  <div class="well">Currently, you don't have any scheduled tasks for to day.</div>
+   <% elsif params[:scheduled] == "this_month"  %>
+   <div class="well">Currently, you don't have any scheduled tasks for this month.</div>
+   <% elsif params[:scheduled] == "nxt_week"%>
+   <div class="well">Currently, you don't have any scheduled tasks for next week.</div>
+   <% elsif params[:scheduled] == "nxt_month" %>
+  <div class="well">Currently, you don't have any scheduled tasks for next month.</div>
+  <% elsif params[:recent] == "recorded" %>
+  <div class="well">Currently, you don't have any Recent tasks activated by time records.</div>
+   <% else %>
+   <div class="well">Currently, you don't have any Tasks.</div>
+  <% end %>
+<br/>
+<div id="whole">
+<% if !@projects.blank? %> 
+<div style="float:left">
+<h1>Tasks</h1>
+</div>
+<div style="float:left;margin-bottom:10px;">
+
+        <ul style="padding-left:50px;">
+        <form name="projectfilters" action="/projects" >
+        <li id="icon">
+   <%= radio_button_tag 'FILTER', 'CLOSED', @chosen == 'CLOSED' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Active
+           </li>
+                        
+          <li id="icon">
+  <%= radio_button_tag 'FILTER', 'OPEN', @chosen == 'OPEN' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Inactive
+            </li>
+           <li id="icon">
+  <%= radio_button_tag 'FILTER', 'ALL', @chosen == 'ALL' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;All
+           </li>
+          </form>
+        </ul>  
+		 
+      
+  </div>
+
+   <% end %> 
+</div>
+<% else %>
+  
+  
+<div id="whole">
+<div style="float:left">
+<h1>Tasks</h1>
+</div>
+<div style="float:left;margin-top:10px;">
+
+        <ul style="padding-left:50px;">
+        <form name="projectfilters" action="/projects" >
+        <li id="icon">
+   <%= radio_button_tag 'FILTER', 'CLOSED', @chosen == 'CLOSED' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Active
+           </li>
+                        
+          <li id="icon">
+  <%= radio_button_tag 'FILTER', 'OPEN', @chosen == 'OPEN' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Inactive
+            </li>
+           <li id="icon">
+  <%= radio_button_tag 'FILTER', 'ALL', @chosen == 'ALL' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;All
+           </li>
+          </form>
+        </ul>  
+		 
+      
+  </div>
+
+<div id="side">
+
+<span class="pull-right">
+  
+<%= simple_form_for :my_threads , url: "/project_?FILTER=#{@chosen}" do %>
+             
+              <select name="sel" onchange="this.form.submit();" id="paginatevalues" class="span1">
+                
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+              </select>
+     
+<% end %>  
+<input type="hidden" id="myid" value='<%= @choosed if !@choosed.blank? %>'>
+</span>
+<span class="pull-right" style="padding:5px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+</span>
+</div>
+   
+</div>
+<div style="float:right;margin-top:20px;"></div>
+ 
+  <table class="table table-striped">
+     <tr>
+          <th style="width:10px;"><input type="checkbox" class="check_all_or_none"> </th>
+          <th style="width:90px"><%= sort_link(@q, :project_name, "Project") %></th>
+	   <th><%= sort_link(@q, :priority, "Priority") %> </th>
+          <th><%= sort_link(@q, :title, "Task Title") %></th>
+          <th><%= sort_link(@q, :action_required, "Status") %></th>
+          <th><%= sort_link(@q, :schedule_date, "Schedule Date") %></th>
+          <th><%= sort_link(@q, :amount, "Amount") %></th>
+	   <th><%= sort_link(@q, :actual, "Actual") %></th>
+          <th style="width:20px;"><%= sort_link(@q, :active, "Active Issues") %></th>
+          <th><%= sort_link(@q, :prq_number, "Task#") %></th>
+          <th></th>
+       
+      </tr>
+   <% total=0 %>
+   <% act_tot=0 %>
+   <% @projects.each do |project| %>
+    <tr>
+    <td class="searched_result" ><input type="checkbox" name="project_list[]" id="check_<%= project.id %>"  value= "<%= project.id %>"></td>
+    <td style="width:90px"><%= project.project_name %></td>
+    <td><%=  project.priority%> </td>  
+			
+           <td><p>
+          <span style="display:block" class="proj_title"><%= project.title %></span>
+          <span style="display:none;text-indent:10px" class="proj_notes"><%=  project.notes %></span>
+          </p>
+      </td>
+      
+	  <td><%= project.action_required %></td>
+	  <td><%= project.schedule_date.strftime("%b-%d-%Y") if !project.schedule_date.blank? %></td>
+         <td><%= number_with_precision(project.amount,:precision => 1, :strip_insignificant_zeros => true) %></td>
+	  <td><%= number_with_precision(project.actual,:precision => 1, :strip_insignificant_zeros => true) %></td>
+		<% total = total+ project.amount %>
+        <% if !project.actual.nil? %> 
+            <% act_tot=act_tot + project.actual %>
+        <% end %>
+          <td style="width:20px"><%= link_to (project.issues.find(:all, :conditions => {:active => '1'})).count, issues_path(:id => project), class: 'btn btn-mini btn-primary' %></td>
+ 
+	  <td><%= project.prq_number %></td>
+        <td>
+        <div class='last'>
+        <span><%= link_to 'Show', project, class: 'btn btn-mini' %> </span>
+        <span><%= link_to 'Edit', edit_project_path(project), class: 'btn btn-mini' %></span>
+        </div>
+      </td>
+    </tr>
+  <% end %>
+	<tfoot>
+        <tr>
+          <td><b>Total</b></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td><td></td>
+          <td><b><%= number_with_precision(total,:precision =>1,:strip_insignificant_zeros => true) %></b></td>
+          <td><b><%= number_with_precision(act_tot,:precision => 1,:strip_insignificant_zeros => true)%></b></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+  </table>
+<%= paginate @projects %> 
+<% end %>

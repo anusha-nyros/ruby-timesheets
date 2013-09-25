@@ -1,0 +1,33 @@
+<%= render :partial => "menu" %> 
+<% if @expenses.blank? %>
+<div class ="well" > Currently You Dont Have Any Analytics Section Records </div>
+<% else %>
+<table class="table table-striped">
+    <tr>
+          <th>Project#</th>
+          <th>Description</th>
+          <th>Date</th>
+           <th>Total Expenses </th>
+             <th>Approved </th>
+          <th>UnApproved</th>
+         <th></th>
+   
+      </tr>
+ <% @pays.each do |p| %>
+    <tr>
+    <td><%= p.project_type.try(:proj_number) %></td> 
+    <td><%= p.exp_description %></td> 
+   <td><%= Date.strptime(p.date, "%Y-%d-%m").strftime("%b-%d-%Y") if !p.date.blank?   %></td>
+
+     <td> <%#= Payment.find(:all ,:conditions => {:project_type_id => expense.project_type.id}).sum(&:pay_amount)  %> 
+         <%= p.amount  %> 
+
+ </td>
+    <td><%= p.approved_amt %></td>
+    
+<td><%= (p.amount - p.approved_amt) %></td>
+    <td><%= "" %></td>
+   <% end %>
+</tr>
+  </table>
+<% end %> 

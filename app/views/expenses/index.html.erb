@@ -1,0 +1,150 @@
+<script type="text/javascript" >
+//for selecting all checkboxes
+function update_issue_id() {         
+     var allVals = [];
+     $('.searched_result :checked').each(function() {
+       allVals.push($(this).val());
+     });
+     $('#expense_check').val(allVals);
+  }
+//for selecting individual checkboxes 
+$(function() {
+   $('.searched_result input').click(update_issue_id);
+   update_issue_id();
+ });
+
+ $(document).ready(function (){
+  $(".check_all_or_none").click(function(){
+  $('.searched_result :checkbox').attr('checked', $( this ).is( ':checked' ) ? true : false );
+  update_issue_id();  
+  });
+});
+</script>
+
+<%= render :partial => "menu" %>
+<% if !@expenses.blank? %>
+<%= render :partial => "expenses/search_form", locals: {q: @q} %>
+<% end %>
+<% if @expenses.blank? %>
+
+  <% if params[:expense] == 'approval' %>
+  <div class="well">You don't currently have any expenses pending for approval.</div>
+  
+  <% else %>
+  
+  <div class="well">You don't currently have any expenses.</div>
+  
+  <% end %>
+  
+<br/>
+<% else %>
+  
+
+<div id="side">
+<span style="text-transform:capitalize;font-size:24px" >Financials</span>
+<span class="pull-right">
+  
+<%= simple_form_for :expenses , url: "/expense_" do %>
+             
+              <select name="sel" onchange="this.form.submit();" id="paginatevalues" class="span1">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+              </select>
+     
+<% end %>  
+<input type="hidden" id="myid" value='<%= @choosed if !@choosed.blank? %>'>
+</span>
+<span class="pull-right" style="padding:5px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+</span>
+</div>
+
+ <table class="table table-striped">
+    <tr>
+
+          <th style="width:15px;"><input type="checkbox" class="check_all_or_none"> </th>
+          <th><%= sort_link(@q, :exp_number, "Expense#") %></th>
+          <th><%= sort_link(@q, :username, "User") %></th>
+          <th><%= sort_link(@q, :date, "Date") %></th>
+          <th><%= sort_link(@q, :contact_type, "ContactType") %></th>
+          <th><%= sort_link(@q, :description, "Notes") %></th>
+          <th><%= sort_link(@q, :reference, "Ref#") %></th>
+          <th><%= sort_link(@q, :amount,"Submitted") %></th>
+          <th><%= sort_link(@q, "Approved") %></th>
+          <th><%= sort_link(@q, "Paid") %></th>
+          <th><%= sort_link(@q, "Balance") %></th>
+          
+          <% if current_user.admin? %>
+         	
+         	 <th><%= sort_link(@q, :status, "Approve") %></th>&nbsp;
+         
+         <% end %>
+         
+         <th></th>
+
+   
+      </tr>
+<% total=0 %>
+
+ <% @expenses.each do |expense| %>
+    <tr>
+    <td class="searched_result" ><input type="checkbox" name="expense_list[]" id="check_<%= expense.id %>"  value= "<%= expense.id %>"></td>
+    <td><%= expense.exp_number %></td>
+    <td><%= expense.username %></td>       
+	  <td><%= expense.date.strftime("%b-%d-%Y") if !expense.date.blank? %></td>
+   <td><%= expense.contact_type %></td>
+<td><%= expense.description %></td> 
+    <td><%= expense.reference %></td>
+
+    <td><%= number_to_currency(number_with_precision(expense.amount,:precision => 1, :strip_insignificant_zeros => true),:precision => 1) %> </td>
+  <% total = total+ expense.amount %>
+   <td><%= number_to_currency(expense.total_approved_amt,:precision => 1) %> </td>
+   <td> <%= number_to_currency(expense.paid_expense_amt,:precision => 1) %> </td>
+   <td><%= number_to_currency(expense.total_approved_amt - expense.paid_expense_amt,:precision => 1) %> </td>
+    <% if current_user.admin? %>
+    <%= simple_form_for :expense, url: "/expenses/status/#{expense.id}" do |f| %>
+	   <% if expense.status == true  %><td><input type="checkbox" name="status"  checked='checked' onclick="this.form.submit();"  ></td>   <% else  %>
+		<td> <input type="checkbox" name="inactive"  onclick="this.form.submit();" ></td>
+		<% end %>
+		
+		<% end %>
+ <% end %>
+        
+       <td>
+    
+        <div class='last'>
+        <span><%= link_to 'Show', expense, class: 'btn btn-mini' %> </span>    
+         <span><%= link_to 'Edit', edit_expense_path(expense), class: 'btn btn-mini' %></span>
+        </div>
+      </td>
+    </tr>
+  <% end %>
+	<tr>
+<td ><b>Total</b> </td>
+<td colspan=5 >  </td>
+<td><b><%= number_to_currency(number_with_precision(total,:precision =>1,:strip_insignificant_zeros => true),:precision => 1) %></b> </td>
+<td colspan= 5></td>
+</tr>
+  </table>
+<%= paginate @expenses %>
+<% end %>
+
+
+<style>
+#side span{
+  display:inline;
+}
+
+</style>
+
+<script type="text/javascript">
+    $('document').ready(function(){
+        var n= $('#myid').val();        
+        $('#paginatevalues').val(n);
+        
+    });
+  
+</script>
+ 

@@ -1,0 +1,41 @@
+<ul class="nav nav-tabs">
+  <li class="<%= action_active('index') %>">
+    <%= link_to projects_path do %>
+        <i class="icon-list-alt"></i>
+        Index
+    <% end %>
+  </li>
+ <li class="<%= action_active('estimate_actual') %>">
+    <%= link_to '/estimate_actual' do %>
+      <i class="icon-list-alt"></i>
+      Estimate Vs Actual
+    <% end %>
+  </li>
+ <li class="<%= action_active('status_view') %>">
+    <%= link_to '/status_view' do %>
+      <i class="icon-list-alt"></i>
+     Status View
+    <% end %>
+  </li>
+
+<li class="<%= action_active('start_end') %>">
+    <%= link_to '/start_end_view' do %>
+      <i class="icon-list-alt"></i>
+     Start/End View
+    <% end %>
+  </li>
+ <li class="<%= action_active('new') %>">
+    <%= link_to new_project_path do %>
+      <i class="<%= green_icon %>"></i>
+      Create New Task
+    <% end %>
+  </li>
+  <li class="<%= action_active('bulk_creation_new') %>" style="width:150px;">
+    <%= link_to bulk_creation_new_path do %>
+      <img src="/assets/add.png" style="height:16px"/><img src="/assets/add.png" style="height:13px;margin-left:-4px;"/><img src="/assets/add.png" style="height:9px;margin-left:-2px;"/>
+      Bulk Creation
+    <% end %>
+  </li>
+
+
+</ul>

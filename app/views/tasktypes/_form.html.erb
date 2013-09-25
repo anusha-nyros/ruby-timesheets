@@ -1,0 +1,15 @@
+
+
+
+<%= simple_form_for(@tasktype , :html => {:multipart => true, class: 'form-horizontal'}) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :tasktype %>
+    <%= f.input :usage, input_html: {rows: '5', class: 'span9'} %>
+  </div>
+
+  <div class="form-actions">
+    <%= link_to 'Back', tasktypes_path, class: 'btn btn-mini-primary' %> &nbsp;&nbsp;<%= f.button :submit, class: 'btn btn-primary' %>
+  </div>
+<% end %>

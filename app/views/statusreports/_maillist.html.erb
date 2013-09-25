@@ -1,0 +1,135 @@
+<br/>
+<% if @statusreports.blank? %>
+  <% if params[:waiting_for] == 'sent' %>
+   <div class="well">You don't currently have any statusreports waiting to be sent.</div>
+   <% else %>
+   <div class="well">You don't currently have any statusreports </div>
+   <% end %>
+<% else %>
+<h3 class="bor">Status Report to be sent </h3>
+
+  <table class="table table-striped">
+
+    
+    <tr>
+    <th><%= sort_link(@q, :report_number, "Report#") %></th>
+     
+      <th><%= sort_link(@q, :report_date, "Date") %></th>
+      
+      <th><%= sort_link(@q, :report_time, "Time") %></th>
+      <th class="span2" ><%= sort_link(@q, :send_to, "Send To") %></th>
+      <th><%= sort_link(@q, :sent_by, "Sent By") %></th>
+      <th><%= sort_link(@q, :sent_date, "Sent Date/Time") %></th>
+     <th><%= sort_link(@q, :subject, "Subject") %></th>
+       
+      
+      <th></th><th></th>
+    </tr>
+<% @statusreports.each do |statusreport| %>
+  <% if statusreport.id.to_s == @report_id %>
+    <tr>
+    <td><%= statusreport.report_number %></td>
+	  
+			
+    <td><%= statusreport.report_date.strftime("%b-%d-%Y") if !statusreport.report_date.blank? %></td>
+      
+	  <td><%= statusreport.report_time.strftime('%H:%M') %></td>
+           
+	  <td><%= statusreport.send_to %></td>
+          <td><%= statusreport.sent_by %></td>
+          <td><%= statusreport.sent_date.strftime("%b-%d-%Y %H:%M") if !statusreport.sent_date.blank? %></td>
+          <td><%= statusreport.subject %></td>
+    <td></td><td></td>
+    </tr>
+  <% end %>
+  <% end %>
+  </table>
+<% end %>
+
+<%#= @tsk_array %>
+<br/>
+<div class="bor">You can enter your  valuable message here </div>
+<br/>
+
+<%= simple_form_for :statusreport,:url => url_for(:action=>'resend_mail',:controller=>'statusreports'), :html => {method: :post, class: 'form-horizontal',:multipart => true ,:id => 'eform'}  do |f| %>
+<%#= hidden_field_tag "project_check_all" %>
+<%= f.input :mailed_projects ,:input_html => {:value => @report_id} ,:as => :hidden %>
+<%= f.input :project_format ,:input_html => {:value => @project_format},:as => :hidden %>
+<div class="control-group text optional">
+<label class="text optional control-label" for="project_msg">Message</label>
+<div class="controls">
+<textarea class="text optional span5" cols="35" id="project_msg" name="project[msg]" rows="5">
+</textarea>
+</div>     
+</div>
+<div class="controls">
+<%= f.submit "Send Email" ,class: 'btn btn-mini btn-primary' %> 
+</div>
+<div id="msgError" style="text-align:center;font-size:11px;font-weight:bolder"> </div>    
+<div id="contactError" style="text-align:center;font-size:11px;font-weight:bolder"> </div>    
+<% end %>
+
+
+
+
+<style>
+ #msgError label,#contactError label {
+  color :red;
+  font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
+  font-size : 13px;
+  }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function() {  
+        var serializedData = $("#eform").serialize();
+        $("#eform").validate({ 
+            errorPlacement: function (error, element) {
+               if (element.attr("name") == "project_check_all") 
+                     $("#contactError").append(error); 
+               else 
+                       error.insertAfter(element); 
+                       error.fadeOut(1000);
+                             }  ,            
+            rules: {
+                "project_check_all":{
+                    required: true 
+                }
+              },
+            messages: {
+                "project_check_all":{
+                    required: "Please select atleast one contact" 
+                }
+            }, 
+            submitHandler: function() {
+                  if (confirm("You are about to submit, please recheck...")) {
+                    var project_check_all = $('#project_check_all').val();
+                    var msg = $('#project_msg').val();
+                    var mailed_projects = $('#project_mailed_projects').val();
+                   $.fancybox.showActivity();
+                   $.ajax({
+                            url:"/statusreports/resend_mail",
+                            type:"POST",
+                            data: { project_format: $('#statusreport_project_format').val(),
+                            msg: $('#project_msg').val(),mailed_projects: $('#statusreport_mailed_projects').val() }, 
+                            success: function(data){ 
+                                             $.fancybox({
+                                              'content' : data,
+                                              'overlayShow'	: false,
+				                                      'transitionIn'	: 'elastic',
+				                                      'transitionOut'	: 'elastic',
+                                              'autoDimensions'	: false,
+			                                        'width'         		: 350,
+			                                        'height'        		: 'auto',
+                                              });     
+                              
+                                            },
+                            error: function() {alert('failed');}
+                    }).done(function() {$("#select_emails").multiselect("uncheckAll");});
+                    return false;
+            }}
+
+        });
+    });
+</script>
+ 

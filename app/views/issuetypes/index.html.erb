@@ -1,0 +1,31 @@
+<%= render :partial => "menu" %>
+
+<%= link_to new_issuetype_path ,class: 'btn btn-success' do %>
+<i class="icon-plus icon-white"></i> New Issue Type
+<% end %>
+<br/><br/>
+<% if @issuetypes.blank? %>
+<div class="well">currently you don't have any issuetypes </div>
+<% else %>
+
+<h1>Issue Types</h1>
+
+<table class="table table-striped">
+  <tr>
+    <th>Name</th>
+    <th>Usage</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @issuetypes.each do |issuetype| %>
+  <tr>
+    <td><%= issuetype.issuetype %></td>
+    <td><%= issuetype.usage %></td>
+    <td><%= link_to 'Edit', edit_issuetype_path(issuetype) ,class: 'btn btn-mini'%>
+    <%= link_to 'Delete', issuetype, confirm: 'Are you sure?', method: :delete ,class: 'btn btn-mini btn-danger'%></td>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

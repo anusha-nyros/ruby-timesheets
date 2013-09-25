@@ -1,0 +1,46 @@
+<%= render :partial => "menu" %>
+
+<p>
+  <b>Category:</b>
+  <%= @link.product %>
+</p>
+
+<p>
+  <b>Link:</b>
+ <%= auto_link(web_presence(@link.link),:html=>{:target=>"_blank"}) %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%= @link.user_name %>
+</p>
+
+
+
+<p>
+  <b>Notes:</b>
+  <%= @link.notes %>
+</p><br>
+
+<% unless @link.linkimages.blank? %>
+ <p>
+  <b>Attachments:</b>
+  <%= @link.linkimages.count %></p>
+  <% @link.linkimages.each do |a| %>
+  <% if a.content_type == 'image/png' %>
+  <%= image_tag(a.link_image_url(:thumb), :width => '90', :height => '90') if a.link_image_url %>
+  <% else %><br><br>
+  <%= link_to a.link_image.uploaded_filename, a.link_image.url %><br>
+  <br>
+  <% end %>
+  <% end %>
+</p>
+  <% end %>
+<% if current_user.id == @link.user_id %>
+ <%= link_to 'Edit', edit_admin_link_path(@link), class: 'btn btn-small'  %>
+   
+    <%= link_to 'Destroy', admin_link_path(@link), confirm: 'Delete this record?', method: :delete, class: 'btn btn-small btn-danger' %>
+    <% end %>
+     <%= link_to 'Back', admin_links_path(:FILTER => 'Other'), class: 'btn btn-small'  %>
+     
+     

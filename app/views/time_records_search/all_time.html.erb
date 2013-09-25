@@ -1,0 +1,115 @@
+<script type="text/javascript">
+    $('document').ready(function(){
+        var n= $('#myid').val();        
+        $('#paginatevalues').val(n);
+        
+    });
+  
+//for selecting all checkboxes
+function update_issue_id() {         
+     var allVals = [];
+     $('.searched_result :checked').each(function() {
+       allVals.push($(this).val());
+     });
+     $('#time_record_check').val(allVals);
+  }
+//for selecting individual checkboxes 
+$(function() {
+   $('.searched_result input').click(update_issue_id);
+   update_issue_id();
+ });
+
+ $(document).ready(function (){
+  $(".check_all_or_none").click(function(){
+  $('.searched_result :checkbox').attr('checked', $( this ).is( ':checked' ) ? true : false );
+  update_issue_id();  
+  });
+});
+
+
+</script>
+<style>
+#side span{
+  display:inline;
+}
+
+</style>
+
+
+<% if @time_records.blank? %>
+  <div class="well">
+    You don't currently have any record
+  </div>
+<% else %>
+
+
+<br/><br/>
+
+<% if !@time_records.nil? %>
+<%= render :partial => "time_records_search/search_form", locals: {q: @q} %>
+<% end %>
+<div id="side">
+<span class="pull-left"><%= paginate @time_records %></span>
+<span class="pull-right" style="margin-top:27px">
+  
+<%= simple_form_for :my_threads , url: "/timerecords_" do %>
+             
+              <select name="sel" onchange="this.form.submit();" id="paginatevalues" class="span1">
+            
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+              </select>
+     
+<% end %>  
+<input type="hidden" id="myid" value='<%= @chosen if !@chosen.blank? %>'>
+</span>
+<span class="pull-right" style="padding:29px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+</span>
+</div>
+
+
+
+  <table class="table table-striped">
+    <tr>
+       <th style="width:15px;"><input type="checkbox" class="check_all_or_none"> </th>
+       <th class="span3"><%= sort_link(@q, :activity_date, "Date") %></th>
+      <th><%= sort_link(@q, :description, "Activity") %></th>
+      <th><%= sort_link(@q, :total_hours, "Hours") %></th>
+      <% if current_user.organization.account_type == "Project" || current_user.organization.account_type == "project" %> 
+     <th><%= sort_link(@q, :project_title, "Project Name") %></th><% end %>
+      <th><%= sort_link(@q, :project_prq_number, "Project#") %></th>
+	<th><%= sort_link(@q, :user_username, "User") %></th>  
+	<th class="span2"></th>
+    </tr>
+    <%#= @time_records.size %>
+    <% total = 0 %>
+    <% for time_record in @time_records %>
+      <tr>
+         <td class="searched_result" ><input type="checkbox" name="time_record_list[]" id="check_<%= time_record.id %>"  value= "<%= time_record.id %>"></td>
+        <td><%= time_record.activity_date.strftime('%b-%d-%Y') %></td>
+        <td><%= simple_format(two_lines_or_200(time_record.description)) %></td>
+        <td><%= time_record.total_hours %></td>
+        <td><%= time_record.project.try(:title) if !time_record.project_id.blank?  %></td>
+        <td><%= time_record.project.try(:prq_number) %></td>
+        <td><%= time_record.user.try(:username) if !time_record.user_id.blank?  %></td>
+        <% if current_user.username == time_record.user.try(:username) %>
+        <td>
+          <%= link_to "edit", edit_time_record_path(time_record, :project_id => time_record.project_id ), class: 'btn btn-mini' %>
+          <%= link_to "delete", time_record, class: 'btn btn-danger btn-mini', method: :delete, confirm: 'Delete this record?' %>
+        </td>
+<% else %>
+<td> </td>
+<% end %>
+     </tr>
+       <% total = total + time_record.total_hours %>
+    <% end %>
+   <tr>
+        <td></td>
+        <td><strong>Total</strong></td>
+        <td><strong><%= total %></strong></td><td></td><td></td><td></td><td></td>
+      </tr>
+  </table>
+<% end %>

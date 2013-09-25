@@ -1,0 +1,30 @@
+
+
+<%= simple_form_for @invitation,:html => {class: 'form-horizontal'}  do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :username ,:label=> "From" ,:disabled => true ,:input_html=>{:value => current_user.username } %>
+    <%= f.input :send_to ,:label => "To" %>
+    <%= f.input :description ,:input_html => {class: 'span6',rows: '5'}%>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit "Send Invitation", class: 'btn btn-primary'  %>
+    <%= link_to "Cancel",root_path ,class: "btn" %>
+  </div>
+<% end %>
+
+
+<p class="hint" >Please send invites only to people you know who will be glad to get them.</p>
+
+
+<style>
+.hint{
+    background-color: #FFFFCC;
+    border-top: 1px solid #CCCCCC;
+    padding: 10px 15px;
+    margin-top:10px;
+    text-align :center;
+}
+</style>

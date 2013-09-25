@@ -1,0 +1,84 @@
+<script type="text/javascript">
+  $('document').ready(function(){
+       $('#dp1').datepicker({
+          dateFormat: 'mm/dd/yy'       
+        }); 
+       $('#dp2').datepicker({
+          dateFormat: 'mm/dd/yy'
+        });
+   });
+</script>  
+
+<%=render :partial=>"menu"%>
+<%= simple_nested_form_for @invoice,html: {class: 'form-horizontal'} do |f| %>
+  <%= f.error_notification %>
+<fieldset >    
+  <table> 
+  <tr>
+	<td>    <%= f.input :invoice %>  </td>
+	
+<td>    <%= f.input :date,:as => :string , :input_html => {id: 'dp1'}  %></td>
+  </tr>
+  <tr>
+  	<td>    <%= f.input :client %></td>
+  	<td>    <%= f.input :reference %></td>
+  </tr>
+  <tr>
+  	<td>    <%= f.input :amount %></td>
+  	<td>    <%= f.input :paid %></td>
+  </tr>
+  <tr>
+  	<td>    <%= f.input :balance,:as=>:integer %></td>
+  	<td>    <%= f.input :last_payment ,:as => :string , :input_html => {id: 'dp2'} %></td>
+  </tr>
+  <tr>
+  	<td>    <%= f.input :days_old %></td>
+  	<td>    <%= f.input :aging %></td>
+  <tr>
+    </table>
+    
+    <!-- for invoice line items
+     -->
+     
+    <div><b>Line Items</b></div> <br/>
+    <div >
+    <%= f.fields_for :inv_line_items do |inv| %>
+    <table>
+      <tr>
+        <td><%= inv.input :reference  %> </td>
+        <td><%= inv.input :extended  %></td>
+      </tr>
+      <tr>
+        <td><%= inv.input :quantity  %></td>
+        <td><%= inv.input :unit  %></td>
+        
+      </td>
+      </tr>
+      <tr>
+        <td> <%= inv.input :amount %> </td>
+        <td> </td> 
+      </tr>
+      <tr>
+        <td colspan="2"> <%= inv.input :description ,input_html: {rows: '5', class: 'span8'} %> </td>
+      </tr>
+ 
+      <tr>
+        <td colspan="2"> <%= inv.input :text_comment,input_html:{rows: '5', class: 'span8'} %> </td>
+      </tr>  
+     </table>
+    <%= inv.link_to_remove "Remove Line Item",class: "btn btn-primary" %><br/><br/>   
+    <% end %>
+   </div>
+  
+
+  <%= f.link_to_add "Add Line Item", :inv_line_items,class: "btn btn-primary" %>
+	
+  </fieldset>
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
+
+
+
+

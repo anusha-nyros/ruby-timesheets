@@ -1,0 +1,83 @@
+<script type="text/javascript">
+
+function getTasks() {
+ //alert("select_id ");
+$('#select_my_task').live('change', function() {
+
+var project_type_id = $('#select_my_task').val();
+
+$("#spinner_ten").show();
+$('#project_task').html.empty;
+  $('#related_category').html.empty;
+	 
+      $('#related_category').html(data);
+	  $("#spinner_ten").hide();
+    }
+  });
+  
+  
+
+});
+}
+
+</script>
+
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+});
+
+</script>
+
+<%#=render :partial=> "menu1" %>
+<%=render :partial=> "menu" %>
+
+<%= simple_nested_form_for(@issue, :html => {:multipart => true , class: 'form-horizontal'}) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :title %>
+    <% if @issue.date_created.blank? %>
+    <%= f.input :date_created, :as => :string, :input_html => { :id => 'datepicker' }, :label => "Date" %>
+    <% elsif !@issue.date_created.blank? %>
+    <%= f.input :date_created, :as => :string, :input_html => { :id => 'datepicker', :value => change_date_format_for_edit_page(@issue.date_created) } , :label => "Date" %>
+    <% end %> 
+    <%= f.input :issuetype_id ,:collection => current_user.organization.issuetypes.map {|i| [i.issuetype ,i.id]}, :label => 'Issue Type',:prompt => 'Choose IssueType' %>
+    
+   <table><tr><td>
+    <%= f.input :project_type_id,:collection => current_user.organization.project_types.find(:all,:order=>'type_name').map {|i| [i.type_name ,i.id]}, :label => 'Project' ,:prompt => 'Choose Project', :input_html => { class: 'fav', :id => "select_my_task", :onclick => " return getTasks()" } %>
+   </td><td><%= image_tag "spinner.gif", :id => 'spinner_ten', :class => 'display',:style =>'display:none;margin-left:15px;margin-top:-15px;' %> </td></tr></table>
+    
+     <span id="related_category" >    
+								 
+     </span><br>
+     
+     <input type="hidden" value="<%= @issue.id %>" id="iss">
+    
+    <%= f.input :description , input_html: {rows: '5', class: 'span9'}%>
+    <%= f.input :active %>
+  </div>
+ <br/>
+<br/>
+
+<div class="controls">
+<%= f.fields_for :issueattachments do |attachment_form|  %>
+ <%= link_to attachment_form.object.issue_attach.uploaded_filename, attachment_form.object.issue_attach.url if attachment_form.object.issue_attach?%>
+    <%= attachment_form.file_field :issue_attach %>
+    <%= attachment_form.link_to_remove "Remove" , :style=>"margin-left:60px;"%>
+<% end %>
+
+  <%= f.link_to_add "Add attachment", :issueattachments %>
+</div>
+  
+  
+  <div class="form-actions">
+    <%= link_to 'Back' , issues_path , class: 'btn'%>
+    <%= f.button :submit ,class: 'btn btn-primary'%>
+  </div>
+<% end %>
+

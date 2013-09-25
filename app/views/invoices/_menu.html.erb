@@ -1,0 +1,57 @@
+<ul class="nav nav-tabs">
+  <li class="<%= tab_active('show_clients_path') %>">
+    <%= link_to show_clients_path do %>
+        <i class="icon-list-alt"></i>
+        Clients
+    <% end %>
+  </li>
+
+  <li class="<%= action_active('index') %>">
+    <%= link_to invoices_path do %>
+        <i class="icon-list-alt"></i>
+        Invoices
+    <% end %>
+  </li>
+ 
+<!--  <li class="<%= action_active('new') %>">-->
+<!--    <%= link_to new_invoice_path do %>-->
+<!--      <i class="icon-plus"></i>-->
+<!--      Create New Invoice-->
+<!--    <% end %>-->
+<!--  </li>-->
+
+  <li class="<%= tab_active('clients_path') %>">
+    <%= link_to '#' do %>
+        <i class="icon-list-alt"></i>
+        Client Balances
+    <% end %>
+  </li> 
+  
+
+  <li class="<%= tab_active('account_histories_path') %>">
+    <%= link_to account_histories_path do %>
+        <i class="icon-list-alt"></i>
+        Statements
+    <% end %>
+  </li>
+<% if current_user.admin? %>
+
+<!--  <li class="<%= action_active('new') %>">-->
+<!--    <%= link_to new_account_history_path do %>-->
+<!--      <i class="icon-plus"></i>-->
+<!--      Create New Transaction-->
+<!--  <%end%>-->
+<!--  </li>-->
+
+  <li class="<%= action_active('balance_summary') %>">
+    <%= link_to balance_summary_account_histories_path do %>
+        <i class="icon-list-alt"></i>
+        Balance Summary
+    <% end %>
+  </li>
+<%end%>
+
+
+
+
+</ul>

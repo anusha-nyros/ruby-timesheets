@@ -1,0 +1,16 @@
+<ul class="nav nav-tabs">
+  <li class="<%= action_active('show') %>">
+    <%= link_to admin_report_path(@pay_period) do %>
+        <i class="icon-list-alt"></i>
+        Summary
+    <% end %>
+  </li>
+  <% if @pay_period && @pay_period.active? %>
+  <li class="<%= action_active('details') %>">
+    <%= link_to admin_report_details_path(@pay_period) do %>
+      <i class="icon-zoom-in"></i>
+      Details
+    <% end %>
+  </li>
+  <% end %>
+</ul>

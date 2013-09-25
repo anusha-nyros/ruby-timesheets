@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Timesheets</title>
+  <%= stylesheet_link_tag "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <div class="wrapper">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <div class="container">
+        <ul class="nav">
+         
+            <!-- Admin menu here -->
+            
+        
+        </ul>
+        <ul class="nav pull-right">
+          <% if current_user %>            
+               <li><%= link_to "Logout", logout_url %></li>
+              </ul>
+            </li>
+          <% else %>
+            <li><%= link_to "Login", login_url %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>  
+  <div class="container">
+    
+    <div id="notifications">
+    <% [:error, :notice, :alert].each do |type| %>
+      <% if flash[type] %>
+        <%= content_tag :div, class: "alert #{alert_class(type)}" do %>
+        <a class="close" data-dismiss="alert">x</a>
+        <%= flash[type] %>
+        <% end %>
+      <% end %>
+    <% end %>
+    </div>
+    
+   
+    
+    <div class="row">
+      <div class="span12">
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+ </div>
+	<!--- wrapper ends here --->
+
+	<style>
+		
+  html, body {
+            height: 100%;
+        }
+        footer {
+            color: #fff;
+            background: #222;
+            padding: 5px;
+            border-top: 1px solid #000;
+            font-size:12px;
+        }
+        
+        .wrapper {
+            min-height: 100%;
+            height: auto !important;
+            height: 100%;
+            margin: 0px auto 10px;
+        }
+        .push {
+            height: 63px;
+        }
+        .wrapper > .container {
+            padding-top: 10px;
+        }
+
+	</style>
+	 <footer>
+      <div class="container">
+      <ul style="list-style:none">
+        <li class="pull-left"><p> Copyright&nbsp;&copy;TeamCloud </p></li>
+        <li class="pull-right" style="padding-left:10px">Privacy</li>
+        <li class="pull-right">Legal</li>
+      </ul>      
+      </div>
+    </footer>
+
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+<div id="simple-search-form">
+  <%= search_form_for @q,:url => search_projects_path, :html => {method: :post, class: 'well form-search'}  do |f| %>
+  <fieldset>
+    <%=f.text_field :title_or_project_name_or_action_required_or_prq_number_or_reference_cont,:style=>"width:150px;", class: "input-medium search-query" %> &nbsp;&nbsp;<br/><br/>
+	<ul id="home_links_search" style="margin-left:0px">
+				<li style="text-indent:6px">
+					<b> <input type='radio' id='task_radio' name='search' checked="checked" class='home_search_task_link'> Tasks </b>
+				</li>
+				<li style="text-indent:6px">
+					<b> <input type='radio' id='issue_radio' name='search' class='home_search_issue_link' >  Issues </b>
+				</li>
+			<!--<li style="text-indent:6px"><b><input type='radio' name="search"><%= link_to " Search Issues ","#",:class => "home_search_issue_link" %> </b></li> -->
+			</ul> <br> </br>
+    <button type="submit" class="btn btn-success" style="margin-left:13px">Search </button>
+    
+  <% end %>
+  </fieldset>
+</div>

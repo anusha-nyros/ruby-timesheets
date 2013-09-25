@@ -1,0 +1,52 @@
+
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+$('#datepicker1').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+$('#datepicker2').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});				
+});
+</script>
+
+<%= simple_form_for [:admin, @pay_period],  html: {class: 'form-horizontal'}  do |f| %>  
+  <fieldset>
+    <legend>Pay Periods</legend>
+    <%= f.error_notification %>
+    <%= f.input :status, as: :select, collection: [['Future', 'Future'], ['In Progress', 'In Progress'],['Open','Open'],['Pending','Pending'],['Processed','Processed'],['Submitted', 'Submitted'],['Voided','Voided']], :prompt => "Select Status" %>
+    <% if @pay_period.pay_start.blank? %>
+    <%= f.input :pay_start, :as => :string, :input_html => { :id => 'datepicker' } %>
+    <% elsif !@pay_period.pay_start.blank? %>
+    <%= f.input :pay_start, :as => :string, :input_html => { :id => 'datepicker', :value => change_date_format_for_edit_page(@pay_period.pay_start) } %>
+    <% end %>
+   
+    <% if @pay_period.pay_end.blank? %>
+    <%= f.input :pay_end, :as => :string, :input_html => { :id => 'datepicker1' } %>
+    <% elsif !@pay_period.pay_end.blank? %>
+    <%= f.input :pay_end, :as => :string, :input_html => { :id => 'datepicker1', :value => change_date_format_for_edit_page(@pay_period.pay_end) } %>
+    <% end %>
+   
+   <% if @pay_period.pay_day.blank? %>
+    <%= f.input :pay_day, :as => :string, :input_html => { :id => 'datepicker2' } %>
+    <% elsif !@pay_period.pay_day.blank? %>
+    <%= f.input :pay_day, :as => :string, :input_html => { :id => 'datepicker2', :value => change_date_format_for_edit_page(@pay_period.pay_day) } %>
+    <% end %>
+	
+    <%= f.input :timecode, :collection => current_user.organization.timecodes.find(:all).map { |r| [r.code, r.code] }, :prompt => "Choose a Time Code"  %>
+   <div style="clear:both">&nbsp;</div>
+     <%= f.input :active%>
+    <div class="form-actions">
+      <%= f.button :submit, class: 'btn-primary' %>
+      <%= submit_tag "Reset", class: 'btn', type: 'reset' %>
+    </div>
+    
+  </fieldset>
+<% end %>

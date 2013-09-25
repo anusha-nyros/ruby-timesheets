@@ -1,0 +1,58 @@
+<script type="text/javascript">  
+  $('.document').ready(function(){
+    var cr= $("input[name='link[share_option]']:checked")[0];
+    $("input[name='link[share_option]']").change(function(event) {
+          var nr= $("input[name='link[share_option]']:checked")[0];
+         
+          if (nr===cr,nr.value != 'Global')
+              return;
+          if (confirm('Are sure you want to Change')) {
+              clearInputFields();
+              cr= nr;
+          } else {
+              cr.checked= true;
+          }
+    });
+  });
+</script>
+
+<%= render :partial => "menu" %>
+<%= simple_nested_form_for([:admin, @link], :html=>{:multipart => true, class: 'form-horizontal' })  do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :product, :label => "Category" %>
+    <%= f.input :link, hint: 'Ex : www.websiteaddress.com' %>
+
+    <%= f.input :user_name, hint: 'User Id' %>
+    <%= f.input :pwd_hint ,:label => 'Password Hint' %>
+
+    <%= f.input :notes, input_html: {rows: '5', class: 'span9'} %>
+    
+    
+    <% if @link.share_option.blank? %>
+    <%= f.input :share_option, :collection => ["Projects","Private"], :as => :radio_buttons, :checked => 'Projects', :input_html => { :onchange => 'return getValue()', :id => 'share' } %>
+    <% else %>
+    <%= f.input :share_option, :collection => ["Projects","Private"], :as => :radio_buttons, :input_html => { :onchange => 'return getValue()', :class => 'share' } %>
+    <% end %>
+
+    <%#= f.input :sharebox, :label => 'Share Box' %>
+    
+    
+  </div>
+
+<div class="controls">
+<%= f.fields_for :linkimages do |attachment_form|  %>
+ <%= link_to attachment_form.object.link_image.uploaded_filename, attachment_form.object.link_image.url if attachment_form.object.link_image?%>
+    <%= attachment_form.file_field :link_image %>
+    <%= attachment_form.link_to_remove "Remove" , :style=>"margin-left:60px;"%>
+<% end %>
+
+  <%= f.link_to_add "Add Image/Document", :linkimages %>
+</div>
+
+
+  <div class="form-actions">
+    <%= f.button :submit, class: 'btn btn-primary' %>
+  </div>
+<% end %>

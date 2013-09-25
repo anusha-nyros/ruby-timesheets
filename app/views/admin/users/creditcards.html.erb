@@ -1,0 +1,37 @@
+
+<h1>Users</h1>
+<% if @users.blank? %>
+  <div class="well">
+    There is currently no user!
+  </div>
+<% else %>  
+  <table class="table table-striped">
+      <tr>
+        <th><%= sort_link(@q, :organization_id, "Account ID") %></th>
+        <th><%= sort_link(@q, :username) %></th>
+        <th><%= sort_link(@q, :email) %></th>
+        <th><%= sort_link(@q, :number,"Card Number") %></th>
+        <th><%= sort_link(@q, :credit_status) %></th>
+        
+      </tr>
+    <% for user in @users %>
+      <tr>
+        <td><%= user.organization_id %></td>
+        <td><%= user.username %></td>
+        <td><%= user.email %></td>
+        <td><%= user.organization.creditcard.number if !user.organization.creditcard.blank? %>
+        <% if user.credit_status == true  %>
+	           <td>Processed</td>
+	      <% else %>
+	        <td>Not Processed</td>
+	      <% end %>
+        
+          <%#= link_to "Edit","/users_edit/#{user.id}", class: 'btn btn-primary' %>
+          <%#= link_to "delete", admin_user_path(user), class: 'btn btn-mini btn-danger', method: 'delete', confirm: "Delete this record?" %>
+       
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<%= paginate @users %>
+<% end %>

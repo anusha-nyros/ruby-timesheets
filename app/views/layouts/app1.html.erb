@@ -1,0 +1,513 @@
+	<!DOCTYPE html>
+<html>
+	<head>
+		<title>Team Cloud</title>
+		<link rel="icon" type="image/png" href="/assets/fav-icon1.png" />
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<%= javascript_include_tag "application" %>
+		<%= csrf_meta_tags %>
+		<script src="/assets/js/basic-jquery-slider.js"></script>
+		<link rel="stylesheet" href="/assets/basic-jquery-slider.css">
+		<style>
+			*{
+				margin:0;
+				padding:0;
+			}
+			body {
+				background:#f3f3f3 url("/assets/bg.jpg") repeat-x center -80px;
+				font-family: Arial, Helvetica, sans-serif;
+				font-size: 12px;
+				margin:0;
+				padding: 0;/* background :#242424;  */
+			}
+			ul li {list-style:none;}
+			a{text-decoration:none;color:#fff}
+			#main{
+				width:960px;
+				margin:0 auto;
+				/*  background:#f3f3f3 url("/assets/bg.jpg") repeat-x center top; */
+			}
+			#hd h1 {
+				color: white;
+				font-size: 30px;
+				width: 260px;
+				height:68px;
+				float: left;
+				background:url(/assets/teamcloudn.png) no-repeat;
+			}
+			#hd h1 a{display:block}
+			.header_links {
+				color: white;
+				float: right;
+				/*margin-right: 40px;*/
+				margin-top:25px;
+			}
+			.header_links ul li {
+				list-style:none;
+				float:left;
+				margin-right: 10px;
+			}
+			.header_links ul li a{
+				padding: 12px 0 12px 12px;
+				font-size:16px;
+			}
+			.header_links ul li a span
+			{
+				padding: 12px 12px 12px 0;
+				font-size:16px;
+			}
+			.header_links ul li a:hover {
+	background:url(/assets/link_left_bg.jpg) no-repeat left center;
+}
+.header_links ul li a:hover span{
+	background:url(/assets/link_right_bg.jpg) no-repeat right center;
+}
+			#for_logo {
+				width:500px;
+				float:left;
+				overflow:hidden;
+			}
+			#for_logo img {
+				padding-top: 13px;
+				padding-left: 33px;
+			}
+			.slider {height: 440px;}
+			#hd {
+                width:100%;
+				height: 67px;
+				margin:0px auto;
+				/*border:1px solid green; */
+				background :#242424;
+			}
+			.content {padding:20px 0;}
+			.content-links ul li {
+				float:left;
+				list-style:none outside none;
+				width:282px;
+				height:130px;
+				padding:15px;
+				margin-right:12px;
+				overflow:hidden;
+					background:#fff;
+				-webkit-border-radius: 6px;
+				-moz-border-radius: 6px;
+				border-radius: 6px;
+				-webkit-box-shadow: -2px -2px 1px rgba(50, 50, 50, 0.17);
+				-moz-box-shadow:    -2px -2px 1px rgba(50, 50, 50, 0.17);
+				box-shadow:         -2px -2px 1px rgba(50, 50, 50, 0.17);
+				margin-bottom:20px;
+			}
+			.content-links ul li .block-wrapper{
+				height:110px;
+			}
+			.content-links ul li.last-nomarg{
+				margin:0
+			}
+			.content-links ul li img{
+				display:block;
+				float:left;
+			}
+			.content-right{
+				float:right;
+				width:193px;
+				height:180px;
+				text-align:left;
+			}
+			.content-right h4{
+				font-size:13px;
+				font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
+				text-transform:uppercase;
+				color:#ca4333;
+			}
+			.content-right p{
+				padding-top:10px;
+				font-size:12px;
+				color:#9e9e9e;
+			}
+			.clear {clear:both;}
+			.content-links {padding-top:20px;}
+			.add-more {
+				/*  border:1px solid red; */
+				 background:#686868 url(/assets/add-more.jpg) center right no-repeat ;
+				float:right;
+				list-style:none outside none;
+				margin-top:23px;
+				color:#fff;
+				width:195px;
+				height:48px;
+				line-height:48px;
+				text-indent:10px
+			}
+			.add-more a{ display:block}
+			.add-more a:hover{
+				background:url(/assets/add-more,hvr.jpg) no-repeat;
+				color:#686868;
+			}
+			.slider-loginform {
+				float:right;
+				/* margin-right: 90px; */
+				/*margin-top: 102px; */
+				 /*background:url(/assets/bg_f5_50.png) repeat scroll left bottom #FFFFFF;*/
+				width:281px;
+				margin-top:50px;
+				padding-bottom:30px;
+				background-color: #ddd;
+				border-radius: 4px 4px 4px 4px;
+				box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05) inset;
+			}
+			.slider-loginform a{display:block}
+			.slider-loginform a:hover{ text-decoration:underline}
+			.slider-loginform input,
+			.slider-loginform a{
+				margin:18px 0 0 23px;
+			}
+			.slider-loginform input.submit-btn{
+				background:url(/assets/lgbutton.png) no-repeat;
+	            width:242px;
+	            height:40px;
+	            border:0;
+	            text-indent:-999px;
+	            cursor:pointer;
+	            margin-top:0;
+			}
+			.slider-loginform input.submit-btn:hover{
+				background:url(/assets/lgbutton_over.png) no-repeat;
+				color:#f5f5f5;
+			}
+			.slider-loginform input[type="text"],.slider-loginform input[type="password"]{
+				width:228px;
+				height:23px;
+				background:#Fff;
+				border:0;
+				-webkit-border-radius: 2px;
+				-moz-border-radius: 2px;
+				border-radius: 3px;
+				color:#444;
+				font-size:16px;
+				padding:6px;
+			}
+			.slider-loginform a{
+				color:#444;
+			}
+			.legend {
+				font-family: Tahoma, Geneva, sans-serif;
+				color: #FFFFFF;
+				font-size: 32px;
+				margin-top: 1px;
+				padding-left: 20px;
+				padding-top: 12px;
+			}
+			.submit {
+				color :#fff;
+				font-size:18px;
+				padding :10px 80px;
+				background:#CD2626;
+				-webkit-border-radius: 6px;
+				-moz-border-radius: 6px;
+				border-radius: 6px;
+				border:1px #CD2626 thick;
+			}
+			.wrapper {margin:auto;}
+			.footerwrapper {
+				height :60px;
+				/* border :1px red solid; */
+				 padding-top:10px;
+				background :#707070;
+				width:100%;
+			}
+			.footer-inner{
+				width:960px;
+				margin:0 auto;
+			}
+			.footer-left {float:left;}
+			.footer-left p {
+				color: #FFFFFF;
+				font-size: 12px;
+				padding:20px 0
+			}
+			.footer-right {float:right;}
+			.footer-right ul li {
+				list-style : none;
+				display:inline;
+				color:#fff;
+				font-size:12px;
+				float:left;
+				height:50px;
+				line-height:50px;
+				margin-left:20px
+			}
+			.silder-slideshow {
+				/*background: url("/assets/banner.png") no-repeat center top; */
+				height: 360px;
+				width: 550px;
+				float:left;
+			}
+			.slider-content ul li {display:inline;}
+			.slider-content {
+				margin-top:0px;
+				/* margin:0px auto;
+				 width:960px; */
+				 margin-right:30px;
+			}
+			#sc {margin:0px auto;}
+			.login {
+				background: url("/assets/login.png") no-repeat center top;
+				height:50px;
+			}
+			.slider-caption {
+				margin:0px auto;
+				text-align:center;
+				height:50px;
+			}
+			.slider-caption img{ margin-top:8px}
+			.ico {
+				background: url("/assets/1.png") no-repeat center top;
+				height : 20px;
+				width:20px;
+			}
+			.oran {
+				margin-left:100px;
+				color:#CD6600;
+				font-family: verdana, sans-serif;
+				font-size: 12px;
+				font-weight:bold;
+			}
+			.error{
+				font-size:16px;
+				float:right;
+				text-align:right;
+				padding-right:30px;
+			}
+            
+           @media screen and (max-width: 980px) {  
+              #main{
+				width:700px;
+                overflow:hidden;
+				/*  background:#f3f3f3 url("/assets/bg.jpg") repeat-x center top; */
+				}
+               #for_logo{
+                width:380px
+               }
+               	.header_links{
+                margin-right:0
+                }
+               #container{
+                width:400px;
+               }
+               #container img{
+               	width:400px;
+               }
+               .slider-content {margin-right:0}
+               .slider-caption img{
+                width:100%;
+               }
+               .silder-slideshow{
+
+               width:300px;
+               }
+               .slider-loginform,.slider-loginform img{
+                width:260px;
+               }
+               .slider-loginform input[type="text"], .slider-loginform input[type="password"]{
+               	width:200px;
+               }
+               .slider-loginform input.submit-btn{
+                 width:222px;
+               }
+               ol.bjqs-markers{
+               left:300px!important
+               }
+				.content-links{
+                 width:650px;
+                 margin:0 auto;
+                }
+               .content-links ul li{
+                 margin-right:8px;
+               }
+               .content-links ul li.last-nomarg{
+                margin-right:8px;
+               }
+              
+				.footerwrapper,.footer-inner {
+              	width:100%;
+              }
+            }
+            #inner-hd-wrapper{
+            	width:960px;
+                margin:0 auto;
+            }
+		</style>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('.error').delay(4500).fadeOut('slow');
+			});
+		</script>
+	</head>
+	<%#= stylesheet_link_tag  "style2" %>
+	<%= javascript_include_tag "basic-jquery-slider" %>
+	<%= csrf_meta_tags %>
+	<body>
+		<div class="wrapper">
+            <div id="hd">
+              <div id="inner-hd-wrapper">
+					<div id="for_logo">
+						<h1> <a href="#">&nbsp; </a></h1>
+			  		</div>
+			 		<div class="header_links">
+						<ul>
+				  			<li><a href="#"><span>Home</span></a></li>
+				  			<li> <a href="/signup"><span>Create Account</span></a></li>
+							
+						</ul>
+			 		</div>
+               </div>
+			</div>
+			<div id="main">
+				<!--slider section -->
+				<div class="slider">
+			 		<div class="slider-caption"><img src="/assets/text.png"/></div>
+			 		<div class="clear"></div>
+					<div id="notifications">
+			 			<% [:error, :notice, :alert].each do |type| %>
+							<% if flash[type] %>
+				  				<%#= content_tag :div, class: "alert #{alert_class(type)}" do %>
+				      		<div class="error"><span style="color:#cc2200"> <%= flash[type] %></span></div>
+							<% end %>
+			 			<% end %>
+			 		</div>
+					<div id="sc">
+			  			<ul class="slider-content">
+				  			<li class="silder-slideshow">
+				  				<div id="container">
+		  		   <!--  Outer wrapper for presentation only, this can be anything you like -->
+								<div id="banner">
+				  <!-- start Basic Jquery Slider -->
+				  						<ul class="bjqs">
+											<li><img src="/assets/temacloud_slider.png"></li>
+											<li><img src="/assets/banner04.png"></li>
+											<li><img src="/assets/slide-2.png"></li>
+										</ul>
+				  <!-- end Basic jQuery Slider -->
+									</div>
+				<!-- End outer wrapper -->
+			 					</div>
+						 	</li>
+							<li class="slider-loginform" >
+				   			<%= form_tag sessions_path do %>
+				    				<table cellpadding="0" cellspacing="0">
+				      				<tr>
+				        					<td><img src="/assets/signin-header1.jpg" style="border-radius:4px 4px 0px 0px;"></td>
+				      				</tr>
+										<tr>
+				      					<td>
+												<input id="username" type="text" placeholder="username" name="username">
+												<input id="password" type="password" name="password" placeholder="password"><br>
+				           					<%= link_to 'Forgot Password?', new_password_reset_path %>
+				          					<br>
+									          <%= submit_tag "Login" ,class:"submit-btn" %>
+				      					</td>
+				      				</tr>
+				      			</table>
+				      	</li>
+				      </ul>
+					</div>
+			 		<div> </div>
+					<% end %>
+				</div>
+		  		<!-- end slider section -->
+		  		<div class="clear"></div>
+		  		<!-- Content part starts here -->
+				<div class="content">
+					<div class="content-links">
+						<ul>
+							<li>
+								<div class="block-wrapper">
+									<img src="/assets/1.png" align="left" >
+									<div class="content-right">
+										<h4>Manage Virtual Teams</h4>
+										<p>Everyone involved in a project can work together in Team Cloud. You have full control over who sees which project, and how many people are involved.</p>
+									</div><div class="clear"></div>
+								</div>
+							</li>
+							<li>
+								<div class="block-wrapper">
+									<img src="/assets/4.png">
+									<div class="content-right">
+										<h4>Know whats next inside Projects</h4>
+										<p>You and your team will always know the answer to the question, "What should I be working on now? Team Cloud makes it easy to prioritize, group, sort, and assign tasks</p>
+									</div>
+									<div class="clear"></div>
+									</div>
+								</li>
+							<li class="last-nomarg">
+								<div class="block-wrapper"><img src="/assets/3.png">
+									<div class="content-right">
+										<h4>Record Time Sheets</h4>
+										<p>The Time Sheets shows you the to-dos that were completed, and breakdown of hours spent on them. Team Cloud has a daily record of project activity from start to finish.</p>
+									</div>
+									<div class="clear"></div>
+								</div>
+							</li>
+							<li>
+								<div class="block-wrapper">
+									<img src="/assets/2.png">
+									<div class="content-right">
+										<h4>Review Expense Reports</h4>
+										<p>Stay in-line with your daily expenses and focus on income.</p>
+									</div><div class="clear"></div>
+								</div>
+							</li>
+							<li>
+								<div class="block-wrapper">
+									<img src="/assets/5.png">
+									<div class="content-right">
+										<h4>Schedule on one gorgeous Calendar</h4>
+										<p> Its no longer a pain to coordinate everyones schedules. Team Cloud brings every event from every project together in one place.</p>
+									</div>
+									<div class="clear"></div>
+								</div>
+							</li>
+							<li class="last-nomarg">
+								<div class="block-wrapper"><img src="/assets/5.png">
+									<div class="content-right">
+										<h4>Organize Heads-up Meetings</h4>
+										<p>People are everywhere, but meetings happen here. Team Cloud's Meetings are the best way to stay on topic, and make a decision on a date and track invitees.</p>
+									</div>
+								<div class="clear"></div></div>
+							</li>
+						</ul>
+						<div class="add-more"><a href="#">AND MORE FEATURES</a> </div>
+						<div class="clear"></div>
+					</div>
+				</div>
+		  <!-- content ends here --->
+		  	</div>
+		 	<div class="footerwrapper">
+				<div class="footer-inner">
+					<div class="footer-left">
+						<p> Copyright&nbsp;&copy;&nbsp;TeamCloud </p>
+					</div>
+			 		<div class="footer-right">
+				 		<ul>
+				  			<li><%= link_to 'Contact Us', '/contact_us' %></li>
+				  			<li><%= link_to 'Legal', '/legal' %></li>
+				  			<li><%= link_to 'Privacy', '/privacy' %></li>
+				  		</ul>
+				  	</div>
+				</div>
+			</div>
+		</div>
+	<!-- Load jQuery and the plug-in -->
+		 <!--  Attach the plug-in to the slider parent element and adjust the settings as required -->
+		<script>
+			$(document).ready(function() {
+				$('#banner').bjqs({
+				'animation' : 'slide',
+				'width' : 550,
+				'height' : 362
+				});
+			});
+		</script>
+	</body>
+</html>

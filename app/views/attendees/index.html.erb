@@ -1,0 +1,25 @@
+<%= render :partial => "menu" %>
+<%= link_to 'New Attendee', new_attendee_path, class: 'btn btn btn-primary' %>
+<br>
+<br>
+<% if @attendees.blank? %>
+  <div class="well">You don't currently have any attendee </div>
+  <% else %>
+ <h1>Attendees</h1> 
+<table class="table table-striped" >
+  <tr>
+    <th>Name</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @attendees.each do |attendee| %>
+  <tr>
+    <td><%= attendee.name %></td>
+    <td><%= link_to 'Edit', edit_attendee_path(attendee), class: 'btn btn-mini' %>
+    <%= link_to 'Destroy', attendee, confirm: 'Are you sure?', method: :delete, class: 'btn btn-mini btn-danger' %></td>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

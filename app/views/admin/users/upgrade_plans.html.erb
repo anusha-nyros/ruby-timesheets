@@ -1,0 +1,39 @@
+<%= render :partial => 'menu' %>
+
+<h1>Welcome, <%= current_user.name %></h1>
+
+
+<%= simple_form_for [:admin,@user], html: {class: 'form-horizontal',id: 'myuserform'} do |f| -%>
+  <%= f.error_notification %>
+  <fieldset>
+     <legend class="plans">You are currently in <%= @user.chosed_plan %> ,you can upgrade to any one of the plans below . </legend>
+     <%= f.input :chosed_plan ,:collection => ["Plan1","Plan2","Plan3"], :as => :radio_buttons, :checked => "#{@user.chosed_plan}",:label => "Chose Plan" %>
+    
+
+    <div class="form-actions">
+        <%= link_to 'Back', admin_users_path, class: 'btn btn-mini-primary' %>&nbsp;&nbsp;
+        <%= f.button :submit, "Update Plan",class: 'btn btn-primary' %>
+
+    </div>
+  </fieldset>
+<% end -%>
+
+
+<style>
+.active_style {
+ margin-top:10px;
+}
+.spacing {
+margin :10px;}
+.rightspace {
+  margin-right:10px;
+}
+.leftspace {
+  margin-right:100px;
+}
+
+.plans{
+    background-color: #FFFFCC;
+    text-align : center;
+}
+</style>

@@ -1,0 +1,66 @@
+<div style="width:940px;height:50px;">
+<div style="float:left;"><h1>Report</h1></div>
+<div style="float:left;margin-left:50px;">
+
+        
+        <form name="projectfilters" action="reports" >
+        <div style="float:left;margin-top:10px;">
+   <%= radio_button_tag 'FILTER', 'Active', @chosen == 'Active' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Active
+           </div>
+                        
+          <div style="float:left;margin-top:10px;margin-left:10px;">
+  <%= radio_button_tag 'FILTER', 'Inactive', @chosen == 'Inactive' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Inactive
+            </div>
+           <div style="float:left;margin-top:10px;margin-left:10px;">
+  <%= radio_button_tag 'FILTER', 'ALL', @chosen == 'ALL' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;All
+           </li></div>
+          </form>
+       
+      
+  </div>
+</div>
+ 
+<% if @pay_periods.blank? %>
+  <div class="well">
+    There is currently no available Time Sheets
+   
+  </div>
+<% else %>
+  
+  <table class="table table-striped">
+    <tr>
+      <th>Status</th>
+      <th>Period Start</th>
+      <th>Period End</th>
+      <th>Users</th>
+      <th>Hours</th>
+      <th></th>
+    </tr>
+
+  <% @pay_periods.each do |pay_period| %>
+    <tr>
+     <% if pay_period.active == true  %>
+	  <td>Active</td>
+	  <% else %>
+	  <td>Inactive</td>
+	  <% end %>
+      <td><%= pay_period.pay_start.strftime('%b-%d-%Y') %></td>
+      <td><%= pay_period.pay_end.strftime('%b-%d-%Y') %></td>
+      <% pp = current_user.pay_periods.find(pay_period) %>
+      <% user_time_records = pp.user_with_total_hours %>
+      <% count = hrs = 0 %>
+      <% user_time_records.each do |u| %> 
+         <% if u.name? %>
+            <% count = count +1 %>
+            
+         <% end %> 
+      <% end %>
+      <td><%= count %></td>      
+      <td><%= pay_period.time_records.to_a.sum(&:total_hours ) %></td>
+      <td>
+       <%= link_to 'Show Report', admin_report_path(pay_period), class: 'btn btn-mini btn-primary' %>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>

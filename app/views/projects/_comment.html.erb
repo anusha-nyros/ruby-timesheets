@@ -1,0 +1,58 @@
+<!-- <%= simple_nested_form_for @project, :html=>{:multipart => true, class: 'form-horizontal' } do |f| %>
+ 
+ <%= f.error_notification %>
+<%= link_to "Add Comments" %>(<%= @project.comments.count %>)
+<br/><br/>
+  <div style="margin-left:-80px;" >
+	<%= f.fields_for :comments do |comment_form|  %>
+	<%= comment_form.input :coment  %>
+        <%= f.button :submit,:value=>"Create Comment", class: 'btn btn-primary',:style=>"margin-left:170px;" %>
+    <br>
+  </p>
+  
+  <% end %>
+  </div>
+  
+<% end %>  
+
+
+
+
+<h3 >Add Comments (<%= @project.comments.count %>)</h3>
+                <hr/>
+                <%= form_for([@project, @project.comments.build], :id => 'commentform', :class => 'special') do |f| %>
+                <p><%= f.text_area :coment, :placeholder => "Post your Comment", :size => "75x3" %></p>
+                    <%= f.text_field :uname, :type =>"hidden",:value=> "#{current_user.name}" %> 
+                <p><%= f.submit 'Post', :id => "registerButton", :length => "5" %></p>
+                <% end %> 
+
+
+
+
+-- >
+
+
+<!--
+
+Working Code 
+
+
+ <h3 >Add Comments (<%= @project.comments.count %>)</h3>
+                <hr/>
+                <%= form_for([@project, @project.comments.build], :id => 'commentform', :class => 'special') do |f| %>
+                <p><%= f.text_area :coment, :placeholder => "Post your Comment", :size => "75x3" %></p>
+                    <%= f.text_field :uname, :type =>"hidden",:value=> "#{current_user.name}" %> 
+                <p><%= f.submit 'Post', :id => "registerButton", :length => "5" %></p>
+                <% end %> 
+
+-->
+
+<h3 >Add Comments (<%= @project.comments.count %>)</h3>
+<%= simple_form_for([@project, @project.comments.build],class: 'form-horizontal') do |f| %>
+ <%= f.error_notification %>
+<p><%= f.input :coment,  input_html: {rows: '5', class: 'span9'},:placeholder => "Post your Comment"%></p>
+<%= f.input :uname, :as =>"hidden", input_html: { value: "#{current_user.name}" } %> 
+<p><%= f.button :submit, class: 'btn btn-primary' %></p>
+<% end %> 
+<br><br>
+                

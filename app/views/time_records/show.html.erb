@@ -1,0 +1,58 @@
+<%= render :partial => "menu" %>
+
+<h1>Time Sheet (<%= short_period(@pay_period) %>)</h1>
+
+<div class="well">
+  <p>Periods : <strong><%= @pay_period.pay_start.to_s(:detail) %></strong> - <strong><%= @pay_period.pay_end.to_s(:detail) %></strong></p>
+  <p>Pay Day: <%= detail_date(@pay_period.pay_day) %></p>
+  <p>Status : <%= @pay_period.active? ? "Active" : "Not Active" %></p>
+ 
+<% if current_user.admin %>
+
+<p>Admin Hours : <%= @pay_period.total_hours(current_user) %></p>
+<% end %>
+
+<% if current_user.admin %>
+<p>Total Hours : <%= @pay_period.total_hours %></p>
+<% else %>
+<p>Total Hours : <%= @pay_period.total_hours(current_user) %></p>
+<% end %>
+  
+</div>
+
+<% if @time_records.blank? %>
+  <div class="well">
+    You don't currently have any record
+  </div>
+<% else %>
+  <table class="table table-striped">
+    <tr>
+      <th class="span3"><%= sort_link(@q, :activity_date, "Date") %></th>
+      <th><%= sort_link(@q, :description, "Activity") %></th>
+      <th><%= sort_link(@q, :total_hours, "Hours") %></th>
+      <% if current_user.organization.account_type == "Project" || current_user.organization.account_type == "project" %> <th><%= sort_link(@q, :project_title, "Task Title") %></th><% end %>
+	<th><%= sort_link(@q, :user_username, "User") %></th>  
+	<th class="span2"></th>
+      <th class="span2"></th>
+    </tr>
+    <% for time_record in @time_records %>
+      <tr>
+        <td><%= time_record.activity_date.to_s(:detail) %></td>
+        <td><%= simple_format(two_lines_or_200(time_record.description)) %></td>
+        <td><%= time_record.total_hours %></td>
+        <td><%= time_record.project.try(:title) if !time_record.project_id.blank?  %></td>
+        <td><%= time_record.user.try(:username) if !time_record.user_id.blank?  %></td>
+        <td>
+          <% if current_user.username == time_record.user.try(:username) %>
+        <td>
+          <%= link_to "edit", edit_time_record_path(time_record, :project_id => @pay_period.project_id ), class: 'btn btn-mini' %>
+          <%= link_to "delete", time_record, class: 'btn btn-danger btn-mini', method: :delete, confirm: 'Delete this record?' %>
+        </td>
+<% else %>
+<td> </td>
+<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

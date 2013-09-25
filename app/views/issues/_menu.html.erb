@@ -1,0 +1,24 @@
+<ul class="nav nav-tabs">
+  <li class="<%= action_active('index') %>">
+    <%= link_to issues_path do %>
+        <i class="icon-list-alt"></i>
+        Index
+    <% end %>
+  </li>
+ 
+ <li class="<%= action_active('new') %>">
+    <%= link_to new_issue_path do %>
+      <i class="<%= green_icon %>"></i>
+      Create New Issue
+    <% end %>
+  </li>
+  
+ <li class="<%= action_active('bulkissues_new') %>">
+    <%= link_to bulkissues_new_path do %>
+      <img src="/assets/add.png" style="height:16px"/><img src="/assets/add.png" style="height:13px;margin-left:-4px;"/><img src="/assets/add.png" style="height:9px;margin-left:-2px;"/>
+      Bulk Issues
+    <% end %>
+  </li>
+ 
+</ul>
+

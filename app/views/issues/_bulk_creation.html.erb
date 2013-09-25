@@ -1,0 +1,82 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+});
+$('document').ready(function(){
+  
+
+$('#bulk_creation_preview').live('click',function(e){  
+   e.preventDefault();
+  var data = $('#new_issue').serialize();
+  $.ajax({
+  type: 'post',
+  data: data,
+  headers: {
+    'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+  },
+  complete: function(request){
+       },
+  success: function(response){ 
+      $('#mydata').html(response); 
+
+  },
+  url: "<%= bulkissues_preview_path %>"
+  });
+  $('#mydata').toggle('slow');  
+  });
+  
+});
+
+</script>
+
+<div id="mydata" style="display:none">
+</div>
+
+
+<%= simple_form_for @issue , :url => url_for(:action =>'bulkissues_creation',:controller=>'issues'),:html => {:multipart => true , class: 'form-horizontal bulk'} do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%#= f.input :title %>
+     <% if @issue.date_created.blank? %>
+    <%= f.input :date_created, :as => :string, :input_html => { :id => 'datepicker' }, :label => "Date" %>
+    <% elsif !@issue.date_created.blank? %>
+    <%= f.input :date_created, :as => :string, :input_html => { :id => 'datepicker', :value => change_date_format_for_edit_page(@issue.date_created) } , :label => "Date" %>
+    <% end %>  
+    <%= f.input :issuetype_id ,:collection => current_user.organization.issuetypes.map {|i| [i.issuetype ,i.id]}, :label => 'Issue Type',:prompt => 'Choose IssueType' %>
+    <%#= f.input :project_type_id,:collection => current_user.organization.project_types.find(:all,:order=>'type_name').map {|i| [i.type_name ,i.id]}, :label => 'Project' ,:prompt => 'Choose Project' %>
+    <%#= f.label "Task" %>
+    <%#= f.collection_select :project_id ,@tasks, :id ,:title ,{:prompt => "Choose Task"},:style =>"margin-left:19px;margin-bottom:15px;width:300px;"%>
+    <%#= f.input :owner, :collection => current_user.organization.contacts.where(contact_type: 'supplier').map { |r| [r.contact, r.contact] }, :prompt => "Select Owner" %>
+   <table><tr><td>
+    <%= f.input :project_type_id,:collection => current_user.organization.project_types.find(:all,:order=>'type_name').map {|i| [i.type_name ,i.id]}, :label => 'Project' ,:prompt => 'Choose Project', :input_html => { class: 'fav', :id => "select_my_task", :onclick => " return getTasks()" } %>
+   </td><td><%= image_tag "spinner.gif", :id => 'spinner_ten', :class => 'display',:style =>'display:none;margin-left:15px;margin-top:-15px;' %> </td></tr></table>
+    
+     <span id="related_category" >    
+								 
+     </span><br>
+ <div class="control-group select required"><label class="select required control-label" for="supplier_id"><strong></strong></label><div class="controls bulkhint">
+Enter Issues as separate paragraphs. Separate Titles with '/', enter issue owner using {}<br/> Example: This is Issue Title / This is Issue body  {ownername}
+</div></div>
+    <%= f.input :description , input_html: {rows: '10', class: 'span9'}%>
+    <%= f.input :active %>
+    
+  </div>
+
+  <div class="form-actions">
+    <%#= link_to 'Back' , issues_path , class: 'btn'%>
+    <%= f.button :submit ,class: 'btn btn-primary'%>
+    <%= link_to "Preview",bulkissues_preview_path, class: 'btn btn-primary',id: 'bulk_creation_preview' %> 
+  </div>
+<% end %>
+
+<style type="text/css">
+ .bulkhint {
+  color:grey;
+  margin-bottom:-10px;
+ }
+ </style>

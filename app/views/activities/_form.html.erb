@@ -1,0 +1,84 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+
+ $("#dates").click(function () {
+  var $that = $(this);
+  $("#range").toggle("slow", function() {
+    $that.toggleClass("toggled-off");
+  });
+});	
+
+$("#date").click(function () {
+  var $that = $(this);
+  $("#range").toggle("slow", function() {
+    $that.toggleClass("toggled-off");
+  });
+});
+
+});
+
+
+</script>
+
+<div id="range" style="display:none" >
+<table class="table table-striped">
+ <tr><th colspan="2"><h3>Document Downloaded History</h3></th><th>
+ <%= link_to "Close", "#", :id => 'date', :style=>'color:red;float:right;' %></th></tr>
+  <tr>
+  
+  <th>User Name</th>
+  <th>Downloaded Date</th>
+  <th>Time</th>
+  </tr>
+<% if controller.action_name == 'edit' %>
+<% @activity.downloads.find(:all, :order => "created_at DESC").each do |s| %>
+    
+  <tr>
+   <td><%= s.user.try(:username) %></td>
+   <td><%= s.created_at.strftime("%b-%Y-%d") %></td>
+   <td><%= s.created_at.strftime("%H:%M") %></td>
+  
+  </tr> 
+ <% end %>
+ <% end %>
+   </table>
+</div>
+
+
+<%= simple_form_for(@activity,:html=>{:multipart => true, class: 'form-horizontal easy_import_form' }) do |f| %>
+  <%= f.error_notification %>
+  <div class="form-inputs">
+    <%= f.association :category, collection: current_user.organization.categories %>
+ <% if @activity.date.blank? %>
+    <%= f.input :date,  :as => :string,:input_html => { :id => 'datepicker' }  %>
+ <% elsif !@activity.date.blank? %>
+    <%= f.input :date,  :as => :string,:input_html => { :id => 'datepicker',:value => change_date_format_for_edit_page(@activity.date) }  %>
+ <% end %>
+    <%= f.input :info, input_html: { class: 'span8 text', rows: 5 } %>
+    <%= f.input :tags %>
+    <%= f.input :priority %>
+    <%= f.input :doc_check, :hint => 'Other Users Can edit record && download the attachment when only Checked Out', :label => 'Checked out' %>
+   <table><tr><td>
+    <%= f.input :attachment, as: :file %></td>
+    <td><% if @activity.attachment? %>
+    <%= link_to @activity.attachment.uploaded_filename,'#' %>
+    <% end %></td></tr></table>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, class: 'btn btn-primary' %>
+     <div style="margin-left:450px;margin-top:-20px;">
+
+  <% if controller.action_name=="edit" %>
+  <% if !@activity.downloads.blank? %>
+  <%= link_to "View CheckedOut attachment History", "#", :id => 'dates' %>
+  <% end %>
+  <% end %>
+  </div>
+  </div>
+ <% end %>

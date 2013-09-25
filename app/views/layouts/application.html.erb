@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Team Cloud</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= stylesheet_link_tag "fam-icons", :media => "all" %>
+  <%= csrf_meta_tags %>
+ <script src="/assets/jquery-ui-1.8.20.custom.min.js"></script>
+ <script type="text/javascript" src="/assets/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
+ <script type="text/javascript" src="/assets/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+ <link rel="stylesheet" type="text/css" href="/assets/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+ <script src="/assets/jquery.validate.js"></script>
+<script>
+	$(document).ready(function(){
+		$('a img').click(function(event) { event.preventDefault(); });
+	});
+</script>
+
+  <link rel="icon" type="image/png" href="/assets/fav-icon1.png" />
+ <style>
+  body {
+	background: #fff ;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	margin:0;
+	padding: 0;/* background :#242424;  */ 
+        
+ }
+ </style>
+
+ <script type="text/javascript">
+	$('document').ready(function(){
+		$('.request').click(function(){
+			$('#request').slideToggle();
+		});
+		 $('#link_account').click(function(){ 
+       		$('#request_accept').slideToggle();        
+     		});
+		$('.dropdown-menu').click(function(event){
+     						event.stopPropagation()
+ 		});
+    $('.accept').click(function(){
+			$('#accept-links').slideToggle();
+		});
+   $('.accept-ok').click(function(){  
+      if (confirm('Are you sure to link this account')) {
+      $.post('/link_accounts/accept',{target: $(this).attr("target"),source: $(this).attr("source") },function(data){	
+				});
+	 $(document).ajaxStop(function(){
+        window.location.reload();
+        });
+        $(this).parent().parent().fadeOut();
+        }
+    });  
+  $('.switch-remove').click(function(){  
+         if (confirm('Are you sure to Unlink Account')) {
+           $.post('/link_accounts/unlink',{id: $(this).attr("value")},function(data){	
+			   	});
+           $(this).parent().fadeOut();
+        }    
+    });
+     $('.accept-remove').click(function(){  
+         if (confirm('Are you sure to Unlink Account')) {
+           $.post('/link_accounts/unlink',{id: $(this).attr("value")},function(data){	
+			   	});
+           $(this).parent().parent().fadeOut();
+        }    
+    });
+        $('#new_link_account').submit(function(e){
+        if ( !$('#link_account_target').val()){               
+			    $('.alert').show();
+              return false;               
+                }     
+            else{
+           $('#new_link_account').submit();           
+                }
+        });
+	 $('.close').click(function(){
+        $(this).parent().fadeOut('slow');       
+    });             
+	});
+
+$(function(){
+  $(".tool").tooltip();
+});
+
+$(function(){
+  $(".subtool").tooltip();
+});
+
+
+function changeTooltipColorTo(color) {
+    $('.tooltip-inner').css('background-color', color)
+    $('.tooltip-inner').css('color', '#000')
+    $('.tooltip.top .tooltip-arrow').css('border-top-color', color);
+    $('.tooltip.right .tooltip-arrow').css('border-right-color', color);
+    $('.tooltip.left .tooltip-arrow').css('border-left-color', color);
+    $('.tooltip.bottom .tooltip-arrow').css('border-bottom-color', color);
+}
+
+$(document).ready(function () {
+    $('.tool').hover(function() {changeTooltipColorTo('#C2BCC5')});
+});
+
+</script>
+
+<style>
+ .rs{
+  padding-right:1px;
+  }
+  
+  .nav li{
+  		padding-top:7px;
+  }
+  blockquote{
+   background-color: #F5F5F5;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+    margin-bottom: 20px;
+    min-height: 20px;
+    padding:5px 19px;
+    color:#444;
+  }
+  
+</style>
+
+
+
+</head>
+<body>
+  <div class="wrapper">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <div class="container">
+        <ul class="nav" style='margin-top:3px'>
+               <% usermodtabs  %>
+ 		 <% tabs %>
+                  <% if current_user && current_user.admin? %>
+            <!-- Admin menu here -->
+<% if current_user.admin? %>
+              <%= link_to  admin_root_url do %>
+                <img class="pull-left rs" src="/assets/teamcloudn2.png" alt="Login" style="margin-top:-13px;margin-right:13px;">
+              <% end %>            
+            <li class="<%= menu_active('admin/home') %>" >  
+              <%= link_to  admin_root_url do %>
+                <%= image_tag('/assets/tabicons/home.png',class: 'pull-left rs') %>&nbsp;
+                <span>Home</span>
+              <% end %>
+            </li>
+           
+            
+             
+<% end %>
+           
+
+             
+          <% if current_user %>   
+                <li class="<%= menu_active('project_types') %>">
+                  <%= link_to project_types_url  ,:rel=> 'tooltip' ,:title => 'list all projects info with their scheduled periods', :class => 'tool' ,'data-placement' => 'bottom' do %>
+                    <%= image_tag('/assets/tabicons/projects.png',class: 'pull-left rs') %>&nbsp;                 
+                    <span >Projects</span>
+                  <% end %>
+                </li>
+                <li class="<%= menu_active('projects') %>">
+                  <%= link_to projects_url ,:rel=> 'tooltip' ,:title => 'list all tasks info with their current status', :class => 'tool' ,'data-placement' => 'bottom' do %>
+                    <%= image_tag('/assets/tabicons/task.png',class: 'pull-left rs') %>&nbsp; 
+                    <span rel="tooltip" title="" class="tool" data-placement ="bottom">Tasks</span>              
+                  <% end %>
+                </li>
+                <li class="<%= menu_active('issues') %>">
+                  <%= link_to issues_url ,:rel=> 'tooltip' ,:title => 'list all issues that can be rised for projects and tasks', :class => 'tool' ,'data-placement' => 'bottom' do %>
+                  <%= image_tag('/assets/tabicons/issue.png',class: 'pull-left rs') %>&nbsp;
+                  <span>Issues</span>              
+                  <% end %>
+                </li>
+              <% end %>
+          <%end%>
+<% if current_user && current_user.admin? %>
+ <li class="dropdown <%= menu_active('admin/pay_periods') || menu_active('time_records') || menu_active('time_records_search') %>">
+               <a class="dropdown-toggle tool" data-toggle="dropdown" href="#"  rel="tooltip" title="keep track of all recorded work hours and pay periods info" data-placement ="bottom" >
+                   <%= image_tag('/assets/tabicons/clock.png',class: 'pull-left rs') %>&nbsp;
+                   <span>Time<span>
+                <span class="caret"></span>
+               </a>
+               <ul class="dropdown-menu" >
+                  <li class="<%= menu_active('admin/pay_periods') %>"> 
+                        <%= link_to admin_pay_periods_url , :rel=> 'tooltip' ,:title => 'list all pay periods with their scheduled times', :class => 'subtool' ,'data-placement' => 'bottom'   do %>
+                          <%= image_tag('/assets/tabicons/timeperiod.png',class: 'pull-left rs') %>&nbsp;
+                          <span>Period Setup</span>
+                        <% end %>
+                  </li> 
+                  <li class="<%= menu_active('time_records') %>">
+                        <%= link_to time_records_url ,:rel=> 'tooltip' ,:title => 'list all timesheets with user work progress', :class => 'subtool' ,'data-placement' => 'bottom' do %>
+                        <%= image_tag('/assets/tabicons/timesheet.png',class: 'pull-left rs') %>&nbsp;
+                        <span>Time Sheets</span>                        
+                        <% end %>
+                  </li>
+
+                <li class="<%= menu_active('time_records_search') %>">
+                      <%= link_to  all_time_time_records_search_index_url  ,:rel=> 'tooltip' ,:title => 'list working hours for each activity', :class => 'subtool' ,'data-placement' => 'bottom' do %>
+                        <%= image_tag('/assets/tabicons/timerecord.png',class: 'pull-left rs') %>&nbsp;
+                        <span>Time Records</span>                      
+                      <% end %>
+                </li>    
+               </ul>
+            </li> 
+ <li class="<%= menu_active('contacts') %>">
+              <%= link_to contacts_url  ,:rel=> 'tooltip' ,:title => 'list all contcts info working under different projects', :class => 'tool' ,'data-placement' => 'bottom' do %>
+                <%= image_tag('/assets/tabicons/cont.png',class: 'pull-left rs') %>&nbsp;             
+                <span >Contacts</span>              
+              <% end %>
+            </li>
+
+
+          <% if current_user %>
+              
+                <li class="<%= menu_active('statusreports') %>">
+                  <%= link_to statusreports_url ,:rel=> 'tooltip' ,:title => 'email list of tasks to group of contacts', :class => 'tool' ,'data-placement' => 'bottom' do %>
+                    <%= image_tag('/assets/tabicons/status_report.png',class: 'pull-left rs') %>&nbsp;
+                    <span>Status</span>
+                  <% end %>
+                </li>
+         <% end %>
+       <%end%>     
+         <% if current_user && current_user.admin? %>
+          <li class="dropdown <%= menu_active('admin/report') || menu_active('expenses') || menu_active('statistics') %> ">
+              <a class="dropdown-toggle tool" data-toggle="dropdown" href="#" rel="tooltip" title="pay period info along with users work progress and all projects statistics" data-placement ="bottom">
+                  <%= image_tag('/assets/tabicons/analytics.png',class: 'pull-left rs') %>&nbsp;
+                  <span>Analytics</span>
+               <span class="caret"></span>
+             </a>
+              
+             <ul class="dropdown-menu" >
+	              <li class="<%= menu_active('admin/report') %>">
+                    <%= link_to admin_reports_url ,:rel=> 'tooltip' ,:title => 'list all recorded hours for each pay period', :class => 'subtool' ,'data-placement' => 'bottom' do %>
+                      <%= image_tag('/assets/tabicons/timereport.png',class: 'pull-left rs') %>&nbsp;
+                      <span>Time Reports</span> 
+                    <% end %>
+                </li>
+                <li class="<%= menu_active('expenses') %>">
+                    <%= link_to '#',:rel=> 'tooltip' ,:title => 'list budget info for each project', :class => 'subtool' ,'data-placement' => 'bottom' do %>
+                      <%= image_tag('/assets/tabicons/exreport.png',class: 'pull-left rs') %>&nbsp;
+                      <span> Expense Reports </span>
+                    <% end %>
+                </li> 
+                <li class="<%= menu_active('statistics') %>">
+                    <%= link_to statistics_url ,:rel=> 'tooltip' ,:title => 'list project statistics with no of records', :class => 'subtool' ,'data-placement' => 'bottom' do %>
+                      <%= image_tag('/assets/tabicons/statistics.png',class: 'pull-left rs') %>&nbsp;
+                      <span>Statistics</span>
+                    <% end %>
+                </li>
+                        
+             </ul>
+          </li>
+          <% end %>
+
+
+
+<!-- User Menu Here -->
+<% if current_user && !current_user.admin? %>
+            <li style="margin-top:-18px;margin-right:13px" >
+             <%= image_tag('/assets/teamcloudn2.png', class: 'pull-left rs') %>
+            </li> 
+   <%  if @usertabs.include?("timesheets") && @usertabs_modified.include?("timesheets") %>       
+      <li class="<%= menu_active('time_records') %>">
+                  <%= link_to time_records_url ,:rel=> 'tooltip' ,:title => 'list all timesheets with user work progress', :class => 'tool' ,'data-placement' => 'bottom'  do %>
+                    <%= image_tag('/assets/tabicons/timesheet.png',class: 'pull-left rs') %>&nbsp;
+                    <span>Time Sheets</span>
+                  <% end %>
+      </li>
+  <% end %>
+  <% if @usertabs.include?("projects") && @usertabs_modified.include?("projects") %>
+  <li class="<%= menu_active('projects') %>">
+        <%= link_to projects_url ,:rel=> 'tooltip' ,:title => 'list all tasks info with their current status', :class => 'tool' ,'data-placement' => 'bottom' do %>
+          <%= image_tag('/assets/tabicons/task.png',class: 'pull-left rs') %>&nbsp; 
+          <span>Tasks</span>         
+        <% end %>
+  </li>  
+  <% end %>
+          
+<% end %>
+         <% if current_user %>
+	  <% if (@usertabs.include?("categories") && @usertabs_modified.include?("categories")) ||   ( @usertabs.include?("data") && @usertabs_modified.include?("data")) %>
+            <li class="dropdown <%= menu_active('categories') || menu_active('activities') %> ">
+                  <a class="dropdown-toggle tool" data-toggle="dropdown" href="#" rel="tooltip" title="sharing the data files between users and list all categories under particular organization"  data-placement ="bottom">
+                       <%= image_tag('/assets/tabicons/share.png',class: 'pull-left rs') %>&nbsp; 
+                       <span>Share</span>
+                       <span class="caret"></span>
+                    </a>
+        <ul class="dropdown-menu" >                
+            <!-- User menu here -->
+       <% if @usertabs.include?("categories") && @usertabs_modified.include?("categories") %>
+             <li class="<%= menu_active('categories') %>">
+                <%= link_to categories_url , :rel=> 'tooltip', :title => 'list all technologies under the organization', :class => 'subtool' ,'data-placement' => 'bottom'  do %>
+                  <%= image_tag('/assets/tabicons/category.png',class: 'pull-left rs') %>&nbsp;
+                  <span>Categories</span>
+                <% end %>     
+            </li>
+        <% end %>
+        <% if @usertabs.include?("data")  && @usertabs_modified.include?("data") %>
+            <li class="<%= menu_active('activities') %>">
+               <%= link_to activities_url  , :rel=> 'tooltip', :title => 'share data files between the users', :class => 'subtool' ,'data-placement' => 'bottom' do%>
+                  <%= image_tag('/assets/tabicons/activity.png',class: 'pull-left rs') %>&nbsp;
+                  <span>Data</span>
+               <% end %>
+            </li>
+        <% end %>
+		</ul>
+            </li>
+          <% end %>
+          <% end %>
+                     <% if current_user && current_user.admin? %>
+            <!-- Admin menu here -->
+		 <li class="dropdown <%= menu_active('categories') || menu_active('activities') || menu_active('admin/folders') %>">
+             <a class="dropdown-toggle tool" data-toggle="dropdown" href="#" rel="tooltip" title="sharing the data files between users and list all categories under particular organization" data-placement ="bottom">
+                  <%= image_tag('/assets/tabicons/share.png',class: 'pull-left rs') %>&nbsp; 
+                    <span >Share</span>
+                    <span class="caret"></span>
+             </a>
+             <ul class="dropdown-menu" >
+	            <li class="<%= menu_active('categories') %>">
+                <%= link_to  categories_url, :rel=> 'tooltip', :title => 'list all technologies under the organization', :class => 'subtool' ,'data-placement' => 'bottom'   do %>
+                    <%= image_tag('/assets/tabicons/category.png',class: 'pull-left rs') %>&nbsp;
+                    <span>Categories</span>
+                 <% end %>
+              </li>
+              <li class="<%= menu_active('activities') %>">
+                  <%= link_to activities_url ,:rel=> 'tooltip', :title => 'share data files between the users', :class => 'subtool' ,'data-placement' => 'bottom' do%>
+                    <%= image_tag('/assets/tabicons/activity.png',class: 'pull-left rs') %>&nbsp;
+                    <span>Data</span>
+                   <% end %>
+              </li>
+
+            <li class="<%= menu_active('admin/folders') %>">
+                  <%= link_to admin_folders_url , :rel=> 'tooltip', :title => 'lists all folders to be shared', :class => 'subtool' ,'data-placement' => 'bottom'  do %>
+                    <%= image_tag('/assets/tabicons/folder.png',class: 'pull-left rs') %>&nbsp;
+                    <span>Folders</span>
+                  <% end %>
+            </li>     
+                  </ul>
+                  </li>
+			<% end %>
+       
+
+
+           <% if current_user && current_user.admin? %>
+            
+             <li class="<%= menu_active('meetings') %>" >
+                  <%= link_to  meetings_url ,:rel=> 'tooltip', :title => 'schedule meetings for users working on the projects', :class => 'tool' ,'data-placement' => 'bottom'  do %> 
+                    <%= image_tag('/assets/tabicons/meeting.png',class: 'pull-left rs') %>&nbsp;                  
+                    <span>Meetings</span>
+                  <% end %>
+             </li>
+             <li class="<%= menu_active('calendars') %>">
+                   <%= link_to  calendars_url ,:rel=> 'tooltip', :title => 'setup and view all tasks info on particular dates ', :class => 'tool' ,'data-placement' => 'bottom' do %>
+                   <%= image_tag('/assets/tabicons/calendar.png',class: 'pull-left rs') %>&nbsp;                    
+                    <span>Calendar</span>
+                   <% end %>
+             </li> 
+<li class="dropdown <%= menu_active('expenses') || menu_active('invoices') || menu_active('account_histories') || action_active('show_clients')  || action_active('show_suppliers') %>">
+ 
+<a class="dropdown-toggle tool" data-toggle="dropdown" href="#"  rel="tooltip" title="keeps Info about all clients and suppliers" data-placement ="bottom" >
+                    <%= image_tag('/assets/tabicons/expense.png',class: 'pull-left rs') %>&nbsp;  
+                   <span>Financials<span>
+                <span class="caret"></span>
+               </a>
+               <ul class="dropdown-menu" >
+                  <li class="<%= menu_active('invoices') || menu_active('account_histories') || action_active('show_clients') %>">
+			<%= link_to show_clients_path , :rel=> 'tooltip' ,:title => 'lists all Clients', :class => 'subtool','data-placement' => 'bottom'   do %>
+                          <%= image_tag('/assets/tabicons/contact.png',class: 'pull-left rs') %>&nbsp;
+                          <span>Clients</span>
+                        <% end %>
+                  </li>
+                  <li class="<%= action_active('show_suppliers') %>">
+                        <%= link_to show_suppliers_path ,:rel=> 'tooltip' ,:title => 'lists all Suppliers', :class => 'subtool','data-placement' => 'bottom' do %>
+                        <%= image_tag('/assets/tabicons/contact.png',class: 'pull-left rs') %>&nbsp;
+                        <span>Suppliers</span>                        
+                        <% end %>
+                  </li>
+                             <li class="<%= menu_active('expenses')%>">
+                    <%= link_to expenses_path  ,:rel=> 'tooltip', :title => 'budget info for list of projects', :class => 'tool' ,'data-placement' => 'bottom' do %> 
+                    <%= image_tag('/assets/tabicons/expense.png',class: 'pull-left rs') %>&nbsp;  
+                    <span> Financials </span> 
+                    <% end %>       
+              </li>
+               </ul>
+            </li>    
+ 
+            
+     
+              <li class="<%= menu_active('my_threads') %>" >
+                  <%= link_to  my_threads_url ,:rel=> 'tooltip', :title => 'view and posts comments on particular topics', :class => 'tool' ,'data-placement' => 'bottom' do %>
+                  <%= image_tag('/assets/tabicons/thread.png',class: 'pull-left rs') %>&nbsp;    
+                  <span >Threads</span>
+                  <% end %>
+              </li>
+              <li class="<%= menu_active('admin/links') %>">
+                    <%= link_to  admin_links_url ,:rel=> 'tooltip', :title => 'list all links info created by users along with their sharing oprions', :class => 'tool' ,'data-placement' => 'bottom' do%>
+                    <%= image_tag('/assets/tabicons/link.gif',class: 'pull-left rs') %>&nbsp;                      
+                    <span>Links/URLs</span>                    
+                    <% end %> 
+               </li>
+               
+                        
+           <% end %>
+ 
+	<!-- User tabs here --> 
+          <% if current_user  && !current_user.admin? %>
+              
+      <% if @usertabs.include?("meetings")  && @usertabs_modified.include?("meetings") %>
+           <li class="<%= menu_active('meetings') %>" >
+          <%= link_to meetings_url ,:rel=> 'tooltip', :title => 'schedule meetings for users working on the projects', :class => 'tool' ,'data-placement' => 'bottom' do%>
+                    <%= image_tag('/assets/tabicons/meeting.png',class: 'pull-left rs') %>&nbsp;                 
+                    <span>Meetings</span>        
+          <% end %>
+           </li>
+      <% end %>
+              
+      <% if @usertabs.include?("calendar")  && @usertabs_modified.include?("calendar")  %>              
+           <li class="<%= menu_active('calendars') %>">
+           <%= link_to  calendars_url ,:rel=> 'tooltip', :title => 'setup and view all tasks info on particular dates ', :class => 'tool' ,'data-placement' => 'bottom' do%>
+              <%= image_tag('/assets/tabicons/calendar.png',class: 'pull-left rs') %>&nbsp;                     
+              <span>Calendar</span>                    
+            <% end %> 
+           </li>
+      <% end %>
+      <% if @usertabs.include?("expensing") && @usertabs_modified.include?("expensing") %>
+            <li class="<%= menu_active('expenses')%>">
+            <%= link_to expenses_path ,:rel=> 'tooltip', :title => 'budget info for list of projects', :class => 'tool' ,'data-placement' => 'bottom'  do %>
+                <%= image_tag('/assets/tabicons/expense.png',class: 'pull-left rs') %>&nbsp;               
+                <span>Expensing</span>   
+            <% end %>           
+            </li> 
+      <% end %>
+      <% if @usertabs.include?("threads") && @usertabs_modified.include?("threads") %> 
+            <li class="<%= menu_active('my_threads') %>" >
+            <%= link_to  my_threads_url ,:rel=> 'tooltip', :title => 'view and posts comments on particular topics', :class => 'tool' ,'data-placement' => 'bottom' do %>              
+              <%= image_tag('/assets/tabicons/thread.png',class: 'pull-left rs') %>&nbsp; 
+              <span>Threads</span>
+            <% end %>
+            </li> 
+      <% end %>
+      <% if @usertabs.include?("links") && @usertabs_modified.include?("links") %> 
+            <li class="<%= menu_active('admin/links') %>" >
+            <%= link_to  admin_links_url ,:rel=> 'tooltip', :title => 'list all links info created by users along with their sharing oprions', :class => 'tool' ,'data-placement' => 'bottom'  do%>
+            <%= image_tag('/assets/tabicons/link.gif',class: 'pull-left rs') %>&nbsp;  
+             <span>Links/URLs</span>              
+            <% end %>
+            </li>
+      <% end %>
+          <% end %> 
+        </ul>
+
+<ul class="nav pull-right" style='margin-top:3px'>
+<% if current_user  && !current_user.admin? %>
+    <li class="<%= menu_active('switch') %>">
+      <%= link_to "/switches" ,:rel=> 'tooltip', :title => 'switching between different moudles', :class => 'tool' ,'data-placement' => 'bottom' do %>
+      <%= image_tag('/assets/tabicons/switch.png',class: 'pull-left rs') %>&nbsp;
+      <span>Switches</span>
+      <% end %>
+    </li>
+ <% end %>
+</ul>
+
+<!-- Other Tabs for rortime -->
+        <ul class="nav pull-right" style='margin-top:3px'>
+          <% if current_user %>            
+            <li class="dropdown <%= action_active('edit')%>">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <%= image_tag('/assets/tabicons/currentuser.png',class: 'pull-left') %>&nbsp;
+                <%= current_user.name %>
+                <span class="caret"></span>
+              </a>
+		<ul class="dropdown-menu" style="width:250px">
+                <% if current_user.admin? %>
+
+		<!-- Admin Switch -->
+        <% if !LinkAccount.where(:source_id => current_user.id).blank? %>
+        <% switches= LinkAccount.where(:source_id => current_user.id) %>
+          <% switches.each do |switch| %>
+             <% if switch.accept == "1" %>
+        <li class="switch">
+          <span>
+          <%= link_to custom_new_path(switch.target_id) do %> 
+          <%= image_tag('/assets/tabicons/person.png',class: 'rs') %>
+          <%=  switch.target %>
+          <% end %>
+          </span>
+            <%# if switch.target_admin_id == current_user.organization.id %> 
+            <i class="icon-remove switch-remove pull-right" value="<%= switch.id %>"></i>    
+            <%# end %>    
+        </li>
+             <% end %>
+          <% end %>
+      <% end %>
+      <% if LinkAccount.where(:target_id => current_user.id) %>
+          <% switches= LinkAccount.where(:target_id => current_user.id) %>
+          <% switches.each do |switch| %>
+             <% if switch.accept == "1" && switch.remove == false && switch.target_admin_id == current_user.organization.id %>
+              <li class="switch">
+                <span>
+                  <%= link_to custom_new_path(switch.source_id) do%>
+                    <%= image_tag('/assets/tabicons/person.png',class: 'rs') %>
+                    <%= switch.source %>
+                  <% end %>
+                </span>
+              <%# if switch.target_admin_id == current_user.organization.id %> 
+              <i class="icon-remove switch-remove pull-right" value="<%= switch.id %>"></i>   
+              <%# end %>           
+              </li>            
+             <% end %>
+          <% end %>
+      <% end %>                  
+              <!--- Admin Switch -->
+		
+			
+		  <% else %>
+
+		   <!-- User Switch -->
+         <% if !LinkAccount.where(:target_id => current_user.id).blank? %>
+          <% switches = LinkAccount.where(:target_id => current_user.id) %>          
+          <% switches.each do |switch| %>
+            <% if switch.accept == "1" && switch.target == current_user.username %>
+              <li class="switch">
+                <span>
+                  <%= link_to custom_new_path(switch.source_id) do%>
+                  <%= image_tag('/assets/tabicons/person.png',class: 'rs') %>
+                  <%= switch.source%>
+                  <% end %>
+                </span>
+
+              <%# if switch.target_admin_id == current_user.organization.id %> 
+              <i class="icon-remove switch-remove pull-right" value="<%= switch.id %>"></i>   
+              <%# end %>   
+              </li>
+            <% end %>
+          <% end %>
+		    <% end %>
+        <% if LinkAccount.where(:source_id => current_user.id) %>
+          <% switches = LinkAccount.where(:source_id => current_user.id) %>
+          <% switches.each do |switch| %>
+            <% if switch.accept == "1" && switch.source == current_user.username %>
+              <li class="switch">
+                <span>
+                  <%= link_to custom_new_path(switch.target_id) do %>
+                  <%= image_tag('/assets/tabicons/person.png',class: 'rs') %>
+                  <%= switch.target %>                  
+                  <% end %>
+                </span>
+                <%# if switch.target_admin_id == current_user.organization.id %> 
+              <i class="icon-remove switch-remove pull-right" value="<%= switch.id %>"></i>   
+              <%# end %>              
+              </li>
+            <% end %>
+          <% end %>
+          <% end %>
+
+            <!-- User Switch -->
+
+                <li >
+                <span class="switch">
+                  <%= link_to account_path ,:rel=> 'tooltip', :title => 'current user info', :class => 'subtool' ,'data-placement' => 'bottom' do%>
+                  <%= image_tag('/assets/tabicons/myaccount.png',class: 'rs') %>
+                  My Account
+                  <% end %>
+                </span></li>              
+                <% end %>
+		 
+                <li>
+                  <span class="switch">
+                  <%= link_to logout_url do%>
+                  <%= image_tag('/assets/tabicons/logout.png',class: 'rs') %>
+                  Logout                 
+                  <% end %>
+                  </span>
+                </li>
+		</ul>
+	   </li>
+      <% if current_user.admin? %>
+      <% link_accounts %>
+      <li class="<%= menu_active('projecttypes') || menu_active('tasktypes') || menu_active('expensetypes') || menu_active('issuetypes') || menu_active('statuses') || menu_active('timecodes')%> || <%= action_active('preference_edit') || menu_active('admin/users')%> dropdown" >
+			<a class="dropdown-toggle tool" data-toggle="dropdown" href="#" rel="tooltip" title="create new users and setup project types,task types,expense types and issues types" data-placement ="bottom">
+      <%= image_tag('/assets/tabicons/settings.png',class: 'pull-left rs') %>&nbsp;
+			<span >Settings<span>
+			<span class="caret"></span>
+			</a>
+		<ul class="dropdown-menu" style="width:250px">
+    <li class="<%= menu_active('admin/users') %>">
+        <%= link_to admin_users_url ,:rel=> 'tooltip', :title => 'list users info under particular organiziton', :class => 'subtool' ,'data-placement' => 'bottom'  do%>
+        <%= image_tag('/assets/tabicons/users.png',class: 'pull-left rs') %>&nbsp;        
+        <span>Users</span>        
+        <% end %>
+    </li>
+    <li class="<%= menu_active('projecttypes') || menu_active('tasktypes') || menu_active('expensetypes') || menu_active('issuetypes') || menu_active('statuses') || menu_active('timecodes')%> " >
+        <%= link_to projecttypes_path ,:rel=> 'tooltip', :title => 'setup new project types,task types,expense types and issues types', :class => 'subtool' ,'data-placement' => 'bottom' do%>
+        <%= image_tag('/assets/tabicons/setup.png',class: 'pull-left rs') %>&nbsp; 
+        <span>SetUp Data</span>        
+        <% end %>
+    </li>
+    <li class="<%= action_active('preference_edit') %>">
+      <%= link_to preference_edit_path(current_user) ,:rel=> 'tooltip', :title => 'setup user credentials', :class => 'subtool' ,'data-placement' => 'bottom'  do%>
+        <%= image_tag('/assets/tabicons/preferecne.png',class: 'pull-left rs') %>&nbsp;         
+        <span>Preferences</span>      
+      <% end %>
+    </li>
+    <li><a href="#" id="link_account" rel="tooltip" title="switching between multiple accounts" class="subtool" data-placement ="bottom">
+     <%= image_tag('/assets/tabicons/linkaccount.png',class: 'pull-left rs') %>&nbsp;     
+     <span >Link Accounts</span> </a>
+    </li>
+    <div style="display:none;padding-left:20px" id="request_accept">
+    <div><span><%= link_to "Request","#", class: "request"  %></span></div>
+		<div style="display:none;padding-left:20px" id="request">
+	            <%= simple_form_for(@link_account) do |f| %>
+                          <div class="form-inputs">
+                            <%= f.input :source, :as => :hidden, :input_html => { :value =>"#{current_user.username}"} %>
+                            <%= f.input :target, :input_html => { :value => "",:class => "input-small"},:label => "User Name" %>
+                            <%= f.input :source_id, :as => :hidden,:input_html => { :value =>"#{current_user.id}"} %>
+                            <%= f.input :target_id,:as => :hidden %>
+                            <%= f.input :source_admin_id,:as => :hidden,:input_html => { :value =>"#{current_user.organization.id}"} %>
+                            <%= f.input :target_admin_id,:as => :hidden %>
+                <%= f.button :submit ,"send",:class => "btn btn-primary btn-mini",:style =>"margin-top:-10px"  %>
+                         </div>
+            		<% end %>
+		</div>
+	<div class="accept">
+       <% accounts= LinkAccount.find(:all, :conditions => ["target_admin_id=? and request=?",current_user.organization.id , true]) %>
+       <%# accounts= LinkAccount.where(:target_admin_id => current_user.organization.id ) %>
+      <span><%= link_to "Accept", '#',:style =>"text-decoration:none;" %></span>
+    <!--  <span>&#40; -->
+       <%#= accounts.count %>
+    <!-- &#41;</span> -->
+       </div><br/>
+      <div id="accept-links" class="pull-left">
+        <ul class="accept-links pull-left">
+          <% accounts.each do |account| %>
+          <li><span style=""><b><%= account.target %></b>&nbsp;( from <b><%= account.source %> )</b></span>
+              <span class="" >      
+  <i class="icon-ok accept-ok" target="<%=account.target_id%>" source="<%=account.source_id %>" ></i>
+  <i class="icon-remove accept-remove" value="<%= account.id %>" ></i> 
+              </span>           
+          </li>
+          <% end %>
+        </ul>
+    </div>
+    </div>
+		<li><%#= link_to "Remove", '#',:style =>"text-decoration:none;" %></li>
+		</ul>
+		 </li>
+	  <!-- link Accounts Request (User)-->
+    
+      <% else %>
+	  <% if @usertabs.include?("linkaccounts") && @usertabs_modified.include?("linkaccounts") %>
+      <% link_accounts %>
+      <li class="<%= menu_active('projecttypes') %> dropdown" >
+			  <a class="dropdown-toggle tool" data-toggle="dropdown" href="#" rel="tooltip" title="create new users and setup project types,task types,expense types and issues types" data-placement ="bottom">
+          <%= image_tag('/assets/tabicons/settings.png',class: 'pull-left rs') %>&nbsp;
+			    <span>Settings</span>
+			    <span class="caret"></span>
+			  </a>
+		    <ul class="dropdown-menu">
+          <li><%= link_to "Request","#", class: "request"  %></li>
+		      <li style="display:none;padding-left:20px" id="request">
+	                  <%= simple_form_for(@link_account) do |f| %>
+                                <div class="form-inputs">
+                                  <%= f.input :source, :as => :hidden, :input_html => { :value =>"#{current_user.username}"} %>
+                                  <%= f.input :target, :input_html => { :value => "",:class => "input-small"},:label => "User Name" %>
+                                  <%= f.input :source_id, :as => :hidden,:input_html => { :value =>"#{current_user.id}"} %>
+                                  <%= f.input :target_id,:as => :hidden %>
+                                  <%= f.input :source_admin_id,:as => :hidden,:input_html => { :value =>"#{current_user.organization.id}"} %>
+                                  <%= f.input :target_admin_id,:as => :hidden %>
+                     <%= f.button :submit ,"send",:class => "btn btn-primary btn-mini",:style =>"margin-top:-10px"  %>
+                    </div>
+                  <% end %>
+		      </li>
+		    </ul>
+		   </li>
+	    <% end %>
+          <% end %>
+          <% else %>
+            <li ><%= link_to "Login", login_url %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>  
+  <div class="container">
+    
+    <div id="notifications">
+    <% [:error, :notice, :alert].each do |type| %>
+      <% if flash[type] %>
+        <%= content_tag :div, class: "alert #{alert_class(type)}" do %>
+        <a class="close" data-dismiss="alert">x</a>
+        <%= flash[type] %>
+        <% end %>
+      <% end %>
+    <% end %>
+    </div>
+    
+<!-- help text -->
+   <% if current_user %>
+      <ul  style="margin:0px">
+      <% if controller_path == 'projects' %>
+     <blockquote>
+  <p><%= image_tag('tasks.png') %>&nbsp;Schedule Your Projects As Tasks.</p>
+  <small>Track your Tasks <cite title="Source Title">Status</cite></small>
+</blockquote>
+      <% elsif controller_path == 'contacts'  %>
+       <blockquote>
+  <p><%= image_tag('contact.png') %>&nbsp;Manage people who were working in your organization with different contact types.</p>
+      <small>Each Contact <cite title="Source Title">precious.</cite></small>
+</blockquote> 
+      <% elsif controller_path == 'statusreports' %>
+      <blockquote>
+  <p><%= image_tag('sr.png') %>&nbsp;Manage Reports which will show you the status of the projects.</p>
+      <small>Sharing projects <cite title="Source Title">status.</cite></small>
+</blockquote> 
+      
+      
+      <% elsif controller_path == 'meetings' %>
+      <blockquote>
+  <p><%= image_tag('meet.png') %>&nbsp;Meeting held to provide a status update to the team members.</p>
+      <small>Resolve difficult and/or time-consuming <cite title="Source Title">issues.</cite></small>
+</blockquote> 
+
+    <% elsif controller_path == 'calendars' %>
+      <blockquote>
+  <p style="font-size:15px;"><%= image_tag('cal.png',:width => '48px', :height => '48px') %>&nbsp;Let your co-workers see your schedules that others have shared with you. When you know when everyone is free or busy,<p style="margin-left:50px;margin-top:-20px;font-size:15px;">scheduling is a snap.</p></p>
+      <small>Organizing your schedule shouldn\u2019t be a <cite title="Source Title">burden.</cite></small>
+</blockquote> 
+
+   <% elsif controller_path == 'expenses' %>
+      <blockquote>
+  <p><%= image_tag('expens.png',:width => '48px', :height => '48px') %>&nbsp;Budget expenses on about the employee development time on projects for approval.</p>
+      <small>Expense reports by <cite title="Source Title">employee.</cite></small>
+</blockquote>
+
+<% elsif controller_path == 'my_threads' %>
+      <blockquote>
+  <p><%= image_tag('thread1.png',:width => '48px', :height => '48px') %>&nbsp;Threads will expose the reccuring problem/issue or any post by employee.</p>
+      <small>Share your idea on <cite title="Source Title">it.</cite></small>
+</blockquote>
+<% elsif controller_path == 'categories' %>
+      <blockquote>
+  <p><%= image_tag('category.png',:width => '48px', :height => '48px') %>&nbsp;Categories of different technologies which are managable from folders.</p>
+      <small>Category has <cite title="Source Title">activities.</cite></small>
+</blockquote>
+<% elsif controller_path == 'admin/folders' %>
+      <blockquote>
+  <p><%= image_tag('folder.png',:width => '48px', :height => '48px') %>&nbsp;Collection of the categories is folder which will share.</p>
+      <small>Consolidate the <cite title="Source Title">categories.</cite></small>
+</blockquote>
+<% elsif controller_path == 'admin/links' %>
+      <blockquote>
+  <p><%= image_tag('link.png',:width => '48px', :height => '48px') %>&nbsp;Create and view the your own link.</p>
+      <small>View your <cite title="Source Title"> link.</cite></small>
+</blockquote>
+      <% elsif controller_path == 'activities' %>
+      <blockquote>
+  <p><%= image_tag('activity.png',:width => '48px', :height => '48px') %>&nbsp;Tracking activities based on the categories and Checked Out activity to give provision to others can download or edit.</p>
+      <small>Never mistake activity for <cite title="Source Title">achievement.</cite></small>
+</blockquote>
+
+<% elsif controller_path == 'admin/pay_periods' %>
+      <blockquote>
+  <p><%= image_tag('pay_period.png',:width => '48px', :height => '48px') %>&nbsp;A pay period is a recurring length of time over which employee time is recorded and paid.</p>
+      <small>Weekly <cite title="Source Title">Pay Periods.</cite></small>
+</blockquote>
+      
+      <% elsif controller_path == 'time_records' %>
+      <blockquote>
+  <p><%= image_tag('timesheet.png',:width => '48px', :height => '48px') %>&nbsp;Time Sheet shows the recorded work hours for that period with detailed screens.</p>
+      <small>Track individual recorded <cite title="Source Title">hours.</cite></small>
+</blockquote>
+ 
+      <% elsif controller_path == 'time_records_search' && action_name == 'all_time' %>
+      <blockquote>
+  <p><%= image_tag('timerecord.png',:width => '48px', :height => '48px') %>&nbsp;Updated all time records of all periods which have been updating with respective periods. </p>
+      <small> All records of <cite title="Source Title">all employees.</cite></small>
+</blockquote>
+	
+   	<% elsif controller_path == 'statistics' %>
+      <blockquote>
+  <p><%= image_tag('stats.png') %>&nbsp;Analysis Reports of the Projects .</p>
+      <small>Analysis Of Project <cite title="Source Title">status.</cite></small>
+</blockquote> 
+      
+   <% elsif controller_path == 'admin/report'%>
+      <blockquote>
+  <p><%= image_tag('report.png',:width => '48px', :height => '48px') %>&nbsp;Descriptive work progress for the period of time.</p>
+      <small>Conclusion of weekly <cite title="Source Title">work progress.</cite></small>
+</blockquote>
+
+ <% elsif controller_path == 'admin/users'%>
+      <blockquote>
+  <p><%= image_tag('employee.png',:width => '48px', :height => '48px') %>&nbsp;Hire new one and manage the employees in your organization.</p>
+      <small>Managing <cite title="Source Title">Employees.</cite></small>
+</blockquote>
+
+  <% elsif controller_path == 'project_types'%>
+     <blockquote>
+  <p><%= image_tag('project.png') %>&nbsp;Manage And Schedule Your Projects.</p>
+  <small>Track your projects <cite title="Source Title">Status</cite></small>
+    </blockquote>
+
+ <% elsif controller_path == 'tasktypes'%>
+<blockquote>
+  <p><%= image_tag('tasks.png',:width => '48px', :height => '48px') %>&nbsp; SetUp the Task types for your organization.</p>
+      <small>Managing <cite title="Source Title">Task Types.</cite></small>
+</blockquote>
+<% elsif controller_path == 'expensetypes'%>
+<blockquote>
+  <p><%= image_tag('expens.png',:width => '48px', :height => '48px') %>&nbsp; SetUp the Expense types for your organization.</p>
+      <small>Managing <cite title="Source Title">Expense Types.</cite></small>
+</blockquote>
+<% elsif controller_path == 'issuetypes'%>
+<blockquote>
+  <p><%= image_tag('issue.png',:width => '48px', :height => '48px') %>&nbsp; SetUp the Issue types for your organization.</p>
+      <small>Managing <cite title="Source Title">Issue Types.</cite></small>
+</blockquote>
+<% elsif controller_path == 'projecttypes'%>
+<blockquote>
+  <p><%= image_tag('project.png',:width => '48px', :height => '48px') %>&nbsp; SetUp Project types for your organization.</p>
+      <small>Managing <cite title="Source Title">Project Types.</cite></small>
+</blockquote>
+<% elsif controller_path == 'issues'%>
+<blockquote>
+  <p><%= image_tag('issue.png',:width => '48px', :height => '48px') %>&nbsp; Identifying and Resolving Issues.</p>
+      <small>Managing <cite title="Source Title">issues.</cite></small>
+</blockquote>
+
+
+<% elsif controller_path == 'statuses'%>
+      <blockquote>
+  <p><%= image_tag('sr.png',:width => '48px', :height => '48px') %>&nbsp; SetUp the status types for your organization.</p>
+      <small>Managing <cite title="Source Title">Status Types.</cite></small>
+</blockquote>
+
+<% elsif controller_path == 'timecodes'%>
+      <blockquote>
+  <p><%= image_tag('timecode.png',:width => '48px', :height => '48px') %>&nbsp; SetUp Time codes	 for your organization.</p>
+      <small>Managing <cite title="Source Title">Time Codes.</cite></small>
+</blockquote>
+ 
+      
+      <% end %>
+      
+      </ul>
+    <% end %>
+     <div class="row">
+      <div class="span12">
+        <% unless controller.controller_path == 'pages' && controller.action_name == 'show' %> 
+        <%= link_to "/contact_us",class: 'pull-right' ,id: 'feed' do %>
+        <%= image_tag('/assets/tabicons/fd.gif',class: 'pull-left rs', width: '24px', height:'24px') %>
+        <span>feedback</span>
+        <% end %>
+        <% else %>
+              <%= link_to root_url,class: 'pull-right' ,id: 'feed' do %>
+              <%= image_tag('/assets/tabicons/home.png',class: 'pull-left rs') %>&nbsp;
+              <span>Click to Home</span>
+              <% end %>
+        <% end %>
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+	
+  <style type="text/css">
+    #feed:hover{
+      text-decoration:none;
+     }
+    .accept span {
+        float:left;
+      }
+    .accept-links li {
+        list-style :none;
+      }
+    .accept-links  {
+        display :block;
+      }
+    .switch a {
+        display :inline; 
+        text-decoration:none;       
+      }
+     .request:hover{
+      text-decoration:none; 
+      }
+
+	
+ 	 html, body {
+            height: 100%;
+        }
+        footer {
+            color: #fff;
+            background: #222;
+            padding: 5px;
+            border-top: 1px solid #000;
+            font-size:12px;
+        }
+        
+        .wrapper {
+            min-height: 100%;
+            height: auto !important;
+            height: 100%;
+            margin: 0px auto 10px;
+        }
+        .push {
+            height: 63px;
+        }
+        .wrapper > .container {
+            padding-top: 10px;
+        }
+   	.contact a:hover{
+	text-decoration :none;
+	}
+
+ html, body {
+    height: 100%;
+    width: 100%;
+ }
+  </style>
+</div>
+<!-- wrapper ends here -->
+
+<!-- footer part here --->
+
+  <footer>
+      <div class="container">
+		   <ul style="list-style:none">
+		     <li class="pull-left"><p> Copyright&nbsp;&copy;&nbsp;TeamCloud </p></li>
+		     
+		     <li class="pull-right contact " style="padding-left:10px"><p > <%= link_to "Privacy ", "/privacy" ,:style=>"color:white;" %>&nbsp;&nbsp;&nbsp; </p> </li>&nbsp;
+		     <li class="pull-right contact"><p  > <%= link_to "Legal ", "/legal" ,:style=>"color:white;" %>&nbsp;&nbsp;&nbsp; </p></li>&nbsp;
+		     <li class="pull-right contact" ><p  > <%= link_to "Contact Us ", "/contact_us" ,:style=>"color:white;" %>&nbsp;&nbsp;&nbsp; </p></li>
+		   </ul>       
+      </div>
+  </footer>
+</body>
+</html>

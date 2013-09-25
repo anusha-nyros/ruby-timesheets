@@ -1,0 +1,64 @@
+
+<%= render :partial => "statistics/search_form", locals: {q: @q} %>
+
+<div id="search-result">
+  <% if @projects.blank? %>
+    <% if params[:q] %>
+      <p class="well">Your search does not generate a result</p>
+    <% end %>
+<div style="float:left;">
+<% if @projects.blank? %>
+<b style="color:red;">No Records Found </b>
+<% end %>
+</div>
+  <% else %>
+    <div style="float:left;margin-bottom:10px;"><b>
+    <% unless @projects.blank? %>(<%= @projects.count %>) Records Found<% end %></b>
+    </div>
+    <br/>
+
+
+<table class="table table-striped" >
+  <tr>
+    <th><%= sort_link(@q, :type_name, "Project Name") %></th>
+         
+         <th><%= sort_link(@q, :proj_number, "Proj#") %></th>
+	  <th><%= sort_link(@q, :date_created, "Date Created") %></th>
+         <th><%= sort_link(@q, :status, "Status") %></th>
+         <th><%= sort_link(@q,:start_date,"Start Date") %> </th>
+         <th><%= sort_link(@q,:end_date,"End Date") %> </th>
+         <th><%= sort_link(@q,:project_group,"Project Group") %> </th>
+         <th>Tasks</th>
+         <th>Hours</th>
+         <th></th>
+      
+   
+    
+  </tr>
+
+<% @projects.each do |project_type| %>
+  <tr>
+    <td><%= project_type.type_name %></td>
+    
+    <td><%= project_type.proj_number %></td>
+    <td><%= project_type.date_created? ? "#{project_type.date_created.strftime("%b-%d-%Y")}" : "-" %></td>
+    <td><%= project_type.status? ? "#{project_type.status}" : "-" %></td>
+    <td><%= project_type.start_date? ? "#{project_type.start_date.strftime("%b-%d-%Y")}" : "-" %></td>
+    <td><%= project_type.end_date? ? "#{project_type.end_date.strftime("%b-%d-%Y")}" : "-" %></td>
+    <td><%= project_type.project_group? ? "#{project_type.project_group}" : "-" %></td>
+    <td><%= project_type.projects.count%></td>
+    
+
+      <% cnt= 0 %>
+             <% project_type.projects.each do |t|  %>
+                 <% cnt +=  t.time_records.to_a.sum(&:total_hours) %>            
+             <% end %>
+    <td><%= cnt %></td>
+
+  </tr>
+<% end %>
+</table>
+
+<% end %>
+ 
+</div>

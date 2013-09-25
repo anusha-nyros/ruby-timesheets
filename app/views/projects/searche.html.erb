@@ -1,0 +1,134 @@
+<style type="text/css">
+.last span{
+  display:inline;
+}
+.last {
+  width:80px;
+}
+#up {
+ float:right;
+}
+</style>
+<%#= render :partial => "menu1" if current_user.admin? %><br/>
+<%= render :partial => "menu" %>
+<%= render :partial => "search_forme", locals: {q: @q} %>
+<div id="search-result">
+  <% if @projects.blank? %>
+    <% if params[:q] %>
+      <p class="well">Your search does not generate a result</p>
+    <% end %>
+<div style="float:left;">
+<% if @projects.blank? %>
+<b style="color:red;">No Records Found </b>
+<% end %>
+</div>
+  <% else %>
+    <div style="float:left;margin-bottom:10px"><b><% unless @projects.blank? %>(<%= @projects.count %>) Records Found<% end %></b></div>
+   <% if controller.action_name != "index" %>     
+     <select name="sel" class="s <%= @secret if !@secret.blank? %> span1" id="up" >
+              
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+     </select>
+    <% end %>
+   <span class="pull-right" style="padding:5px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+   </span>
+
+
+<br/>
+    <table class="table table-striped">
+      <tr>
+    <th><%= sort_link(@q, :project_name, "Type") %></th>
+     
+      <th><%= sort_link(@q, :title, "Title") %></th>
+      
+      <th><%= sort_link(@q, :action_required, "Status") %></th>
+      <th><%= sort_link(@q, :schedule_date, "Schedule Date") %></th>
+                 <th><%= sort_link(@q, :prq_number, "Project#") %></th>
+      <th><%= sort_link(@q, :amount, "Amount") %></th>
+
+     <th><%= sort_link(@q, :actual ,"Actual") %></th>
+
+     <th><%= sort_link(@q, :variance, "Variance") %></th>
+     <th><%= sort_link(@q, :percent_variance, "%Variance") %></th>
+	 
+      
+	  
+      <th></th>
+      </tr>
+    <% amt_tot=act_tot=variance_tot=var_per_tot=0 %>
+    <% for project in @projects %>
+      <tr>
+       <td><%= project.project_name %></td>
+	  
+			
+      	 <td>
+            <p>
+              <span style="display:block" class="proj_title"><%= project.title %></span>
+              <span style="display:none;text-indent:10px" class="proj_notes"><%=  project.notes %></span>
+            </p>
+          </td>
+      
+	  <td><%= project.action_required %></td>
+	  <td><%= project.schedule_date.strftime("%b-%d-%Y") if !project.schedule_date.blank? %></td>
+         
+          <td><%= project.prq_number %></td>
+          <td><%= number_with_precision(project.amount,:precision => 1, :strip_insignificant_zeros => true) %></td>
+          <td><%= project.actual %></td>
+	  
+          <td><%= project.variance %> </td>
+          <td>
+	<% if !project.percent_variance.blank? && project.percent_variance < 0 %>        
+            <%= number_to_percentage(project.percent_variance ,:precision => 0,:strip_insignificant_zeros => true) %>
+            <% var_per_tot=var_per_tot + project.percent_variance %>
+          <% end %>
+          <% if !project.actual.nil? %> 
+            <% act_tot=act_tot + project.actual %>
+          <% end %>
+          <% if !project.amount.nil? %> 
+            <% amt_tot=amt_tot + project.amount %>
+          <% end %>
+          <% if !project.variance.nil? %> 
+            <% variance_tot=variance_tot + project.variance %>
+          <% end %> 
+	   </td>
+      <td>
+       <div class='last'>
+              <span><%= link_to 'Show', project, class: 'btn btn-mini' %> </span>
+              <span><%= link_to 'Edit', edit_project_path(project), class: 'btn btn-mini' %></span>
+       </div>
+      </td>
+    </tr>
+  <% end %>
+
+      <tr>
+        <td><b>Total</b></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+            <b><%= number_with_precision(amt_tot,:precision => 1,:strip_insignificant_zeros => true) %>    </b>
+        </td>
+        <td>
+            <b><%= number_with_precision(act_tot,:precision => 1,:strip_insignificant_zeros => true)%>     </b>
+        </td>
+        <td>
+            <b><%= number_with_precision(variance_tot,:precision => 1,:strip_insignificant_zeros => true)%>
+            </b>
+        </td>
+        <td>
+            <b><%= number_to_percentage(var_per_tot,:precision => 0) %>
+            </b>
+        </td>
+        <td></td>
+      </tr>
+</table>
+<%= paginate @projects %>
+ 
+  <% end %>
+  
+</div>

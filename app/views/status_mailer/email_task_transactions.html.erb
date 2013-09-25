@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<style type="text/css" >
+a:focus {
+    outline: thin dotted #333333;
+    outline-offset: -2px;
+}
+a:hover, a:active {
+    outline: 0 none;
+}
+body {
+    background-color: white;
+    color: #333333;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    margin: 0;
+}
+a {
+    color: #0088CC;
+    text-decoration: none;
+}
+a:hover {
+    color: #005580;
+    text-decoration: underline;
+}
+.row {
+    margin-left: -20px;
+}
+.row:before, .row:after {
+    content: "";
+    display: table;
+}
+.row:after {
+    clear: both;
+}
+table {
+    background-color: transparent;
+    border-collapse: collapse;
+    border-spacing: 0;
+    max-width: 100%;
+}
+.table {
+    margin-bottom: 18px;
+    width: 100%;
+}
+.table th, .table td {
+    border-top: 1px solid #DDDDDD;
+    line-height: 18px;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+.table th {
+    font-weight: bold;
+}
+.table thead th {
+    vertical-align: bottom;
+}
+.table caption + thead tr:first-child th, .table caption + thead tr:first-child td, .table colgroup + thead tr:first-child th, .table colgroup + thead tr:first-child td, .table thead:first-child tr:first-child th, .table thead:first-child tr:first-child td {
+    border-top: 0 none;
+}
+.table tbody + tbody {
+    border-top: 2px solid #DDDDDD;
+}
+.table-condensed th, .table-condensed td {
+    padding: 4px 5px;
+}
+.table-bordered {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-collapse: separate;
+    border-color: #DDDDDD #DDDDDD #DDDDDD -moz-use-text-color;
+    border-radius: 4px 4px 4px 4px;
+    border-style: solid solid solid none;
+    border-width: 1px 1px 1px 0;
+}
+.table-bordered th, .table-bordered td {
+    border-left: 1px solid #DDDDDD;
+}
+.table-bordered caption + thead tr:first-child th, .table-bordered caption + tbody tr:first-child th, .table-bordered caption + tbody tr:first-child td, .table-bordered colgroup + thead tr:first-child th, .table-bordered colgroup + tbody tr:first-child th, .table-bordered colgroup + tbody tr:first-child td, .table-bordered thead:first-child tr:first-child th, .table-bordered tbody:first-child tr:first-child th, .table-bordered tbody:first-child tr:first-child td {
+    border-top: 0 none;
+}
+.table-bordered thead:first-child tr:first-child th:first-child, .table-bordered tbody:first-child tr:first-child td:first-child {
+    border-top-left-radius: 4px;
+}
+.table-bordered thead:first-child tr:first-child th:last-child, .table-bordered tbody:first-child tr:first-child td:last-child {
+    border-top-right-radius: 4px;
+}
+.table-bordered thead:last-child tr:last-child th:first-child, .table-bordered tbody:last-child tr:last-child td:first-child {
+    border-bottom-left-radius: 4px;
+}
+.table-bordered thead:last-child tr:last-child th:last-child, .table-bordered tbody:last-child tr:last-child td:last-child {
+    border-bottom-right-radius: 4px;
+}
+.table-striped tbody tr:nth-child(2n+1) td, .table-striped tbody tr:nth-child(2n+1) th {
+    background-color: #F9F9F9;
+}
+.table tbody tr:hover td, .table tbody tr:hover th {
+    background-color: #F5F5F5;
+}
+table .span1 {
+    float: none;
+    margin-left: 0;
+    width: 44px;
+}
+table .span2 {
+    float: none;
+    margin-left: 0;
+    width: 124px;
+}
+table .span3 {
+    float: none;
+    margin-left: 0;
+    width: 204px;
+}
+table .span4 {
+    float: none;
+    margin-left: 0;
+    width: 284px;
+}
+[class^="icon-"], [class*=" icon-"] {
+    background-image: url("/assets/glyphicons-halflings.png");
+    background-position: 14px 14px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 14px;
+    line-height: 14px;
+    vertical-align: text-top;
+    width: 14px;
+}
+.odd{
+    background-color: #F5F5F5;
+}
+
+ .bor{
+    font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
+    padding-bottom :3px;
+    margin-bottom :10px;
+    line-height :2em;    
+    }
+</style>
+
+  </head>
+<body>
+<p style ="font-size:20px;" > Tasks    On &nbsp;&nbsp;   Date:  <%= Date.today.strftime("%b-%d-%Y") %>  </p>
+<br/>
+   <table  class=" table table-striped " cellspacing =5 cellpadding= 3 >
+   <tr style="color: #0088CC;background-color: #F5F5F5;" >
+     <th> Project</th >
+     <th> Task </th >
+     <th> Task#  </th >
+     <th> Schedule Date </th >
+     <th>Supplier</th >
+
+     <th> Status </th >
+  
+     <th></th>
+   </tr>
+
+  <% @email_tasks.each do |task| %>
+    <tr class="<%= cycle('even', 'odd') %>" >
+    <td><%= task.project_name  %></td>
+	 <td><%= task.title %></td>
+      	   <td><%= task.prq_number  %> </td>
+ 
+	  <td><%= task.schedule_date.strftime("%b-%d-%Y") if !task.schedule_date.blank? %></td>
+	 
+      
+          <td><%= task.supplier.try(:company) %></td>
+	  <td><%= task.action_required %></td>
+          <td></td>
+    </tr>
+  <% end %>
+   </table>
+<br/><br/>
+<div class="bor">
+  <% if !@message.blank? %>
+ <legend >Here is Message details </legend>
+ <p style="text-indent:10px"><%= @message %></p>
+  <% end %>
+</div>
+
+<br/><br/>
+<p> Thank You </p>
+<p> Team Cloud </p>
+  </body>
+</html>
+<table>

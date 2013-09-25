@@ -1,0 +1,464 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});
+$('#datepicker7').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});
+$('#datepicker2').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});
+$('#datepicker1').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});
+$('#datepicker2').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});
+$('#datepicker3').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});
+$('#datepicker4').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});
+$('#datepicker5').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});
+$('#datepicker6').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});
+
+$("#dates").click(function () {
+  var $that = $(this);
+  $("#range").toggle("slow", function() {
+    $that.toggleClass("toggled-off");
+  });
+});
+
+$("#date").click(function () {
+  var $that = $(this);
+  $("#ranges").toggle("slow", function() {
+    $that.toggleClass("toggled-off");
+  });
+});								
+});
+ $('document').ready(function(){
+     $('#advance-search').click(function(){
+        $('#advance-search-form').toggle()
+        $('#simple-search-form').toggle()  
+     
+    }); 
+  /* for selection */ 
+
+ $('#select_emails :checkbox').removeAttr('checked'); 
+
+
+ 
+ $('.email-link1').click(function(e){ 
+        e.preventDefault();
+       
+        if($('#project_check').val() == ''){
+          alert("Please select atleast one task ");
+              return false;
+          } 
+        if($('#project_check').val() != ''){
+                  var task_ids = $('#project_check').val();
+                  $('.select-contacts').css("display","block");
+                  $('#various2').fancybox();  
+			              	$.ajax({
+                          type: "POST",
+                          url: "/maillist",
+                          traditional: true,
+                          data: {
+                              ids: task_ids
+                                  },
+                          success:function(data, textStatus, XMLHttpRequest){
+                                $('#data').html(data);   
+                                                           
+                               }  
+				                    });                        
+                }  
+ });
+
+
+ $('.email-link').click(function(e){
+
+        if(! $('#project_check').val()){
+          alert("Please select atleast one  record");
+		return false;
+        } 
+    else {
+  return true;
+      }
+ });
+// for bulk chnaging the records in the tasks module 
+ $('.bulk_change_submit').click(function(e){
+
+        if(! $('#project_check').val()){
+          alert("Please select atleast one or more task(s) to edit in bulk ");
+		return false;
+        } 
+        if($('#project_check').val() != ''){
+                  var project_bulk_ids = $('#project_check').val();
+                  $('#bulk_edit_box').fancybox();  
+			              	$.ajax({
+                          type: "POST",
+                          url: "/bulklist",
+                          traditional: true,
+                          data: {
+                              ids: project_bulk_ids
+                                  },
+                          success:function(data, textStatus, XMLHttpRequest){
+                                $('#bulk_data').html(data);   
+                                                           
+                               }  
+				                    });                        
+                }  
+ });
+////  end for bulk changing the records in the tasks module 
+
+// pagination  select box
+
+  $('.s').change(function(){  
+             if($(this).hasClass('up')){
+              var input = $("<input>").attr("type", "hidden").attr("name", "mydata").val($('.s').val());
+              $('.upform').append($(input));
+                $('.upform').submit();
+              }else{
+                 var input = $("<input>").attr("type", "hidden").attr("name", "mydata").val($('.s').val());
+                 $('.downform').append($(input));
+                 $('.downform').submit();
+              }
+        });
+        var n= $('#myid').val();        
+        $('#up').val(n); 
+
+
+$("#select_emails").change(function() {
+      $('.email-link1').addClass("send"); 
+  });
+
+
+
+  $('.ui-multiselect-none').click(function(){
+    $('#select :checkbox').removeAttr('checked');  
+    $('#project_check_all').val("");
+     
+  });
+//getting all checked Values when chekall is clicked
+  $("#select_emails")
+    .multiselect()
+    .bind("multiselectclick multiselectcheckall multiselectuncheckall", function( event, ui ){
+        var checkedValues = $.map($(this).multiselect("getChecked"), function( input ){
+            return input.value;
+          });
+        // alert(checkedValues);
+        $('#project_check_all').val(checkedValues);
+    });
+
+
+});
+//getting individual  value when check box is clicked
+
+ $(function() {
+   $('.ui-multiselect-checkboxes input').click(function(){
+    var array_of_checked_values = $("#select_emails").multiselect("getChecked").map(function(){
+    return this.value;	
+    }).get();  
+      $('#project_check_all').val(array_of_checked_values); 
+     // alert(array_of_checked_values);
+    });
+ });
+
+
+
+/* fror selection */ 
+
+</script>
+<style>
+ .bor{
+    font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
+    padding-bottom :3px;
+    margin-bottom :10px;
+    line-height :2em;    
+    }
+</style>
+
+
+<div id="simple-search-form">
+  <%= search_form_for q,:url => search_projects_path, :html => {method: :post, class: 'well form-search upform'}  do |f| %>
+   <fieldset>
+    <%= f.text_field :title_or_project_name_or_action_required_or_prq_number_or_reference_cont,:style=>"width:220px;", class: "input-medium search-query" %>
+    <button type="submit" class="btn btn-success">Search</button>
+  &nbsp;&nbsp; <a href="#" id="advance-search">Advanced</a> &nbsp;&nbsp;
+    <%= link_to "Reset " , {:controller => "projects", :action => "index" , :FILTER => "ALL" } %>&nbsp;&nbsp;
+    <%= link_to "Expand" , '/expand',:class => "expand" %>&nbsp;&nbsp;
+  <%= link_to "Collapse" , '/collapse',:class => "collapse",:style =>"display:none" %>&nbsp;&nbsp;
+	 <input type="hidden" name="up">
+  <% end %>
+<!-- for selecting projects for the PDf report-->
+ <input type="hidden" id="myid" value='<%= @choosed if !@choosed.blank? %>'>
+
+
+<% if !@projects.blank? %>
+<%= simple_form_for :project,:url => url_for(:action=>'pdf_report',:controller=>'projects'), :html => {method: :post,:onsubmit=>"return confirm('Do you want to create pdf report ?');", class: 'form-horizontal'}  do |f| %>
+ <%#= hidden_field_tag "project_check_all" %>
+<%= hidden_field_tag "project_check" %>
+
+
+<%#= f.submit "Generate PDF Report",:style=>"float:right;margin-top:-25px;",class: 'btn btn-primary email-link' %>
+<%= image_submit_tag("pdf_icon.png", :class=> "email-link",:style=>"float:right;margin-top:-25px;width:20px;height:18px;margin-right:70px;") %>
+<% end %>
+<% end %>
+
+<!-- for mailing the projects transactions -->
+
+<a id="various2" href="#nenu" title="Sending Email Tasks"><%= image_submit_tag("email_icon.png", :class=> "email-link1",:style=>"float:right;margin-top:-46px;width:25px;height:25px;margin-right:45px;") %></a>
+<!-- for mailing the projects transactions -->
+<!-- for selecting projects -->
+<a id="bulk_edit_box" href="#bulk" title="Bult Edit Tasks" style="text-decoration: none;"><%= submit_tag("Bulk Update", :class=> "bulk_change_submit btn btn-primary",:style=>"float:right;height:25px;margin-top:-43px;margin-right:110px;") %></a>
+ 
+  </fieldset>
+
+
+</div>
+
+	<div style="display: none;">
+    
+		<div id="nenu" style="width:700px;height:500px;overflow:auto;">
+		<span class="select-contacts pull-right">
+
+      <select style="display: none;width:280px" id="select_emails" class="span1 contacts" title="Email Projects" multiple="multiple" name="email_contacts" size="5">
+         <% @cntcts.each do |contact| %>
+	          <% if !contact.email.blank? %>
+	            <option value="<%= contact.id %>"><%= contact.email %></option>
+            <% end %>
+	       <% end %>
+	      </select>
+   </span>
+    <br/>
+    <div class="bor"><h4>List of the task to be sent </h4></div>
+    <div id="data"></div>
+   </div>
+	 </div>
+
+<!-- div for the lighbox for the edit change -->
+   	<div style="display: none;">
+    
+		<div id="bulk" style="width:700px;height:500px;overflow:auto;">
+
+    <div class="bor"><h4> &nbsp;&nbsp;&nbsp;&nbsp;Bulk Change Tasks form </h4></div>
+    <div id="bulk_data"></div>
+   </div>
+   </div>
+<!-- div for the lighbox for the edit change -->
+<div id="advance-search-form" style="display: none">
+  <%= search_form_for q,:url => search_projects_path, :html => {method: :post, class: 'form-horizontal downform'}  do |f| %>
+  <fieldset>
+  <legend>Search Task</legend>
+  <input type="hidden" name="down">
+<br/>
+<table>
+<tr>
+  <td>
+    <div class="control-group">
+    <%= f.label :title_cont, "Task Title", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :title_cont %>
+    </div>
+  </div>
+    </td>
+  <td>
+   <div class="control-group">
+    <%= f.label :start_date_cont, "Start Date", class: 'control-label' %>
+    <div class="controls">
+      <% if q.start_date_cont.blank? %>
+    <%= f.text_field :start_date_cont, include_blank: true, default: nil, :id => 'datepicker1', :style=>"width:100px;" %> 
+      <% elsif !q.start_date_cont.blank? %>
+      <%= f.text_field :start_date_cont, :value => "#{change_date_format_for_edit_page(q.start_date_cont)}", :id => 'datepicker1', :style=>"width:100px;" %> 
+      <% end %> 
+      
+    </div>
+  </div>
+  </td>
+</tr> 
+  
+  <tr>
+   <td>
+   <div class="control-group">
+    <%= f.label :amount_cont, "Amount", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :amount_cont %>
+    </div>
+  </div>
+  </td>
+  <td>
+<div class="control-group">
+    <%= f.label :end_date_cont, "End Date", class: 'control-label' %>
+    <div class="controls">
+      <% if q.end_date_cont.blank? %>
+    <%= f.text_field :end_date_cont, include_blank: true, default: nil, :id => 'datepicker7', :style=>"width:100px;" %> 
+      <% elsif !q.end_date_cont.blank? %>
+      <%= f.text_field :end_date_cont, :value => "#{change_date_format_for_edit_page(q.end_date_cont)}", :id => 'datepicker7', :style=>"width:100px;" %> 
+      <% end %> 
+      
+    </div>
+  </div>
+  
+   </td>
+
+</tr> 
+  <tr>
+<td>
+    <div class="control-group">
+    <%= f.label :project_name_cont, "All Projects", class: 'control-label' %>
+    <div class="controls">
+      <%#= f.label "All Projects", :style => "margin-right:20px;" %>
+	  <%#= f.collection_select :project_name_cont, @project_types,:project_name, :project_name ,class:"controls", :prompt => "Choose a Project" %>
+      <%= f.collection_select(:project_name_cont, current_user.organization.project_types.find(:all, :order => 'type_name'), :type_name, :type_name, :prompt => "Choose a Project") %> 
+    </div>
+  </div>
+   
+   </td>
+ 
+  <td>
+    <div class="control-group">
+    <%= f.label :action_required_cont, "Status", class: 'control-label' %>
+    <div class="controls">
+       <%= f.collection_select(:action_required_cont, current_user.organization.statuses.all, :status_name, :status_name, :prompt => "Choose a Status") %> 
+    </div>
+  </div>
+   
+   </td>
+</tr> 
+<tr>
+  <td>
+      <div class="control-group">
+    <%= f.label :owner_cont, "Owner", class: 'control-label' %>
+    <div class="controls">
+<%= f.collection_select(:owner_cont, current_user.organization.contacts.where(contact_type: 'supplier'), :contact, :contact, :prompt => "Select Owner") %>
+     
+    </div>
+  </div>
+  </td>
+   <td >
+    <div class="control-group">
+    <%= f.label :supplier_contact_cont, "Supplier", class: 'control-label' %>
+    <div class="controls">
+     
+      <%= f.collection_select(:supplier_contact_cont, current_user.organization.contacts.where(contact_type: 'supplier').all, :contact, :contact, :prompt => "Choose a Supplier") %> 
+    
+    </div>
+  </div>
+  </td>
+ 
+</tr> 
+  <tr>
+  <td>
+ <div class="control-group">
+    <%= f.label :schedule_date_cont, "Schedule Date", class: 'control-label' %>
+    <div class="controls">
+      <% if q.schedule_date_cont.blank? %>
+    <%= f.text_field :schedule_date_cont, include_blank: true, default: nil, :id => 'datepicker', :style=>"width:100px;" %> 
+      <% elsif !q.schedule_date_cont.blank? %>
+      <%= f.text_field :schedule_date_cont, :value => "#{change_date_format_for_edit_page(q.schedule_date_cont)}", :id => 'datepicker', :style=>"width:100px;" %> 
+      <% end %>&nbsp;<%= link_to "Select Range", "#", :id => 'dates' %> 
+      
+    </div>
+  </div>
+
+ <div class="control-group" id="range" style="display:none" >
+    <%= f.label :schedule_date_gteq, "Schedule Range", class: 'control-label' %>
+    <div class="controls">
+      <% if q.schedule_date_gteq.blank? %>
+      <%= f.text_field :schedule_date_gteq, include_blank: true, default: nil, :id => 'datepicker2', :style=>"width:100px;" %>
+      <% elsif !q.schedule_date_gteq.blank? %>
+      <%= f.text_field :schedule_date_gteq, :value => "#{change_date_format_for_edit_page(q.schedule_date_gteq)}", :id => 'datepicker2', :style=>"width:100px;" %> 
+      <% end %>
+       - 
+       <% if q.schedule_date_lteq.blank? %>
+      <%= f.text_field :schedule_date_lteq, include_blank: true, default: nil, :id => 'datepicker3', :style=>"width:100px;"  %>
+       <% elsif !q.schedule_date_lteq.blank? %>
+       <%= f.text_field :schedule_date_lteq, :value => "#{change_date_format_for_edit_page(q.schedule_date_lteq)}", :id => 'datepicker3', :style=>"width:100px;" %> 
+       <% end %>
+    </div>
+  </div>
+  </td>
+  <td>
+  <div class="control-group">
+    <%= f.label :reference_cont, "Reference#", class: 'control-label' %>
+    <div class="controls">
+     
+     <%= f.text_field :reference_cont %>
+    
+    </div>
+  </div>
+  </td>
+
+</tr> 
+ <tr>
+ 
+</tr> 
+
+<tr>
+  <td >
+     <div class="control-group">
+    <%= f.label :status_date_cont, "Status Date", class: 'control-label' %>
+    <div class="controls">
+      <% if q.status_date_cont.blank? %>
+    <%= f.text_field :status_date_cont, include_blank: true, default: nil, :id => 'datepicker6', :style=>"width:100px;" %> 
+      <% elsif !q.status_date_cont.blank? %>
+      <%= f.text_field :status_date_cont, :value => "#{change_date_format_for_edit_page(q.status_date_cont)}", :id => 'datepicker6', :style=>"width:100px;" %> 
+      <% end %>&nbsp;<%= link_to "Select Range", "#", :id => 'date' %> 
+      
+    </div>
+  </div>
+
+  <div class="control-group" id="ranges" style="display:none" >
+    <%= f.label :status_date_gteq, "Status Range", class: 'control-label' %>
+    <div class="controls">
+      <% if q.status_date_gteq.blank? %>
+      <%= f.text_field :status_date_gteq, include_blank: true, default: nil, :id => 'datepicker4', :style=>"width:100px;" %>
+      <% elsif !q.status_date_gteq.blank? %>
+      <%= f.text_field :status_date_gteq, :value => "#{change_date_format_for_edit_page(q.status_date_gteq)}", :id => 'datepicker4', :style=>"width:100px;" %> 
+      <% end %>
+       - 
+       <% if q.status_date_lteq.blank? %>
+      <%= f.text_field :status_date_lteq, include_blank: true, default: nil, :id => 'datepicker5', :style=>"width:100px;"  %>
+       <% elsif !q.status_date_lteq.blank? %>
+       <%= f.text_field :status_date_lteq, :value => "#{change_date_format_for_edit_page(q.status_date_lteq)}", :id => 'datepicker5', :style=>"width:100px;" %> 
+       <% end %>
+    </div>
+  </div>
+   </td>
+   <td>
+   <div class="control-group">
+    <%= f.label :prq_number_cont, "Task#", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :prq_number_cont %>
+    </div>
+  </div>
+  </td>
+  
+</tr> 
+
+ 
+</table>  
+  <div class="form-actions">
+    <%= f.submit class: 'btn btn-success' %>
+    <input type="reset" class='btn'></input>
+    <a href="#" id="simple-search">Simple</a>
+  </div>  
+  </fieldset>
+  <% end %>
+</div>

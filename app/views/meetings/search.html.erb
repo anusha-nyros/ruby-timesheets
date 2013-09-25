@@ -1,0 +1,57 @@
+<%= render :partial => "menu" %>
+<%= render :partial => "search_form", locals: {q: @q} %>
+<div id="search-result">
+  <% if @meetings.blank? %>
+    <% if params[:q] %>
+      <p class="well" >Your search does not generate a result</p>
+    <% end %>
+<div style="float:left;">
+<% if @meetings.blank? %>
+<b style="color:red;">No Records Found </b>
+<% end %>
+</div>
+  <% else %>
+    <div style="float:left;"><b><% unless @meetings.blank? %>(<%= @meetings.count %>) Records Found<% end %></b></div>
+<br/>
+  
+    <table class="table table-striped">
+
+    
+    <tr>
+    <th><%= sort_link(@q, :meeting_number, "Meet#") %></th>
+     <th><%= sort_link(@q, :subject, "Subject") %></th>
+      <th><%= sort_link(@q, :meeting_date, "Date") %></th>
+      <th><%= sort_link(@q, :meeting_type, "Type") %></th>
+      
+      <th><%= sort_link(@q, :meeting_time, "From") %></th>
+      <th><%= sort_link(@q, :meeting_time, "To") %></th>
+      <th><%= sort_link(@q, :meeting_location, "Location") %></th>
+       
+      <th></th>
+    </tr>
+
+  <% @meetings.each do |meeting| %>
+    <tr>
+    <td><%= meeting.meeting_number %></td>
+	  <td><%= meeting.subject %></td>
+			
+      <td><%= meeting.meeting_date.strftime("%b-%Y-%d") if !meeting.meeting_date.blank? %></td>
+      
+	 <td><%= meeting.meeting_type %></td>
+	  <td><%= meeting.meeting_time.strftime('%H:%M') if !meeting.meeting_time.blank? %></td>
+	  <td><%= meeting.to_meeting_time.strftime('%H:%M') if !meeting.to_meeting_time.blank? %></td>
+	  <td><%= meeting.meeting_location %></td>
+               
+ 
+	  
+          
+      <td>
+        
+        <%= link_to 'Show', meeting, class: 'btn btn-mini' %>
+        <%= link_to 'Edit', edit_meeting_path(meeting), class: 'btn btn-mini' %>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>
+</div>

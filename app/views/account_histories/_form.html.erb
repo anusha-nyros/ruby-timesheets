@@ -1,0 +1,38 @@
+<script>
+$(function(){
+// Datepicker
+	$('.datepicker3').datepicker({
+		dateFormat:  'mm/dd/yy'
+	});
+});
+</script>
+<%= render :partial=>"menu"%>
+<%= simple_form_for @account_history, :html => {class: 'form-horizontal' , :multipart=>true} do |f| %>
+  <%= f.error_notification %>
+   <fieldset>
+	 <legend>Accounts Form</legend>
+
+  <div class="form-inputs">
+     	<% if @account_history.date.blank? %>
+           <%= f.input :date ,:as => :string, :input_html => {class: 'datepicker3'} %>
+        <% else !@account_history.date.blank? %>
+           <%= f.input :date ,:as => :string, :input_html => {class: 'datepicker3',:value => change_date_format_for_edit_page(@account_history.date)} %>
+        <% end %>  
+
+    <%= f.input :num_invoice, :label=> "Invoice#" %>
+    <%= f.input :type_of_account, :label =>"Type" , as: :select,collection: ['Invoice','Credit','Payment'],:prompt => 'Select Type'%>
+<%= f.input :reference %>
+<%= f.input :assign_to ,collection: current_user.organization.contacts.where(:contact_type =>"supplier").map(&:contact),:prompt => "Select Supplier" ,:label => "Assign To" %>
+    
+    <%= f.input :description,input_html: {rows: '3' , class: 'span5'} %>
+
+    
+    <%= f.input :amount %> 
+    <%= f.input :statement_attachment ,:label=>"Upload File"%>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+    </fieldset>  
+<% end %>

@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Username:</b>
+  <%= @invitation.username %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @invitation.description %>
+</p>
+
+<p>
+  <b>Send to:</b>
+  <%= @invitation.send_to %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%= @invitation.user_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_invitation_path(@invitation) %> |
+<%= link_to 'Back', invitations_path %>

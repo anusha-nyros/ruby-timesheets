@@ -1,0 +1,69 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});				
+});
+</script>
+<script>
+
+$('document').ready(function(){
+	if ($('#meeting_meeting_type').val() == 'Web' || $('#meeting_meeting_type').val() == 'Phone') {
+		   $('#web').css("display","block");
+			}
+	$('#meeting_meeting_type').change(function(){
+		if (($(this).val() == 'Web') || ($(this).val() == 'Phone') ){
+			
+			$('#web').css("display","block");
+		}
+		else{
+		       $('#web').css("display","none");			
+		}
+	});
+}) 
+</script>
+
+<%= simple_nested_form_for @meeting, :html=>{:multipart => true, class: 'form-horizontal' } do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+       <% if @meeting.meeting_date.blank? %>
+    <%= f.input :meeting_date, :as => :string, :input_html => { :id => 'datepicker' } %>
+    <% elsif !@meeting.meeting_date.blank? %>
+    <%= f.input :meeting_date, :as => :string, :input_html => { :id => 'datepicker', :value => change_date_format_for_edit_page(@meeting.meeting_date) } %>
+    <% end %>
+     <%= f.input :meeting_type, :collection => ["Web", "Phone", "Face-to-Face"], :prompt => 'Select Type' %>
+     <div id="web" style ='display:none;' >
+     <%= f.input :meeting_tool ,:label => "Tool"  %>
+     <%= f.input :meeting_connection ,:label => "Connection" %>
+     </div >
+     <%= f.input :meeting_time ,:default => { :hour => "00", :minute =>"00"}, :input_html => { :style => "width:103px;"}, :label => 'From'  %>
+     <%= f.input :to_meeting_time , :default => { :hour => "00", :minute =>"00"}, :input_html => { :style => "width:103px;"}, :label => 'To'  %>
+     
+     <%= f.input :meeting_location %>
+     <%= f.input :subject %>
+     <%= f.input :meeting_attnds ,:label => "Attendees" %>
+     <%= f.input :supplier_id, collection: current_user.organization.contacts.where(contact_type: 'supplier'), label_method: :company, name: 'supplier_id',:label=>"Assigned To", :prompt => "Please Select"  %>
+     <%= f.input :meeting_notes, :label=>"Meeting Notes", input_html: {rows: '5', class: 'span9'} %>
+     <%= f.input :action_items, :label=>"Action Items", input_html: {rows: '5', class: 'span9'} %>
+
+  <%= f.fields_for :meeting_attachments do |attachment_form|  %>
+   <%= link_to attachment_form.object.doc.uploaded_filename, attachment_form.object.doc.url if attachment_form.object.doc?%>
+   
+    <%= attachment_form.file_field :doc %>
+
+
+    <%= attachment_form.link_to_remove "Remove" , :style=>"margin-left:60px;"%><br>
+   
+  </p>
+  
+  <% end %>
+  <%= f.link_to_add "Add attachment", :meeting_attachments %>
+  </div>
+  
+  <div class="form-actions">
+  <p><%= f.button :submit, class: 'btn btn-primary' %></p>
+  </div>
+<% end %> 

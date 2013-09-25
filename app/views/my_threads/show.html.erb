@@ -1,0 +1,87 @@
+<script>
+$('document').ready(function(){
+ $('.expand1 , .collapse1').click(function(e){
+    e.preventDefault();
+    if ($(this).hasClass('expand1')){$(this).toggleClass('expand1 ,collapse1');
+                                    $(this).text("Collapse All");
+                                      $('.thread_title').css("display","none");
+                                     $('.thread_notes').css("display","block");
+                    }
+    else{
+          $(this).toggleClass('expand1'); 
+          $(this).text("Expand All");
+          $('.thread_title').css("display","block");
+          $('.thread_notes').css("display","none");
+ 
+        }
+  });
+});
+</script>
+<style type="text/css">
+#sample:hover
+{
+
+background:white;
+}
+</style>
+<%= render :partial => "menu" %>
+<table>
+  <tr><td><i class="icon-comment"></i></td></tr>
+  <tr><td><b>Thread Number:</b></td><td style="padding-left:13px;"><%= @my_thread.thread_number %></td></tr>
+  <tr>
+  <td><b>Title:</b></td><td style="padding-left:13px;font-weight:bolder;"><%= @my_thread.title %></td></tr>
+  <tr>
+  
+  <tr><td><b>Creation date:</b></td><td style="padding-left:13px;"><%= @my_thread.creation_date.strftime("%b-%d-%Y") if !@my_thread.creation_date.blank? %></td></tr>
+  
+  <tr>
+  <td><b>User:</b></td>
+  <td style="padding-left:13px;"><%= @my_thread.user.username %></td>
+  </tr>
+<td><b>Description:</b></td></tr>
+</table>
+<p ><%= simple_format(@my_thread.description) %> </p>
+<br>
+<h3>Comments:<% unless @my_thread.thread_comments.blank? %>[<%= @my_thread.thread_comments.count %>]<% end %></h3><br>
+<%= form_for([@my_thread, @my_thread.thread_comments.build], class: 'form-horizontal') do |f| %>
+
+<table>
+<tr>
+<td>                
+<%= f.text_area :title, :placeholder => "Post your Comment...", :rows => "3", class: 'span7' %>
+</td>                   
+<td>&nbsp;&nbsp;
+<%= f.submit 'Post', class: 'btn btn-primary', :style => "margin-top:-40px;" %></td>
+</table>
+<% end %>
+
+<% if @my_thread.thread_comments.count > 0 %>
+<div id= "commemt_block" style="float:right;padding-bottom:10px;font-size:15px;"> 
+<%= link_to "Expand All " , '#',:class => "expand1" ,:style => "text-decoration: none;" %>&nbsp;&nbsp;
+     <%= link_to "Collapse All" , '#',:class => "collapse1",:style =>"display:none;text-decoration: none;" %>
+</div>
+<% end %>
+
+<% unless @my_thread.thread_comments.blank? %>
+<table class="table table-striped" >
+<% @my_thread.thread_comments.find(:all, :order => 'updated_at DESC').each do |c| %>
+<tr>
+<td>
+<p style="float:right;">
+<%= c.created_at.strftime("%m/%d/%Y-%H:%M") if !c.created_at.blank? %> &nbsp;
+<% if c.user_id %><i class="icon-user"></i> <%= c.user.try(:username) %><% end %></p>
+<p style="font-size:15px;">
+  <span  ><%= simple_format(truncate(c.title,:length=> 110),:class=>"thread_title",:style=>"font-size:15px;display:block;") %></span>
+   <span><%= simple_format(c.title,:class=>"thread_notes",:style=>"font-size:15px;display:none;") %></span>
+</p>
+</td>
+</tr>
+<tr><td id="sample" > </td></tr>
+<% end %>
+</table>
+<% end %>
+<br>
+<% if current_user.id == @my_thread.user.id %>
+<%= link_to 'Edit', edit_my_thread_path(@my_thread), class: 'btn btn-primary' %>
+<% end %> &nbsp;&nbsp;<%= link_to 'Back', my_threads_path, class: 'btn btn-mini-primary' %>
+

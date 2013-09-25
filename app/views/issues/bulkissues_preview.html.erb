@@ -1,0 +1,56 @@
+<script type="text/javascript">
+$('.preview').click(function(){
+   $('#mydata').toggle("slow"); 
+});
+
+</script>
+<%#= render :partial => "menu" %>
+<% if @issue_preview.blank? %>
+  <div class="well">You don't currently have any issues to preview </div>
+<br/>
+<% else %>
+  
+<br/><br/>
+<div id="whole">
+<div style="float:left">
+<h3 style="padding:1px;"> <%=@issue_preview.count%> New Issues Created </h3>
+</div>
+<br/>
+<br/>
+<div style="float:right;margin-top:20px;"></div>
+
+  <table class="table table-striped">
+     <tr>  
+          <th>Title</th>
+          <th>Project </th>
+          <th>Task </th>
+          <th>Description</th>
+          <th>Date</th>
+          <th>Owner</th> 
+          <th></th> 
+  	     
+      </tr>
+
+  <% @issue_preview.each do |issue| %>
+    <tr>
+    <td><%= issue.title %></td>
+    <td><%= issue.project_type.type_name %></td>
+    <td><%= issue.project.title %></td>
+    <td><%= issue.description  %></td>
+	  
+	  <td><%= issue.date_created.strftime("%b-%d-%Y") if !issue.date_created.blank? %></td>   
+    <% if current_user.organization.contacts.find_by_contact(issue.owner) %>          
+    <td><%= current_user.organization.contacts.find_by_contact(issue.owner).contact %></td>
+    <% else %>
+   <td style=""> - </td>          
+    <% end %>
+        <%# end %>
+    <%# end %>
+   
+    </tr>
+  <% end %>
+  </table>
+  <% end %>
+<%= link_to "Close",'#',class: 'btn btn-mini btn-danger preview' %>
+</div>
+

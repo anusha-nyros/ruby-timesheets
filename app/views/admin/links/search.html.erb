@@ -1,0 +1,67 @@
+<%= render :partial => "menu" %>
+<%= render :partial => "search_form", locals: {q: @q} %>
+
+<div style="width:940px;height:50px;">
+<div style="float:left;"><h1>Links/URLs</h1></div>
+<div style="float:left;margin-left:30px;">
+     <form name="links" action="/admin/links" >
+          
+           <div style="float:left;margin-top:10px;">
+   <%= radio_button_tag 'FILTER', 'My', @chosen == 'My' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;My Links
+           </div>
+                        
+          <div style="float:left;margin-top:10px;margin-left:10px;;">
+  <%= radio_button_tag 'FILTER', 'Other', @chosen == 'Other' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Shared Links
+           </div>
+           
+          </form>
+       
+      
+  </div> </div>
+
+
+<div id="search-result">
+<% if @links.blank? %>
+  <div class="well">No records found </div>
+<% else %>
+<br/>
+<table class="table table-striped" >
+  <tr>
+    
+    <th><%= sort_link(@q, :product, "Category", {:FILTER=>@chosen}) %></th>
+    <th><%= sort_link(@q, :link, "Link",{:FILTER=>@chosen}) %></th>
+    <th><%= sort_link(@q, :user_name, "User",{:FILTER=>@chosen}) %></th>
+    <th style="width:210px"><%= sort_link(@q, :notes, "Notes",{:FILTER=>@chosen}) %></th>
+    <th style="width:100px"><%= sort_link(@q, :share_option, "Shared Option",{:FILTER=>@chosen}) %></th>
+    <th></th>
+  </tr>
+<% @links.each do |link| %>
+  <tr>
+    <td><%= link.product %></td>
+    
+    <td>
+	<%= auto_link(web_presence(link.link), :html => {:target => '_blank' }) do |text|      
+         truncate(text, :length =>30)      
+        end %>
+    </td>
+    <td><%= link.user_name %></td>
+   
+    <td><%= truncate(link.notes, :length => 50) %></td>
+    
+    <td><%= link.share_option %></td>
+    
+    <td style="width:136px"><%= link_to 'Show', admin_link_path(link), class: 'btn btn-mini'  %>
+   <% if current_user.admin? %>
+    <%= link_to 'Edit', edit_admin_link_path(link), class: 'btn btn-mini'  %>
+    <%= link_to 'Destroy', admin_link_path(link), confirm: 'Delete this record?', method: :delete, class: 'btn btn-mini btn-danger' %>
+    <% elsif current_user.id == link.user_id %>
+    <%= link_to 'Edit', edit_admin_link_path(link), class: 'btn btn-mini'  %>
+    <%= link_to 'Destroy', admin_link_path(link), confirm: 'Delete this record?', method: :delete, class: 'btn btn-mini btn-danger' %>
+    <% end %>
+    
+    </td>
+  </tr>
+<% end %>
+</table>
+<% end %>
+</div>

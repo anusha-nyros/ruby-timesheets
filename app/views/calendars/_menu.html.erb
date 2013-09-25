@@ -1,0 +1,34 @@
+<ul class="nav nav-tabs">
+  <li class="<%= action_active('index') %>">
+    <%= link_to calendars_path do %>
+        <i class="icon-list-alt"></i>
+       My Calendar
+    <% end %>
+  </li>
+ 
+ 
+  <li class="<%= action_active('team_view') %>">
+    <%= link_to ('/team_view') do %>
+        <i class="icon-list-alt"></i>
+       Team Calendar
+    <% end %>
+  </li>
+  
+  <li class="<%= action_active('new') %>">
+    <%= link_to new_calendar_path do %>
+      <i class="icon-plus"></i>
+      New Calendar Entry
+    <% end %>
+  </li>
+  
+  
+  
+   <li class="<%= action_active('view') %>">
+    <%= link_to ('/calendar_view') do %>
+      <i class="icon-list-alt"></i>
+      Projects Calendar
+    <% end %>
+  </li>
+  
+  
+</ul>

@@ -1,0 +1,113 @@
+
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+});
+$('document').ready(function(){
+  $('.bulk').submit(function(e){
+        if ( !$('#supplier_id').val()){               
+ 		    	$('#supplier_id').css("border","1px solid red");
+			    $('.ale').show();
+              return false;               
+                }
+        if (!$('#notes').val()){
+          $('#notes').css("border","1px solid red");
+			    $('.notes').show(); 
+              return false;
+            }    
+            else{
+                  $('.bulk').submit();           
+                }
+        });
+	 $('.close').click(function(){
+        $(this).parent().fadeOut('slow');       
+   }); 
+
+$('#bulk_creation_preview').live('click',function(e){  
+   e.preventDefault();
+  var data = $('#new_project').serialize();
+  $.ajax({
+  type: 'post',
+  data: data,
+  headers: {
+    'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+  },
+  complete: function(request){
+       },
+  success: function(response){ 
+      $('#mydata').html(response); 
+
+  },
+  url: "<%= bulk_creation_preview_path %>"
+  });
+  $('#mydata').toggle('slow');  
+  });
+  
+});
+
+
+
+</script>
+<div class="alert alert-error ale" style="display:none">
+       <a class="close">x</a>
+         Assigned To can't be blank!
+</div>
+<div class="alert alert-error notes" style="display:none">
+       <a class="close">x</a>
+         Description can't be blank!
+</div>
+<div class="alert alert-error project_type" style="display:none">
+       <a class="close">x</a>
+         Project can't be blank!
+</div>
+
+<div id="mydata" style="display:none">
+</div>
+
+<%= simple_form_for @project1, :url => url_for(:action=>'bulk_creation',:controller=>'projects'),:html=>{:multipart => true, class: 'form-horizontal bulk' } do |f| %>
+ <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :project_type_id , :collection => current_user.organization.project_types.find(:all, :order => 'type_name',:conditions => {:status => ["active","pending","active"]}).map {|t| [t.type_name,t.id ]}, :prompt => "Choose a Project" ,:label => "Project" %>
+    <%#= f.input :project_name, :collection => current_user.organization.project_types.find(:all, :order => 'type_name').map { |r| [r.type_name, r.type_name] }, :label => "Project",:prompt => "Choose a Project",input_html: {id:'project_type'} %>
+    
+    <%= f.input :entered_by,:as=>'hidden',input_html: { value: "#{current_user.name}", id:'entered_by'}  %>
+	
+    <div class="controls" style="margin-left:-1px;margin-top :8px;">
+    <%= f.label "status"%>
+    <%= f.input :action_required, :collection => current_user.organization.statuses.find(:all).map { |r| [r.status_name, r.status_name] },:input_html => {id: 'action_required'},:prompt => "Choose a Status", :label => false %>
+    </div>
+    <% if @project1.schedule_date.blank? %>
+    <%= f.input :schedule_date, :as => :string, :input_html => { :id => 'datepicker',:value =>"" } %>
+    <% elsif !@project1.schedule_date.blank? %>
+    <%= f.input :schedule_date, :as => :string, :input_html => { :id => 'datepicker', :value => change_date_format_for_edit_page(@project1.schedule_date) } %>
+    <% end %>
+    
+    <%= f.input :supplier_id, collection: current_user.organization.contacts.where(contact_type: 'supplier'), label_method: :company, name: 'supplier_id',:label => "Assigned To", :prompt => "Please Select",:input_html => {:id => 'supplier_id'}  %>
+    
+    <div class="control-group select required"><label class="select required control-label" for="supplier_id"><strong></strong></label><div class="controls bulkhint">
+Enter Tasks as separate paragraphs. Separate Titles with '/', enter task owners using {}<br/> Example: This is Task Title / This is Task body  {ownername}
+</div></div>
+
+    <%= f.input :notes, :label=>"Task Description", input_html: {rows: '10', class: 'span10',id: 'notes'} %>
+    
+    <%= f.input :active, :input_html => { :checked => true ,id: 'active'} %>
+
+  </div>
+  
+  <div class="form-actions">
+  <p><%= f.submit "Create Task" ,class: 'btn btn-primary' %> 
+     <%= link_to "Preview",bulk_creation_preview_path, class: 'btn btn-primary',id: 'bulk_creation_preview' %> 
+  </p>
+  </div>
+<% end %>
+<style type="text/css">
+ .bulkhint {
+  color:grey;
+  margin-bottom:-10px;
+ }
+ </style>

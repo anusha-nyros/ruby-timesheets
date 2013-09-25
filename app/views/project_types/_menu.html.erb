@@ -1,0 +1,33 @@
+<ul class="nav nav-tabs">
+  <li class="<%= action_active('index') %>">
+    <%= link_to project_types_path do %>
+        <i class="icon-list-alt"></i>
+        Projects
+    <% end %>
+  </li>
+  <li class="<%= action_active('new') %>">
+    <%= link_to new_project_type_path do %>
+      <i class="<%= green_icon %>"></i>
+      Create New Project
+    <% end %>
+  </li>  
+<%   @active1 = current_user.organization.project_types.find(:first) %>
+<% if !@active1.blank? %>
+<% if @active1.status_check == "active" %> 
+   <li class="<%= action_active('budget_view') %>">
+    <%= link_to "/budget_view" do %>
+        <i class="icon-list-alt"></i>
+        Budget View
+    <% end %>
+  </li>
+<li class="<%= action_active('over_budget_view') %>">
+    <%= link_to "/over_budget_view" do %>
+        <i class="icon-list-alt"></i>
+        Over Budget View 
+    <% end %>
+  </li>
+ 
+<% end %>
+<% end %>
+
+</ul>

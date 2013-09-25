@@ -1,0 +1,178 @@
+<script type="text/javascript">
+$(function(){
+	$("#select_emails").multiselect();
+});
+$('document').ready(function(){
+ $("#select_emails").multiselect();
+ $('#select_emails :checkbox').removeAttr('checked');  
+
+  $("#select_emails").change(function() {
+      $('.email-link').addClass("send"); 
+      $('.email-link').attr("value","Mail Time Records ");
+  });
+  $('.ui-multiselect-none').click(function(){
+    $('#select :checkbox').removeAttr('checked');  
+    $('#project_check_all').val("");
+     
+  });
+//getting all checked Values when chekall is clicked
+  $("#select_emails")
+    .multiselect()
+    .bind("multiselectclick multiselectcheckall multiselectuncheckall", function( event, ui ){
+        var checkedValues = $.map($(this).multiselect("getChecked"), function( input ){
+            return input.value;
+          });
+        // alert(checkedValues);
+        $('#project_check_all').val(checkedValues);
+    });
+});
+
+//getting individual  value when check box is clicked
+
+ $(function() {
+   $('.ui-multiselect-checkboxes input').click(function(){
+    var array_of_checked_values = $("#select_emails").multiselect("getChecked").map(function(){
+    return this.value;	
+    }).get();  
+      $('#project_check_all').val(array_of_checked_values); 
+     // alert(array_of_checked_values);
+    });
+
+
+});
+</script>
+
+<br/>
+<h4>List of the timerecords </h4>
+	<span class="select-contacts pull-right" style="margin-right:10px;">
+      <select style="width:250px" id="select_emails" class="span1 contacts" title="Email Projects" multiple="multiple" name="email_contacts" size="5">
+         <% @cntcts.each do |contact| %>
+	          <% if !contact.email.blank? %>
+	            <option value="<%= contact.id %>"><%= contact.email %></option>
+            <% end %>
+	       <% end %>
+	      </select>
+   </span>
+<br/><br/>
+<div class="reports_content">
+<% if @user_time_records.blank? %>
+  <div class="well">
+    There is currently no time record!
+  </div>
+<% else %>
+  <% @user_time_records.each do |user, time_records| %>
+    <h2><%= user.title %> </h2>
+    <% if time_records.blank? %>
+      <div class="well">There is currently no record for this user</div>
+    <% else %>
+      
+    <table class="table table-striped">
+      <tr>
+        <th class="span2">Date</th>
+        <th id="activity">Activity</th>
+        <th>User</th>
+        <th class="span2">Hours</th>
+      </tr>
+      <% total = 0 %>
+      <% for time_record in time_records %>
+      <tr>
+        <td><%= time_record.activity_date.strftime('%b-%d-%Y') %></td>
+        <td><%= simple_format(time_record.description) %></td>
+        <td><%= time_record.user.try(:username) if !time_record.user_id.blank? %></td>
+        <td><%= time_record.total_hours %></td>
+      </tr>
+      <% total = total + time_record.total_hours %>
+      <% end %>
+      <tr>
+        <td></td>
+        <td><strong>Total</strong></td><td></td>
+        <td><strong><%= total %></strong></td>
+      </tr>
+    </table>
+    <% end %>
+  <% end %>
+<% end %>
+</div>
+
+<%#= @tsk_array %>
+<br/>
+<div class="bor">You can enter your message here </div><br/><br/>
+
+<%= simple_form_for :time_record,:url => url_for(:action=>'project_recap_mail',:controller=>'time_records'), :html => {method: :post, class: 'form-horizontal',:multipart => true ,:id => 'eform'}  do |f| %>
+<%= hidden_field_tag "project_check_all" %>
+<%= f.input :mailed_projects ,:input_html => {:value => @pay_period_id },:as => :hidden %>
+<div class="control-group text optional">
+<label class="text optional control-label" for="project_msg">Message</label>
+<div class="controls">
+<textarea class="text optional span5" cols="35" id="project_msg" name="project[msg]" rows="5">
+</textarea>
+</div>     
+</div>
+<div class="controls">
+<%= f.submit "Send Email" ,class: 'btn btn-mini btn-primary' %> 
+</div>
+<div id="msgError" style="text-align:center;font-size:11px;font-weight:bolder"> </div>    
+<div id="contactError" style="text-align:center;font-size:11px;font-weight:bolder"> </div>    
+<% end %>
+
+<style>
+ #msgError label,#contactError label {
+  color :red;
+  font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
+  font-size : 13px;
+  }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function() {  
+        var serializedData = $("#eform").serialize();
+        $("#eform").validate({ 
+            errorPlacement: function (error, element) {
+               if (element.attr("name") == "project_check_all") 
+                     $("#contactError").append(error); 
+               else 
+                       error.insertAfter(element); 
+                       error.fadeOut(1000);
+                             }  ,            
+            rules: {
+                "project_check_all":{
+                    required: true 
+                }
+              },
+            messages: {
+                "project_check_all":{
+                    required: "Please select atleast one contact" 
+                }
+            }, 
+            submitHandler: function() {
+                  if (confirm("You are about to submit, please recheck...")) {
+                    var project_check_all = $('#project_check_all').val();
+                    var msg = $('#project_msg').val();
+                    var mailed_projects = $('#project_mailed_projects').val();
+                   $.fancybox.showActivity();
+                   $.ajax({
+                            url:'/time_records/project_recap_mail',
+                            type:"POST",
+                            data: { project_check_all: $('#project_check_all').val(),
+                            msg: $('#project_msg').val(),mailed_projects: $('#time_record_mailed_projects').val() }, 
+                            success: function(data){ 
+                                             $.fancybox({
+                                              'content' : data,
+                                              'overlayShow'	: false,
+				                                      'transitionIn'	: 'elastic',
+				                                      'transitionOut'	: 'elastic',
+                                              'autoDimensions'	: false,
+			                                        'width'         		: 350,
+			                                        'height'        		: 'auto',
+                                              });     
+                              
+                                            },
+                            error: function() {alert('failed');}
+                    }).done(function() {$("#select_emails").multiselect("uncheckAll");});
+                    return false;
+            }}
+
+        });
+    });
+</script>
+ 

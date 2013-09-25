@@ -1,0 +1,193 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ *= require dataTables/jquery.dataTables
+ *= require_tree .
+*/
+@import "bootstrap";
+
+.container h1 {
+  margin-bottom: 20px;
+}
+.navbar .nav > li > a {
+    padding: 7px 8px;
+} 
+
+
+
+
+#calendar table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#calendar td,
+#calendar th {
+  font-family: "Lucida Grande",arial,helvetica,sans-serif;
+  font-size: 14px;
+  padding: 6px;
+  border: 1px solid #999;
+  color:blue;
+}
+
+#calendar th {
+  background: #DDD;
+  color: blue;
+  text-align: center;
+  width: 14.2857142857143%;
+}
+
+#calendar td {
+  background: #FFF;
+  color: black;
+  height: 80px;
+  vertical-align: top;
+  font-size: 15px;
+}
+
+.navbar-inner
+{
+background: #222;
+}
+#calendar .notmonth {
+  color: #CCC;
+}
+
+#calendar #month {
+  margin: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+
+#calendar .today {
+  background-color: #D7F2FF;
+}
+
+#calendar ul {
+  margin: 0;
+  margin-top: 5px;
+  padding: 0;
+  list-style: none;
+}
+
+#calendar li {
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+  text-align: center;
+}
+#calendar td .users 
+{
+//color:red;
+font-size:14px;
+}
+
+
+.popover-inner {
+  width: 280px;
+  padding: 3px;
+  overflow: hidden;
+  background: #3A87AD;
+
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+     -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+}
+//stats in home page
+
+#home_calendar table
+{
+border-collapse: collapse;
+  
+  -webkit-box-shadow: 0 3px 17px rgba(0, 0, 0, 0.3);
+     -moz-box-shadow: 0 3px 17px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 3px 17px rgba(0, 0, 0, 0.3);
+}
+#home_calendar td,
+#home_calendar th {
+  font-family: "Lucida Grande",arial,helvetica,sans-serif;
+  font-size: 10px;
+  padding: 6px;
+  border: 1px solid #999;
+  color:#999;
+}
+
+#home_calendar th {
+  background: #DDD;
+  color: blue;
+  text-align: center;
+  width: 1.2857142857143%;
+}
+
+#home_calendar td {
+  background: #FFF;
+  color: black;
+  height: 10px;
+  vertical-align: top;
+  font-size: 9px;
+  font-weight:bolder;
+}
+
+#home_calendar .notmonth {
+  color: #CCC;
+}
+
+#home_calendar #month {
+  margin: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align:center;
+}
+
+
+#home_calendar .today {
+  background-color: #D7F2FF;
+}
+
+#home_calendar ul {
+  margin: 0;
+  margin-top: 5px;
+  padding: 0;
+  list-style: none;
+}
+
+#home_calendar li {
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+  text-align: center;
+}
+#home_calendar td .users 
+{
+//color:red;
+font-size:14px;
+}
+#home_stats
+{
+float:left;
+//margin-bottom:30px;
+//margin-top:30px;
+/*width:850px;
+height:560px;*/
+width:41%;
+height:505px;
+border-radius:20px;
+background:whiteSmoke;
+//background:#DFF0D8;
+box-shadow:10px 5px 10px #000;
+-webkit-box-shadow:10px 5px 10px #000;
+-moz-box-shadow: 10px 5px 10px #000;
+}

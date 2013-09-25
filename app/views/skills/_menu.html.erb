@@ -1,0 +1,30 @@
+<ul class="nav nav-tabs">
+  <li class="<%= tab_active('contacts') %>">
+    <%= link_to contacts_path do %>
+        <i class="icon-list-alt"></i>
+        Contacts
+    <% end %>
+  </li>
+   <li class="<%= tab_active('contacts/new') %>">
+    <%= link_to new_contact_path do %>
+        <i class="<%= green_icon %>"></i>
+        Create Contact
+    <% end %>
+  </li>
+ 
+  <li class="<%= tab_active('skills') %>">
+    <%= link_to skills_path do %>
+        <i class="icon-list-alt"></i>
+        Skills
+    <% end %>
+  </li>
+  
+   <li class="<%= tab_active('groups') %>">
+    <%= link_to groups_path do %>
+        <i class="icon-list-alt"></i>
+        Groups
+    <% end %>
+  </li>
+   
+   
+</ul>

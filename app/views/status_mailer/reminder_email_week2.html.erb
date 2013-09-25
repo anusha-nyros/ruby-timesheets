@@ -1,0 +1,14 @@
+<p>Dear <%=  @user.name %>,</p> <br />
+<p>
+We want to remind you that your GoTeamCloud  account trail period ends  on <%= (@user.created_at + 30.days ).strftime("%b-%d-%Y %H:%M") %> .</p>
+<p> Hopefully, you’ve found a lot to like in using the service.
+</p> <br />
+<p>
+You can continue your trial period with the existing plan for the next 16 days.
+</p> <br />
+
+<p>
+---<br />
+Regards,<br />
+Team Cloud <br />
+</p>

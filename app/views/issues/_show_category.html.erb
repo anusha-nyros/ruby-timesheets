@@ -1,0 +1,8 @@
+   
+<div id="related_category" style="display:block">		
+<p style="float:left;margin-left:100px;margin-right:24px;">Tasks</p>
+<p ><%= select(:issue, :project_id, @tasks.collect {|e| [e.title, e.id]}, {:include_blank => 'Select Task also.'}) %>
+</p>
+<%#= builder.input :project_id ,:collection => current_user.organization.projects.find(:all, :order => 'title').map {|p| [p.title, p.id]} ,:prompt => "Choose a Task",:input_html => { class: 'category'} %>
+<%#= collection_select(:payment, :project_id, @tasks.all, :id, :title, :prompt => 'Please select task'), :class => 'category' %></div>
+                                 

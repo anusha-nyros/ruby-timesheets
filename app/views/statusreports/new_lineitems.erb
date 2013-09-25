@@ -1,0 +1,44 @@
+<%= simple_form_for @statusreport, :url => url_for(:action=>'update_lineitems',:controller=>'statusreports',:id => @statusreport), :html => {method: :post, class: 'form-horizontal'}  do |f| %>
+
+  <table class="table table-striped">
+      <tr>
+    	<th style="width:15px;"></th>
+        <th>Project</th>
+        <th>Title</th>
+        <th>Task#</th>
+        <th> Status</th>
+       <th>Status Details</th>
+       <th>% Completed</th>
+       <th></th><th></th><th></th>
+      </tr>
+    <% for project in @projects %>
+       <% if !project.blank? %>
+      <tr class="searched_result">
+     <td >
+	 <% if @prev_projects.include?(project.project_id) %>
+	 <input type="checkbox" name="project_list[]" id="check_<%= project.project_id  %>" value= "<%= project.project_id %>" checked >
+	 <% else %>
+	 <input type="checkbox" name="project_list[]" id="check_<%= project.project_id  %>" value= "<%= project.project_id  %>" >
+	 <% end %>
+    </td>
+       <td><%= project.project_type %></td>
+
+        <td>
+            <p>
+              <span style="display:block" class="proj_title"><%= project.title %></span>
+              <span style="display:none;text-indent:10px" class="proj_notes"><%=  project.notes %></span>
+            </p>
+        </td>
+          <td><%= project.prq_number %></td>
+        <td><%= project.action_required %></td>
+
+        <td style="text-align:justify"><%= project.status_details %></td>
+	 <td><%= project.per_completed %></td><td></td><td></td><td></td>
+
+      </tr>
+      <% end %>
+    <% end %>
+   <input type="hidden" value="<%= @prev_projects %>" name="prev_projects" >
+</table>
+	 <%= f.submit "Update ",class: 'btn btn-primary' %>
+<% end %> 

@@ -1,0 +1,68 @@
+<head>
+<style type="text/css">
+.last span{
+  display:inline;
+}
+.last {
+  width:80px;
+}
+  ul li
+  {
+  display:inline;
+ 
+  }
+</style>
+</head>
+
+<%#= render :partial => "menu" %>
+<% if @project_preview.blank? %>
+  <div class="well">You don't currently have any projects </div>
+<br/>
+<% else %>
+  
+<br/><br/>
+<div id="whole">
+<div style="float:left">
+<h3 style="padding:1px;"> <%=@project_preview.count%> New Tasks Created </h3>
+</div>
+<br/>
+<br/>
+<div style="float:right;margin-top:20px;"></div>
+
+  <table class="table table-striped">
+     <tr>  
+          <th>Type</th>
+          <th>Title </th>
+          <th>Description </th>
+          <th>Status</th>
+          <th>Schedule Date</th>
+          <th>Assigned To</th>  
+          <th>Owner</th>  
+  	   <th>PRQ</th> 
+      </tr>
+
+  <% @project_preview.each do |project| %>
+    <tr>
+    <td><%= project.project_name %></td>
+    <td><%= project.title %></td>
+    <td><%= project.notes %></td>
+	  <td><%= project.action_required %></td>
+	  <td><%= project.schedule_date.strftime("%b-%d-%Y") if !project.schedule_date.blank? %></td>
+	  <td><%= project.supplier.company %></td>
+    <%# contact_array = current_user.organization.contacts.where(contact_type: 'supplier') %>
+    <%# contact_array.each do |contact| %>
+        <%# if contact.contact == project.owner %>   
+          <% if current_user.organization.contacts.find_by_contact(project.owner) %>          
+      <td><%= current_user.organization.contacts.find_by_contact(project.owner).contact %></td>
+          <% else %>
+      <td style=""> - </td>          
+          <% end %>
+        <%# end %>
+    <%# end %>
+    <td><%= project.prq_number %></td>
+    </tr>
+  <% end %>
+  </table>
+  <% end %>
+<%= link_to "Back",bulk_creation_new_path ,class: 'btn btn-primary preview ' %>
+</div>

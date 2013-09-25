@@ -1,0 +1,27 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});				
+});
+</script>
+<%= render :partial => "menu" %>
+<%= simple_form_for @calendar, :html=>{:multipart => true, class: 'form-horizontal'} do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <% if @calendar.entry_date.blank? %>
+    <%= f.input :entry_date, :as => :string, :input_html => { :id => 'datepicker' }, :label => 'Schedule Activity' %>
+    <% elsif !@calendar.entry_date.blank? %>
+    <%= f.input :entry_date, :as => :string, :input_html => { :id => 'datepicker', :value => change_date_format_for_edit_page(@calendar.entry_date) }, :label => 'Schedule Activity' %>
+    <% end %>
+    <%= f.input :event, :label => "Title" %>
+   <%= f.input :activity, input_html: {rows: '5', class: 'span9'} %>
+  </div>
+
+  <div class="form-actions">
+   <%= link_to 'Back', calendars_path, class: 'btn btn-mini-primary' %> &nbsp;&nbsp; <%= f.button :submit, class: 'btn btn-primary' %>
+  </div>
+<% end %>

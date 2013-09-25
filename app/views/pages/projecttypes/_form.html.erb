@@ -1,0 +1,14 @@
+<%= render :partial => "menu"%>
+
+<%= simple_form_for(@projecttype, :html => {:multipart => true ,:class => 'form-horizontal'}) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :projecttype%>
+    <%= f.input :usage %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

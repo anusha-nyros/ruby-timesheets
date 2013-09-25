@@ -1,0 +1,274 @@
+
+img { border: none; }
+
+
+a:hover {
+ color: #128dcd;
+}
+h1 {
+ font-size: 1.9em;
+ font-weight: 600;
+}
+
+
+
+#header1 {
+       //padding-top:10px;
+	margin-right:-20px;
+	margin-bottom:15px;
+	float:right;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	border-radius:10px;
+}
+
+
+
+ul#nav {
+ list-style:none;
+ margin:10px auto;
+ right:0px;
+}
+
+ul#nav li{
+float:left;
+width:33.3%;	
+}
+
+ul#nav li a{
+
+ width: 100px;
+ height: 100px;
+ margin-left: 10px;
+ 
+ /* 21px; */
+ display:block;
+margin-top:2px;
+margin-bottom:5px;
+
+}
+/* icons text */
+span#icontxt{
+width: 100px;
+margin-top:-15px;
+margin-bottom:18px;
+float:left;
+font-style:normal;
+font-weight:bold;
+font-size:12px;
+text-align:center;
+}
+
+
+ul#nav li.enironment a {
+ background: url("/assets/sample/enironment_grey.png") no-repeat 0 0;
+ background-size: 80px 90px;
+/*-moz-background-size: 100px 120px;*/
+/* -webkit-background-size: 100px 120px; */
+/* -o-background-size: 100px 120px;*/
+}
+
+ul#nav li.architect a {
+ background: url("/assets/sample/architect_grey.png") no-repeat 0 0;
+background-size: 80px 90px;
+ }
+ul#nav li.people a {
+ background: url("/assets/sample/people1.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.enironment a:hover {
+ background: url("/assets/sample/enironment.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.architect a:hover {
+ background: url("/assets/sample/architect.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.people a:hover {
+ background: url("/assets/sample/people1.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+
+ul#nav li.projects a {
+ background: url("/assets/sample/calendar.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.projects a:hover {
+ background: url("/assets/sample/calendar.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+
+
+ul#nav li.tasks a {
+ background: url("/assets/sample/tasks.png") no-repeat 0 0;
+background-size: 80px 90px; 
+}
+ul#nav li.tasks a:hover {
+ background: url("/assets/sample/tasks.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+
+
+ul#nav li.expenses a {
+ background: url("/assets/sample/expense.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.expenses a:hover {
+ background: url("/assets/sample/expense.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+
+
+
+ul#nav li.issues a {
+ background: url("/assets/sample/issue1.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.issues a:hover {
+ background: url("/assets/sample/issue1.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+
+
+
+
+
+ul#nav li.admin a {
+ background: url("/assets/sample/admin.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.admin a:hover {
+ background: url("/assets/sample/admin.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.terminology a {
+ background: url("/assets/sample/terminology_grey.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.terminology a:hover {
+ background: url("/assets/sample/terminology.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.qa a {
+ background: url("/assets/sample/qa-grey.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.qa a:hover {
+ background: url("/assets/sample/qa.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.code-analytics a {
+ background: url("/assets/sample/code-analytics-grey.png") no-repeat 0 0;
+background-size: 80px 90px; 
+}
+ul#nav li.code-analytics a:hover {
+ background: url("/assets/sample/code-analytics.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.files a {
+ background: url("/assets/sample/files-grey.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.files a:hover {
+ background: url("/assets/sample/files.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.news-fee a {
+ background: url("/assets/sample/news-fee-grey.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.news-fee a:hover {
+ background: url("/assets/sample/news-fee.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+
+
+
+
+
+
+
+ul#nav li.deploy a {
+ background: url("/assets/sample/deploy_gray.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.deploy a:hover {
+ background: url("/assets/sample/deploy.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.calendar a {
+ background: url("/assets/sample/projects.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.calendar a:hover {
+ background: url("/assets/sample/projects.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.timesheets a {
+ background: url("/assets/sample/time_sheets.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.timesheets a:hover {
+ background: url("/assets/sample/time_sheets.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.learning a {
+ background: url("/assets/sample/learning_grey.png") no-repeat 0 0;
+background-size: 80px 90px; 
+}
+ul#nav li.learning a:hover {
+ background: url("/assets/sample/learning.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.dispatch a {
+ background: url("/assets/sample/dispatch_grey.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.dispatch a:hover {
+ background: url("/assets/sample/dispatch.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.links a {
+ background: url("/assets/sample/links.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.links a:hover {
+ background: url("/assets/sample/links.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+
+
+
+
+ul#nav li.timerecords a {
+ background: url('/assets/sample/document.png') no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.timerecords a:hover {
+ background: url('/assets/sample/document.png') no-repeat 0 0;
+background-size: 80px 90px; }
+
+ul#nav li.timeperiods a {
+ background: url("/assets/sample/thread.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.timeperiods a:hover {
+ background: url("/assets/sample/thread.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+
+ul#nav li.meetings a {
+ background: url("/assets/sample/meetings1.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.meetings a:hover {
+ background: url("/assets/sample/meetings1.png") no-repeat 0 0;
+background-size: 80px 90px;}
+
+ul#nav li.statusreports a {
+ background: url("/assets/sample/status-reports.png") no-repeat 0 0;
+background-size: 80px 90px;
+}
+ul#nav li.statusreports a:hover {
+ background: url("/assets/sample/status-reports.png") no-repeat 0 0;
+background-size: 80px 90px;}

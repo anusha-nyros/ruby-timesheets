@@ -1,0 +1,51 @@
+<div class="well">
+
+<p>
+  <b>Date:</b>
+  <%= @account_history.date %>
+</p>
+
+<p>
+  <b>invoice:</b>
+  <%= @account_history.num_invoice %>
+</p>
+
+<p>
+  <b>Type of account:</b>
+  <%= @account_history.type_of_account %>
+</p>
+
+<p>
+  <b>Reference:</b>
+  <%= @account_history.reference %>
+</p>
+
+<p>
+  <b>Amount:</b>
+  <%= @account_history.amount %>
+</p>
+
+<p>
+  <b>Balance:</b>
+  <%= @account_history.balance %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @account_history.description %> 
+</p>
+
+<% unless @account_history.statement_attachment.blank? %>
+  <p>
+    <h3>Statement :</h3> 
+
+    <%= link_to @account_history.statement_attachment.uploaded_filename, @account_history.statement_attachment.url%>
+  		
+<%end%>
+</p>
+
+<%= link_to 'Edit', edit_account_history_path(@account_history),:class=>"btn btn-primary" %>
+<%= link_to 'Back', account_histories_path,:class=>"btn" %>
+
+</div>
+

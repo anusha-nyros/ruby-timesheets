@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<style type="text/css" >
+a:focus {
+    outline: thin dotted #333333;
+    outline-offset: -2px;
+}
+a:hover, a:active {
+    outline: 0 none;
+}
+body {
+    background-color: white;
+    color: #333333;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    margin: 0;
+}
+a {
+    color: #0088CC;
+    text-decoration: none;
+}
+a:hover {
+    color: #005580;
+    text-decoration: underline;
+}
+.row {
+    margin-left: -20px;
+}
+.row:before, .row:after {
+    content: "";
+    display: table;
+}
+.row:after {
+    clear: both;
+}
+table {
+    background-color: transparent;
+    border-collapse: collapse;
+    border-spacing: 0;
+    max-width: 100%;
+}
+.table {
+    margin-bottom: 18px;
+    width: 100%;
+}
+.table th, .table td {
+    border-top: 1px solid #DDDDDD;
+    line-height: 18px;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+.table th {
+    font-weight: bold;
+}
+.table thead th {
+    vertical-align: bottom;
+}
+.table caption + thead tr:first-child th, .table caption + thead tr:first-child td, .table colgroup + thead tr:first-child th, .table colgroup + thead tr:first-child td, .table thead:first-child tr:first-child th, .table thead:first-child tr:first-child td {
+    border-top: 0 none;
+}
+.table tbody + tbody {
+    border-top: 2px solid #DDDDDD;
+}
+.table-condensed th, .table-condensed td {
+    padding: 4px 5px;
+}
+.table-bordered {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-collapse: separate;
+    border-color: #DDDDDD #DDDDDD #DDDDDD -moz-use-text-color;
+    border-radius: 4px 4px 4px 4px;
+    border-style: solid solid solid none;
+    border-width: 1px 1px 1px 0;
+}
+.table-bordered th, .table-bordered td {
+    border-left: 1px solid #DDDDDD;
+}
+.table-bordered caption + thead tr:first-child th, .table-bordered caption + tbody tr:first-child th, .table-bordered caption + tbody tr:first-child td, .table-bordered colgroup + thead tr:first-child th, .table-bordered colgroup + tbody tr:first-child th, .table-bordered colgroup + tbody tr:first-child td, .table-bordered thead:first-child tr:first-child th, .table-bordered tbody:first-child tr:first-child th, .table-bordered tbody:first-child tr:first-child td {
+    border-top: 0 none;
+}
+.table-bordered thead:first-child tr:first-child th:first-child, .table-bordered tbody:first-child tr:first-child td:first-child {
+    border-top-left-radius: 4px;
+}
+.table-bordered thead:first-child tr:first-child th:last-child, .table-bordered tbody:first-child tr:first-child td:last-child {
+    border-top-right-radius: 4px;
+}
+.table-bordered thead:last-child tr:last-child th:first-child, .table-bordered tbody:last-child tr:last-child td:first-child {
+    border-bottom-left-radius: 4px;
+}
+.table-bordered thead:last-child tr:last-child th:last-child, .table-bordered tbody:last-child tr:last-child td:last-child {
+    border-bottom-right-radius: 4px;
+}
+.table-striped tbody tr:nth-child(2n+1) td, .table-striped tbody tr:nth-child(2n+1) th {
+    background-color: #F9F9F9;
+}
+.table tbody tr:hover td, .table tbody tr:hover th {
+    background-color: #F5F5F5;
+}
+table .span1 {
+    float: none;
+    margin-left: 0;
+    width: 44px;
+}
+table .span2 {
+    float: none;
+    margin-left: 0;
+    width: 124px;
+}
+table .span3 {
+    float: none;
+    margin-left: 0;
+    width: 204px;
+}
+table .span4 {
+    float: none;
+    margin-left: 0;
+    width: 284px;
+}
+.odd{
+    background-color: #F5F5F5;
+}
+.well {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #eee;
+  border: 0px solid rgba(0, 0, 0, 0.05);
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+
+</style>
+</head>
+<body >
+<h4> Project Update Notification E-mail</h4>
+<p> The project <b> <%= @project.type_name %>(<%= @project.proj_number %>) </b> has been updated. Following are the budget and notification contact related changes  </p>
+<br/>
+
+
+<table class="table table-striped" cellspacing =5 cellpadding= 3 >
+      
+     <tr style="color: #0088CC;background-color: #F5F5F5;"><td> Field Changed </td> <td>Previous Value </td> <td> New Value </td></tr> 
+      
+      <% if  @val1["start_date"] != (@project.start_date.strftime("%d/%Y/%m") if !@project.start_date.blank?).to_s %>
+      <tr><td> Start Date  </td><td> <%=  Date.parse(@val1["start_date"]).to_date.strftime("%b-%d-%Y") if !@val1["start_date"].blank? %> </td><td><%= @project.start_date.strftime("%b-%d-%Y") if !@project.start_date.blank? %></td> </tr>
+       <% end %> 
+       <% if  @val1["end_date"] != (@project.end_date.strftime("%d/%Y/%m") if !@project.end_date.blank?).to_s %>
+      <tr><td> End Date </td><td> <%= Date.parse(@val1["end_date"]).to_date.strftime("%b-%d-%Y") if !@val1["end_date"].blank? %> </td><td><%= @project.end_date.strftime("%b-%d-%Y") if !@project.end_date.blank?  %></td> </tr>
+      <% end %> 
+      <% if  @val1["budget_info"] != @project.budget_info %>
+      <tr><td> Budget Info </td><td> <%= @val1["budget_info"] %> </td> <td><%= @project.budget_info %></td></tr>
+      <% end %>
+      <% if  @val1["hours_budget"].to_f != @project.hours_budget %>
+      <tr><td> Hours Budget </td><td> <%= @val1["hours_budget"] %> </td> <td><%= @project.hours_budget %></td></tr>
+      <% end %> 
+      <% if  @val1["expense_budget"].to_f != @project.expense_budget %>
+    <tr><td> Expense Budget </td><td> <%= @val1["expense_budget"] %> </td> <td><%= @project.expense_budget %> </td></tr>
+     <% end %>   
+	<% if @proj_contact_emails != @emails %>
+        <tr>
+          <td> Contacts </td>
+           <td>
+           <% if !@proj_contact_emails.blank? %> 
+           <%  @proj_contact_emails.split(",").each do |a| %>
+           <%= a %><br/>
+           <% end %> 
+           <% end %>
+            </td>
+           <td> 
+            <% if !@emails.blank? %> 
+            <%  @emails.split(",").each do |b| %>
+           <%= b %><br/>
+           <% end %> 
+           <% end %> 
+           </td>
+      </tr>
+
+      <% end %>
+   
+  </table>
+
+
+<p> ***  You Have received this  project update notification  email as you are one of the notification contacts </p><br/>
+<p> Thank you </p>
+<p> Team Cloud </p> 
+</body>
+</html>

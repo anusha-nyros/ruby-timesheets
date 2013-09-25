@@ -1,0 +1,229 @@
+<style>
+	.prjt_links li {
+     		display:inline;
+		float:left;
+		padding:3px;
+  		}
+
+</style>
+<script>
+
+$('document').ready(function(){
+
+	$('#statusreport_format').change(function(){
+		if ($(this).val() == 'Format2'){
+			
+			$('#format1').css("display","none");
+			$('#format2').css("display","block");			
+		}else{
+			$('#format2').css("display","none");			
+			$('#format1').css("display","block");
+			}
+	});
+
+
+
+}) 
+</script>
+<script type="text/javascript">
+$('document').ready(function(){
+    $('.email-link').click(function(e){ 
+        e.preventDefault();
+        var pj_format = $('#statusreport_format').val();
+                      
+
+
+            
+			                $.ajax({
+                          type: "POST",
+                          url: "/show_maillist",
+                          traditional: true,
+                          data: {
+                              id: $('#s_id').val() ,project_format: pj_format 
+                                  },
+                          success:function(data, textStatus, XMLHttpRequest){
+                               $.fancybox({
+                                              'content' : data,
+                                              'overlayShow'	: false,
+				                                      'transitionIn'	: 'elastic',
+				                                      'transitionOut'	: 'elastic',
+                                              'autoDimensions'	: false,
+			                                        'width'         		: 800,
+			                                        'height'        		: 500,
+                                              });       
+                               }  
+				                    });              
+ });
+});
+
+</script>
+
+
+<p>
+  <b>Report number:</b>
+  <%= @statusreport.report_number %>
+</p>
+
+<p>
+  <b>Report date:</b>
+  <%= @statusreport.report_date.strftime("%b-%d-%Y") if !@statusreport.report_date.blank? %>
+</p>
+
+<p>
+  <b>Report time:</b>
+  <%= @statusreport.report_time.strftime('%H:%M') %>
+</p>
+
+<p>
+  <b>Send to:</b>
+  <%= @statusreport.send_to %>
+</p>
+
+<p>
+  <b>Sent by:</b>
+  <%= @statusreport.sent_by %>
+</p>
+
+<p>
+  <b>Subject:</b>
+  <%= @statusreport.subject %>
+</p>
+<p>
+  <b>User:</b>
+  <%= @statusreport.report_user %>
+</p>
+<p>
+  <b>Custom Message:</b>
+  <%= simple_format(@statusreport.custom_message) if  !@statusreport.custom_message.blank? %>
+</p>
+
+<input type="hidden" value="<%= @statusreport.id %>" id="s_id">
+<br/><br/>
+<% if !@projects.blank? %>
+<div>
+<h2> Tasks </h2>
+
+<ul class="pull-right nav prjt_links">
+<li>
+<%= simple_form_for :statusreport,:url => url_for(:action=>'resend_mail',:controller=>'statusreports',:id => @statusreport), :html => {method: :post,:onsubmit=>"return confirm('Are you sure. You want to send mail ?');", class: 'form-horizontal'}  do |f| %>
+ <li>
+<%= f.input "format", :collection => ["Format1","Format2"], :selected => 'Format1', :label=>"",:input_html => {:name=>"project_format",:style => 'width: 165px;'} %>
+</li>
+ <% if @statusreport.sent_by.blank? %>
+        <%= f.submit "Send Email",:onfocus=>"if(this.blur)this.blur()",class: 'btn btn-primary email-link' %>
+        <% else %>
+        <%= f.submit "Resend Email",:onfocus=>"if(this.blur)this.blur()",class: 'btn btn-primary email-link' %>
+       <% end %>
+
+<% end %>
+</li>
+<li>
+<%= simple_form_for :new_lineitems, :url => url_for(:action=>'new_lineitems',:controller=>'statusreports',:id => @statusreport), :html => {method: :post, class: 'form-horizontal'}  do |f| %>
+	
+	<%= f.hidden_field :prev_projects,  :value => "#{@statusreport.id}" %>
+	<%= f.hidden_field :searched_projects,  :value => "#{@statusreport.searched_projects}" %>
+        
+        <%= f.submit "Update LineItems",class: 'btn btn-primary' %>
+      
+<% end %>
+
+</li>
+
+</ul>
+</div>
+<br/><br/><br/>
+
+
+
+
+<div id="format1" >
+<table class="table table-striped">
+    
+    <tr>
+    <th> Project </th>
+     
+      <th> Title </th>
+       <th> Task#</th>
+      <th> Status </th>
+      <th> Priority </th >
+       <th> Status Details </th>
+       <th> % Completed </th>
+     
+      
+      <th></th>
+    </tr>
+
+  <% @projects.each do |project| %>
+    <tr>
+    <td><%= project.project_type  %></td>
+	  
+			
+      	   <td><p>
+          <span style="display:block" class="proj_title"><%= project.title %></span>
+          <span style="display:none;text-indent:10px" class="proj_notes"><%=  project.notes %></span>
+          </p>
+      </td>
+       <td><%= project.prq_number %></td>
+	  <td><%= project.action_required %></td>
+	 
+      
+          <td><%= project.priority %></td>
+	  <td><%= project.status_details %></td>
+          <td><%= project.per_completed %></td><td></td>
+    </tr>
+  <% end %>
+  </table>
+</div>
+
+<div style ='display:none;' id="format2" >
+<table class="table table-striped">
+    
+    <tr>
+    <th> Ref# </th>
+    <th style ="width:250px;"> Title/Task </th>
+      <th> Status Date</th >
+     <th> Amount</th >
+     <th> Actual</th >
+     <th style ="width:25px;" > %Comp letion </th >
+     <th> Status </th >
+     <th style ="width:180px;" > Remarks </th >
+     
+      
+      <th></th>
+    </tr>
+
+
+  <% @projects.each do |project| %>
+    <tr>
+    <td><%= project.reference  %></td>
+	  
+			
+      	   <td><span ><b><%= project.title %></b></span><br/>
+          <span><%=  project.notes %></span>
+      </td>
+       <td><%= project.status_date.strftime('%b-%d-%Y') if !project.status_date.blank? %></td>
+      <td><%= project.amount %></td>
+        <td><%= project.actual %></td>
+         <td><%= project.per_completed %></td>
+	  <td><%= project.action_required %></td>
+	  <td><%= project.status_details %></td>
+          <td></td>
+    </tr>
+  <% end %>
+  </table>
+</div>
+<% else %>
+<div>
+<%= simple_form_for :new_lineitems, :url => url_for(:action=>'new_lineitems',:controller=>'statusreports',:id => @statusreport), :html => {method: :post, class: 'form-horizontal'}  do |f| %>
+	
+	<%= f.hidden_field :prev_projects,  :value => "#{@statusreport.id}" %>
+	<%= f.hidden_field :searched_projects,  :value => "#{@statusreport.searched_projects}" %>
+        <%= f.submit "Update LineItems",class: 'btn btn-primary' %>
+      
+<% end %>
+</div>
+<% end %>
+
+<%= link_to 'Edit', edit_statusreport_path(@statusreport), class: 'btn' %>
+<%= link_to "Delete", statusreport_path(@statusreport), method: :delete, confirm: "Delete this record?", class: 'btn btn-danger' %>
+<br/><br/>

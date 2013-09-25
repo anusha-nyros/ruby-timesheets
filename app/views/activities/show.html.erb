@@ -1,0 +1,57 @@
+<%= render :partial => "menu" %>
+<p>
+<% if @activity.doc_check == true %>
+<p style="font-size:13px;font-weight:bolder;color:green;">Any one can edit this activity and download attachment.</p>
+<% end %>
+</p>
+<div class="well">
+  <p>
+    <b>Date:</b>
+    <%= @activity.date.to_s(:detail) %>
+  </p>
+
+  <p>
+    <b>Info:</b>
+    <%= @activity.info %>
+  </p>
+
+  <p>
+    <b>Created By:</b>
+    <%= @activity.user.name %> (<%= @activity.user.username %>)
+  </p>
+
+  <p>
+    <b>Tags:</b>
+    <%= @activity.tags %>
+  </p>
+  
+  <p>
+    <b>Priority:</b>
+    <%= @activity.priority %>
+  </p>
+  
+  <% unless @activity.attachment.blank? %>
+  <p>
+    <b>Attachment:</b>
+      
+    <% if @activity.doc_check == true %>
+    <%= link_to @activity.attachment.uploaded_filename,  :controller => 'activities', :action => 'download' %>&nbsp;<%= link_to '',{:controller => 'activities', :action => 'download'}, class: 'icon-download' %>
+    <% else %>
+    <%= link_to @activity.attachment.uploaded_filename, {:controller => 'activities', :action => 'download'} %>
+    <% end %>
+  </p>
+  <% end %>
+    
+  <p>
+  <%= link_to 'Back', activities_path, class: 'btn btn-small' %>
+  <% if !(current_user.id == @activity.user_id) && @activity.doc_check == true %>
+  <%= link_to "Edit", edit_activity_path(@activity), class: 'btn btn-small' %>
+  <% end %>
+  <% if current_user.id == @activity.user_id && @activity.doc_check == true || current_user.id == @activity.user_id && @activity.doc_check == false %>  
+  <%= link_to "Edit", edit_activity_path(@activity), class: 'btn btn-small' %>
+  <% end %>
+  <% if !(current_user.id == @activity.user_id) && @activity.doc_check == false %>
+  <%= link_to "Edit", '#', class: 'btn btn-small', :disabled => true %>       
+  <% end %>
+  </p>
+</div>

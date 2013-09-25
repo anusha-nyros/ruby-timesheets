@@ -1,0 +1,41 @@
+<ul class="nav nav-tabs">
+  
+   <li class="<%= tab_active('projecttypes') %>">
+    <%= link_to projecttypes_path do %>
+        <i class="icon-list-alt"></i>
+         Project Types
+    <% end %>
+  </li>
+
+   <li class="<%= tab_active('tasktypes') %>">
+    <%= link_to tasktypes_path do %>
+        <i class="icon-list-alt"></i>
+        Task Types
+    <% end %>
+  </li>
+  <li class="<%= tab_active('expensetypes') %>">
+    <%= link_to expensetypes_path do %>
+        <i class="icon-list-alt"></i>
+        Expense Types
+    <% end %>
+  </li>
+  <li class="<%= tab_active('issuetypes') %>">
+    <%= link_to issuetypes_path do %>
+        <i class="icon-list-alt"></i>
+        Issues Types
+    <% end %>
+  </li>
+  <li class="<%= tab_active('statuses') %>">
+    <%= link_to statuses_path do %>
+        <i class="icon-list-alt"></i>
+        Status
+    <% end %>
+  </li>
+ 
+  <li class="<%= tab_active('timecodes') %>">
+    <%= link_to timecodes_path do %>
+        <i class="icon-list-alt"></i>
+        Time Codes
+    <% end %>
+  </li>
+</ul>

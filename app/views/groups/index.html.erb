@@ -1,0 +1,25 @@
+<%= render :partial => "menu" %>
+<%= link_to 'New Group', new_group_path, class: 'btn btn btn-primary' %>
+<br>
+<br>
+<% if @groups.blank? %>
+  <div class="well">You don't currently have any group </div>
+  <% else %>
+ <h1>Groups</h1> 
+<table class="table table-striped" >
+  <tr>
+    <th>Name</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @groups.each do |group| %>
+  <tr>
+    <td><%= group.title %></td>
+    <td><%= link_to 'Edit', edit_group_path(group), class: 'btn btn-mini' %>
+    <%= link_to 'Destroy', group, confirm: 'Are you sure?', method: :delete, class: 'btn btn-mini btn-danger' %></td>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

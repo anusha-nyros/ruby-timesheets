@@ -1,0 +1,63 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<br/>
+
+  
+ <p> <b> Title </b> : <%= @project_report.pdf_number %> </p>
+ <p> <b> Table of Contents </b> </p>
+<% c = 1 %> 
+  <% @rep_projects.each do |project| %>
+    
+ <p> <%= c %> . <%= project.title %> - <%= project.prq_number %> </p><br>
+<% c = c + 1 %> 
+<% end %> 
+<!-- 
+<table class="table table-striped">
+     <tr>
+         
+          <th class='span2' >Title</th>
+          <th class='span3'>Description </th>
+          <th class='span3'>Analysis</th>
+     
+       
+      </tr>
+  
+
+  <% @rep_projects.each do |project| %>
+    <tr >
+       	<td><%= project.title %></td>
+	<td><%= project.notes %></td>
+	<td><%= project.analysis %></td>   
+     <% end %>
+	
+  </table> -->
+  <% @rep_projects.each do |project| %>
+   <p>-----------------------</p>
+   <% if !project.title.blank? %>
+   <p> <b> Title </b></p>
+   <p>  <%= project.title if !project.title.blank? %> </p>
+   <% end %>
+   <% if !project.notes.blank? %>
+   <p> <b> Description </b></p>
+   <p> <%= simple_format(project.notes) if !project.notes.blank? %> </p>
+   <% end %>
+  <% if !project.analysis.blank? %>
+   <p> <b> Analysis </b></p>
+   <p>  <%= project.analysis if !project.analysis.blank? %> </p>
+   <% end %>
+   <% if !project.attachments.blank? %>
+   <p><b>Images</b></p>
+     <% project.attachments.each do |a| %>
+        <% if !a.content_type.blank? %>
+       <% if a.content_type.include?("image") %>
+    <%= image_tag(get_image_path(a.doc_url), :size => "200x200") %> &nbsp;&nbsp;
+    <% end %>
+    <% end %> 
+ <% end %> 
+  <% end %> 
+   <% end %> 
+
+</html>   
+

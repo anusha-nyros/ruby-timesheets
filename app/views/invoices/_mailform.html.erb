@@ -1,0 +1,93 @@
+<style>
+.error
+{
+	color:red !important;
+	font-size:13px !important;
+}
+ #msgError label,#contactError label {
+  color :red;
+  font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
+  font-size : 13px;
+  }
+</style>
+
+<%= simple_form_for :invoice,:url => url_for(:action=>'send_email',:controller=>'invoices'), :html => {method: :post,class: 'form-horizontal',:multipart => true ,:id => 'eform'}  do |f| %>
+
+<input type="hidden" id="inv_id" name="inv_id" value="<%=@invid %>"/>
+<input type="hidden" id="invoice_id" name="invoice_id" value="<%=@invoiceid %>"/>
+
+<div class="control-group text optional">
+<label class="text optional control-label" for="mailid">Email Id</label>
+<div class="controls">
+<input type="text" id="mailid" name="mailid">
+</div>     
+</div>
+
+<div class="control-group text optional">
+<label class="text optional control-label" for="msg">Message</label>
+<div class="controls">
+<textarea class="text optional span5" cols="35" id="msg" name="msg" rows="5">
+</textarea>
+</div>     
+</div>
+<div class="controls">
+<%= f.submit "Send Email" ,class: 'btn btn-mini btn-primary' %> 
+</div>
+<div id="msgError" style="text-align:center;font-size:11px;font-weight:bolder"> </div>    
+<div id="contactError" style="text-align:center;font-size:11px;font-weight:bolder"> </div>    
+<% end %>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function() {  
+        var serializedData = $("#eform").serialize();
+        $("#eform").validate({ 
+            errorPlacement: function (error, element) {
+               if (element.attr("name") == "project_check_all") 
+                     $("#contactError").append(error); 
+               else 
+                       error.insertAfter(element); 
+                       error.fadeOut(1000);
+                             }  ,            
+            rules: {
+                "mailid":{
+                    required: true 
+                }
+              },
+            messages: {
+                "mailid":{
+                    required: "Please enter mail id" 
+                }
+            }, 
+            submitHandler: function() {
+                  if (confirm("You are about to send mail, please recheck...")) {
+                   var mailid=$('#mailid').val();
+                   var msg=$('#msg').val();
+                   $.fancybox.showActivity();
+                   $.ajax({
+                            url:"/invoices/send_email",
+                            type:"POST",
+                            data: {inv_id: $('#inv_id').val(),invoice_id: $('#invoice_id').val(),mailid: mailid,msg: msg},
+                            success: function(data){ 
+                                             $.fancybox({
+                                              'content' : data,
+                                              'overlayShow'	: false,
+				               'transitionIn'	: 'elastic',
+				                'transitionOut'	: 'elastic',
+                                              'autoDimensions'	: false,
+			                       'width'          : 350,
+			                       'height'        	: 'auto',
+                                              });     
+                              
+                                            },
+                            error: function() {alert('failed');}
+                    })
+//                    return false;
+            } }
+
+        });
+    });
+</script>
+ 
+		

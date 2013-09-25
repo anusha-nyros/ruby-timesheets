@@ -1,0 +1,85 @@
+<style type="text/css">
+.last span{
+  display:inline;
+}
+.last {
+  width:80px;
+}
+#up {
+ float:right;
+}
+</style>
+<div id="search-result">
+  <% if @projects.blank? %>
+  <h1> Tasks </h1>
+  <div style="float:right;margin-bottom:-75px;">
+  <%= link_to "HOME" , '/admin' ,:class=> 'btn btn-primary' %>
+  </div>
+  <%= render :partial => "admin/home/search_form_tasks", locals: {q: @q} %>
+    <% if params[:q] %>
+      <p class="well">Your search does not generate a result</p>
+    <% end %>
+<div style="float:left;">
+<% if @projects.blank? %>
+<b style="color:red;">No Records Found </b>
+<% end %>
+</div>
+  <% else %> 
+  <h1> Tasks </h1>
+  <div style="float:right;margin-bottom:-75px;">
+  <%= link_to "HOME" , '/admin' ,:class => 'btn btn-primary' %>
+  </div>
+  <%= render :partial => "admin/home/search_form_tasks", locals: {q: @q} %>
+   <p>Displaying <strong><%= @projects.offset_value + 1 %> - <%= @projects.offset_value + @projects.length %> of <%= @projects.total_count %> </strong> records(s) </p>
+  <table class="table table-striped">
+     <tr>
+          <th><%= sort_link(@q, :project_name, "Project") %></th>
+          <th><%= sort_link(@q, :title, "Task Title") %></th>
+          <th><%= sort_link(@q, :action_required, "Status") %></th>
+          <th><%= sort_link(@q, :schedule_date, "Schedule Date") %></th>
+          <th><%= sort_link(@q, :amount, "Amount") %></th>
+	   <th><%= sort_link(@q, :actual, "Actual") %></th>
+          <th><%= sort_link(@q, :active, "Active Issues") %></th>
+          <th><%= sort_link(@q, :prq_number, "Task#") %></th>
+          <th></th>
+       
+      </tr>
+    <% total=0 %>
+
+  <% @projects.each do |project| %>
+    <tr>
+    <td><%= project.project_name %></td>
+      <td><p>
+          <span style="display:block" class="proj_title"><%= project.title %></span>
+          <span style="display:none;text-indent:10px" class="proj_notes"><%=  project.notes %></span>
+          </p>
+      </td>
+  
+	  <td><%= project.action_required %></td>
+	  <td><%= project.schedule_date.strftime("%b-%d-%Y") if !project.schedule_date.blank? %></td>
+         <td><%= number_with_precision(project.amount,:precision => 1, :strip_insignificant_zeros => true) %></td>
+	  <td><%= number_with_precision(project.actual,:precision => 1, :strip_insignificant_zeros => true) %></td>
+		<% total = total+ project.amount %>
+          <td><%= link_to (project.issues.find(:all, :conditions => {:active => '1'})).count, issues_path(:id => project), class: 'btn btn-mini btn-primary' %></td>
+ 
+	  <td><%= project.prq_number %></td>
+        <td>
+        <div class='last'>
+        <span><%= link_to 'Show', project, class: 'btn btn-mini' %> </span>
+        <span><%= link_to 'Edit', edit_project_path(project), class: 'btn btn-mini' %></span>
+        </div>
+      </td>
+    </tr>
+  <% end %>
+	<tfoot>
+        <tr>
+          <td><b>Total</b></td>
+          <td colspan=3></td>
+          <td><b><%= number_with_precision(total,:precision =>1,:strip_insignificant_zeros => true) %></b></td>
+          <td colspan = 3 ></td>
+        </tr>
+      </tfoot>
+  </table>
+  <%= paginate @projects %>
+  <% end %>
+</div>

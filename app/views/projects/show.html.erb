@@ -1,0 +1,96 @@
+<%#= render :partial => "menu1" if current_user.admin? %><br/>
+<%= render :partial => "menu" %>
+
+<p>
+  <b>Task Title:</b>
+  <%= @project.title %>
+</p>
+
+<p>
+  <b>Project :</b>
+  <%= @project.project_name %>
+</p>
+
+<p>
+  <b>Action required:</b>
+  <%= @project.action_required %>
+</p>
+<% unless @project.prq_number.blank? %>
+<p>
+  <b>TASK#: </b>
+  <%= @project.prq_number %>
+</p>
+<% end %>
+<p>
+  <b>Schedule date:</b>
+  <% unless @project.schedule_date.blank? %>
+  <%= @project.schedule_date.strftime("%b-%d-%Y") %>
+  <% end %>
+</p>
+
+<p>
+  <b>Status:</b>
+
+	<% if @project.active == true  %>
+	Active
+	<% else %>
+	Inactive
+	<% end %> 
+
+</p>
+
+<p>
+  <b>Amount:</b>
+  <%= number_with_precision(@project.amount,:precision => 1,:strip_insignificant_zeros => true) %>
+</p>
+
+<p>
+  <b>Assigned To:</b>
+  <%= @project.supplier.try(:company) %>
+</p>
+
+
+<p>
+  <b>Task Created At : </b>
+  <%= @project.created_at.strftime("%b-%d-%Y %H:%M:%S") %>
+</p>
+  <% if !@project.entered_by.blank? %>
+<p>
+  <b>Task Created By :</b>
+
+  <%= @project.entered_by  %>
+  </p> 
+  <% end %>
+<% unless @project.status_date.blank? %>
+<p>
+  <b>Status Date:</b>
+  <%= @project.status_date.strftime("%b-%d-%Y") %>
+</p>
+<% end %>
+<p>
+  <b>Task Description:</b>
+  <%= simple_format(@project.notes) %>
+</p>
+
+<% unless @project.attachments.blank? %>
+  <p>
+    <b>Attachments:</b>
+  <%= @project.attachments.count %></p>
+  <% @project.attachments.each do |a| %>
+  <%= link_to a.doc.uploaded_filename, a.doc.url %><br>
+  <% end %>
+  <% end %>
+
+<br/>
+
+<br/><br/>
+<!-- 28-06-2012 -->
+<h3> Time Records </h3><br/>
+<%= render :partial => "time_rec" %><br/>
+<h3> Task Change History  </h3> 
+<%= render :partial => "change_history" %> <br/>
+<!-- 28-06-2012 -->
+<%= link_to 'Back', projects_path, class: 'btn btn-mini-primary' %>
+<%= link_to 'Edit', edit_project_path(@project), class: 'btn' %>
+<%= link_to "Delete", project_path(@project), method: :delete, confirm: "Delete this record?", class: 'btn btn-danger' %>
+<br/><br/><br/>

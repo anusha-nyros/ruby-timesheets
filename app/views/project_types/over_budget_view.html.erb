@@ -1,0 +1,96 @@
+   <script>
+    $('document').ready(function(){
+       $('#myTab a').click(function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+    })
+    });
+    </script>
+<%#= render :partial => "menu1" %>
+<% if !@active1.blank? %>
+<%= simple_form_for :project_type, url: "/project_types/stat" do |f| %>
+	   <% if @active1.status_check == 'active' %><input type="checkbox" name="active"  checked='checked' onclick="this.form.submit();"  >&nbsp;&nbsp;<%= "Turn On/Off Budget View " %><br/>
+            <% else  %>
+  		 <input type="checkbox" name="inactive"  onclick="this.form.submit();" >&nbsp;&nbsp;<%= "Turn On/Off Budget View " %><br/>
+           <% end %>
+		
+<% end %>
+<% end %>
+
+
+<%= render :partial => "menu" %>
+ <% if @projects.blank? %>
+  <div class="well">You don't currently have any   projects </div>
+<% else %>
+   <ul class="nav nav-tabs" id="myTab">
+    
+    <li class="active" ><a href="#profile">Over Budget Expenses</a></li>
+    <li  ><a href="#home">Over Budget Hours</a></li>
+    </ul>
+<div class="tab-content">
+<div class="tab-pane " id="home">
+<% if @over_projct_hours.blank? %>
+  <div class="well">You don't currently have any  over budget hours projects </div>
+<% else %>
+<table class="table table-striped" >
+  <tr>
+         <th> Project Name </th>
+         
+         <th>Project#</th>
+	  <th> Status </th>
+         <th> Hours Budget </th>
+         <th>Hours</th>
+    
+  </tr>
+
+<% @over_projct_hours.each do |project_type| %>
+  <tr>
+
+    <td><%= project_type.type_name %></td>
+    
+    <td><%= project_type.proj_number %></td>
+    <td><%= project_type.status? ? "#{project_type.status}" : "-" %></td>
+    <td><%= project_type.hours_budget %></td>
+        <% cnt= 0 %>
+             <% project_type.projects.each do |t|  %>
+                 <% cnt +=  t.time_records.to_a.sum(&:total_hours) %>            
+             <% end %>
+    <td><%= cnt %></td>
+
+  </tr>
+<% end %>
+</table>
+<% end %>
+</div> 
+<div class="tab-pane active" id="profile">
+<% if @over_projct_expense.blank? %>
+  <div class="well">You don't currently have any  over budget expense  projects </div>
+<% else %>
+<table class="table table-striped" >
+  <tr>
+         <th> Project Name </th>
+         
+         <th>Project#</th>
+	  <th> Status </th>
+         <th> Expense Budget </th>
+          <th>Expenses</th>
+    
+  </tr>
+
+<% @over_projct_expense.each do |project_type| %>
+  <tr>
+ 
+    <td><%= project_type.type_name %></td>
+    
+    <td><%= project_type.proj_number %></td>
+    <td><%= project_type.status? ? "#{project_type.status}" : "-" %></td>
+    <td><%= project_type.expense_budget %></td>
+    <td><%=  number_to_currency(Payment.find(:all ,:conditions => {:project_type_id => project_type.id }).sum(&:pay_amount),:precision=> 1) %></td>
+
+  </tr>
+<% end %>
+</table>
+<% end %>
+</div> 
+</div> 
+<% end %> 

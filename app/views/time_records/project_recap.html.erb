@@ -1,0 +1,127 @@
+<script type="text/javascript">
+$(function(){
+	$("#select_emails").multiselect();
+});
+$('document').ready(function(){
+ $('#select_emails :checkbox').removeAttr('checked');  
+
+
+ $('.email-link').click(function(e){ 
+        e.preventDefault();
+        var pay_id = $('#pay_id').val();
+        
+			                $.ajax({
+                          type: "POST",
+                          url: "/pjrecap_maillist",
+                          traditional: true,
+                          data: {
+                              id: pay_id
+                                  },
+                          success:function(data, textStatus, XMLHttpRequest){
+                               $.fancybox({
+                                              'content' : data,
+                                              'overlayShow'	: false,
+				                                      'transitionIn'	: 'elastic',
+				                                      'transitionOut'	: 'elastic',
+                                              'autoDimensions'	: false,
+			                                        'width'         		: 800,
+			                                        'height'        		: 500,
+                                              });       
+                               }  
+				                    });   
+                                      
+                
+ });
+
+
+  $("#select_emails").change(function() {
+      $('.email-link').addClass("send"); 
+      $('.email-link').attr("value","Mail Time Records ");
+  });
+  $('.ui-multiselect-none').click(function(){
+    $('#select :checkbox').removeAttr('checked');  
+    $('#project_check_all').val("");
+     
+  });
+//getting all checked Values when chekall is clicked
+  $("#select_emails")
+    .multiselect()
+    .bind("multiselectclick multiselectcheckall multiselectuncheckall", function( event, ui ){
+        var checkedValues = $.map($(this).multiselect("getChecked"), function( input ){
+            return input.value;
+          });
+        // alert(checkedValues);
+        $('#project_check_all').val(checkedValues);
+    });
+});
+
+//getting individual  value when check box is clicked
+
+ $(function() {
+   $('.ui-multiselect-checkboxes input').click(function(){
+    var array_of_checked_values = $("#select_emails").multiselect("getChecked").map(function(){
+    return this.value;	
+    }).get();  
+      $('#project_check_all').val(array_of_checked_values); 
+     // alert(array_of_checked_values);
+    });
+
+
+});
+</script>
+
+<%= render :partial => "view" %>
+
+<h1>Tasks (<%= short_period(@pay_period) %>)</h1>
+
+<% if  !@user_time_records.blank? %>
+<%= simple_form_for :time_record,:url => url_for(:action=>'project_recap_mail',:controller=>'time_records'), :html => {method: :post, class: 'form-horizontal'}  do |f| %>
+
+<input type="hidden" id="pay_id" value="<%=@pay_period_id %>">
+<%#= text_field_tag "project_check" %>
+
+<a id="various2" href="#nenu" class = "btn btn-primary email-link" style="float:right;margin-top:-60px" title="Email TimeRecords">Email TimeRecords</a>
+
+<% end %> 
+<% end %>
+<br/>
+
+<div class="reports_content">
+<% if @user_time_records.blank? %>
+  <div class="well">
+    There is currently no time record!
+  </div>
+<% else %>
+  <% @user_time_records.each do |user, time_records| %>
+    <h2><%= user.title %> </h2>
+    <% if time_records.blank? %>
+      <div class="well">There is currently no record for this user</div>
+    <% else %>
+      
+    <table class="table table-striped">
+      <tr>
+        <th class="span2">Date</th>
+        <th id="activity">Activity</th>
+        <th>User</th>
+        <th class="span2">Hours</th>
+      </tr>
+      <% total = 0 %>
+      <% for time_record in time_records %>
+      <tr>
+        <td><%= time_record.activity_date.strftime('%b-%d-%Y') %></td>
+        <td><%= simple_format(time_record.description) %></td>
+        <td><%= time_record.user.try(:username) if !time_record.user_id.blank? %></td>
+        <td><%= time_record.total_hours %></td>
+      </tr>
+      <% total = total + time_record.total_hours %>
+      <% end %>
+      <tr>
+        <td></td>
+        <td><strong>Total</strong></td><td></td>
+        <td><strong><%= total %></strong></td>
+      </tr>
+    </table>
+    <% end %>
+  <% end %>
+<% end %>
+</div>

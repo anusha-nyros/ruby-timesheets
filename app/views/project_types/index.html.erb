@@ -1,0 +1,201 @@
+<style type="text/css">
+.last span{
+  display:inline;
+}
+.last {
+  width:115px;
+}
+  
+</style>
+<script type="text/javascript" >
+//for selecting all checkboxes
+function update_project_id() {         
+     var allVals = [];
+     $('.searched_result :checked').each(function() {
+       allVals.push($(this).val());
+     });
+     $('#project_check').val(allVals);
+  }
+//for selecting individual checkboxes 
+$(function() {
+   $('.searched_result input').click(update_project_id);
+   update_project_id();
+ });
+
+ $(document).ready(function (){
+  $(".check_all_or_none").click(function(){
+  $('.searched_result :checkbox').attr('checked', $( this ).is( ':checked' ) ? true : false );
+  update_project_id();  
+  });
+});
+</script>
+</head>
+
+
+<%#= render :partial => "menu1" if current_user.admin? %>
+<% if !@active1.blank? %>
+<%= simple_form_for :project_type, url: "/project_types/stat" do |f| %>
+	   <% if @active1.status_check == 'active' %><input type="checkbox" name="active"  checked='checked' onclick="this.form.submit();"  >&nbsp;&nbsp;<%= "Turn On/Off Budget View " %> <br/>
+            <% else  %>
+  		 <input type="checkbox" name="inactive"  onclick="this.form.submit();" >&nbsp;&nbsp;<%= "Turn On/Off Budget View " %><br/>
+           <% end %>
+		
+<% end %>
+<% end %> 
+<%= render :partial => "menu" %>
+ <%#= link_to 'New Project', new_project_type_path, class: 'btn btn btn-primary' %>
+<% if @projects.blank? %>
+  <div class="well">You don't currently have any  <%= params[:name] %> projects </div>
+<table class="table" style="">
+   <tr style="background-color: #d9edf7;border-radius:20px;">
+   <td style="color:green;font-size:13px;font-weight:bolder;"><%= link_to  "Active" ,:name => "active" %>&nbsp;:&nbsp;<span style="color:black;font-size:14px;font-weight:bolder;"><%= @active_projects %></span></td>
+   <td style="color:green;font-size:13px;font-weight:bolder;"><%= link_to  'Pending',:name => "pending" %>&nbsp;:&nbsp;<span style="color:black;font-size:14px;font-weight:bolder;"><%= @pending_projects %></span></td>
+   <td style="color:green;font-size:13px;font-weight:bolder;"><%= link_to  'Closed', :name => "closed" %>&nbsp;:&nbsp;<span style="color:black;font-size:14px;font-weight:bolder;"><%= @completed_projects %></span></td>
+   <td style="color:green;font-size:13px;font-weight:bolder;"><%= link_to  'All', :name => "all" %>&nbsp;:&nbsp;<span style="color:black;font-size:14px;font-weight:bolder;"><%= @all_projects %></span></td>
+  </tr>
+   </table>
+  <% else %>
+  <%= render :partial => "project_types/search_form", locals: {q: @q} %>
+  <%#= render :partial => "projects/search_form", locals: {q: @q} %>
+
+	 
+
+<div id="side">
+<span class="pull-left" style="font-size:24px;font-weight:bold">Projects</span>
+<span class="pull-right">
+  
+<%= simple_form_for :my_threads , url: "/project_types_?name=#{@chosen}" do %>
+             
+              <select name="sel" onchange="this.form.submit();" id="paginatevalues" class="span1">
+                
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+              </select>
+     
+<% end %>  
+<input type="hidden" id="myid" value='<%= @choosed if !@choosed.blank? %>'>
+</span>
+<span class="pull-right" style="padding:5px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+</span>
+</div>
+
+
+
+
+ <table class="table" style="">
+   <tr style="background-color: #d9edf7;border-radius:20px;">
+   <td style="color:green;font-size:13px;font-weight:bolder;"><%= link_to  "Active" ,:name => "active" %>&nbsp;:&nbsp;<span style="color:black;font-size:14px;font-weight:bolder;"><%= @active_projects %></span></td>
+   <td style="color:green;font-size:13px;font-weight:bolder;"><%= link_to  'Pending',:name => "pending" %>&nbsp;:&nbsp;<span style="color:black;font-size:14px;font-weight:bolder;"><%= @pending_projects %></span></td>
+   <td style="color:green;font-size:13px;font-weight:bolder;"><%= link_to  'Closed', :name => "closed" %>&nbsp;:&nbsp;<span style="color:black;font-size:14px;font-weight:bolder;"><%= @completed_projects %></span></td>
+   <td style="color:green;font-size:13px;font-weight:bolder;"><%= link_to  'All', :name => "all" %>&nbsp;:&nbsp;<span style="color:black;font-size:14px;font-weight:bolder;"><%= @all_projects %></span></td>
+  </tr>
+   </table>
+   
+<table class="table table-striped">
+  <tr>
+         <th style="width:10px;"><input type="checkbox" class="check_all_or_none"> </th>
+         <th><%= sort_link(@q, :type_name, "Project Name") %></th>  
+         <th><%= sort_link(@q, :proj_number, "Proj#") %></th>
+         <th><%= sort_link(@q, :projecttype_id,"Project Type")%></th>
+         <th><%= sort_link(@q, :start_date,"Start Date") %> </th>
+         <th><%= sort_link(@q, :end_date,"End Date") %> </th>
+         <th><%= sort_link(@q, :project_group,"Project Group") %> </th>
+         <th><%= sort_link(@q, :status, "Status") %></th>
+         <th>Tasks</th>
+         <th>Hrs</th>
+	  <th>Issues</th>
+         <th></th><th></th>
+    
+         
+    
+  </tr>
+
+<% @projects.each do |project_type| %>
+  <tr>
+    <td class="searched_result" ><input type="checkbox" name="project_list[]" id="check_<%= project_type.id %>"  value= "<%= project_type.id %>"></td>
+    <td style="width:130px"><%= project_type.type_name %></td>
+    
+    <td class="cl"><%= project_type.proj_number %></td>
+    <% if !project_type.projecttype.blank? %>
+    <td class="cl"><%= project_type.projecttype.projecttype %></td>
+    <% else %>
+    <td> -</td>
+    <% end %>
+    <td  style="width:90px"><%= project_type.start_date? ? "#{project_type.start_date.strftime("%b-%d-%Y")}" : "-" %></td>
+    <td  style="width:90px"><%= project_type.end_date? ? "#{project_type.end_date.strftime("%b-%d-%Y")}" : "-" %></td>
+    <td class="cl"><%= project_type.project_group? ? "#{project_type.project_group}" : "-" %></td>
+    <td style="width:40px"><%= project_type.status? ? "#{project_type.status}" : "-" %></td>
+    <td style="width:30px"><%= link_to (project_type.projects).count, project_type %></td>
+	
+    <% cnt= 0 %>
+             <% project_type.projects.each do |t|  %>
+                 <% cnt +=  t.time_records.to_a.sum(&:total_hours) %>            
+             <% end %>
+    <td style="width:30px"><%= cnt %></td>
+    
+    <td style="width:30px"><%= link_to (project_type.issues.find(:all, :conditions => {:active => '1'})).count, issues_path(:project_id => project_type), class: 'btn btn-mini btn-primary' %></td>
+
+<% if project_type.status == 'Closed' || project_type.status.blank? %> 
+    <td class="lastlinks">
+    <span></span>
+    <span></span>
+    </td> 
+<% else %>
+
+<td class="lastlinks">
+<span><%= link_to 'Add Task',new_project_path(project_type: project_type),class: 'btn btn-mini btn-primary' %></span>
+<span>   
+<%= link_to 'Add Issue', new_issue_path(:project_id => project_type), class: 'btn btn-mini btn-primary' %>
+</span>
+</td>
+
+ <% end %>
+    <td style="width:30px">
+      
+     <%= link_to 'Edit', edit_project_type_path(project_type), class: 'btn btn-mini' %>
+       
+    </td>
+  </tr>
+<% end %>
+</table>
+<%= paginate @projects %>
+<% end %>
+
+
+<style>
+.lastlinks{
+ width:143px;
+}
+.lastlinks span{
+  padding:10px 0px;
+  width:80px;
+  display:inline;
+}
+.last span{
+  display:inline;
+}
+.last {
+  width:10px;
+}
+.cl {
+  width:90px;  
+}
+.table th, .table td {
+padding:15px 3px;
+line-height: 18px;
+text-align: left;
+vertical-align: top;
+border-top: 1px solid #DDD;
+}
+</style>
+
+<script type="text/javascript">
+    $('document').ready(function(){
+        var n= $('#myid').val();        
+        $('#paginatevalues').val(n);
+        
+    });
+</script>

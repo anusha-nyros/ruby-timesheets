@@ -1,0 +1,79 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});				
+});
+$('document').ready(function(){
+   
+     $('#advance-search').click(function(){
+        $('#advance-search-form').toggle()
+        $('#simple-search-form').toggle()  
+     
+    }); 
+ });
+</script>
+
+<div id="simple-search-form">
+  <%= search_form_for q,:url => search_statusreports_path, :html => {method: :post, class: 'well form-search'}  do |f| %>
+  <fieldset>
+    <%= f.text_field :report_number_or_sent_by_or_subject_cont,:style=>"width:220px;", class: "input-medium search-query" %>
+    <button type="submit" class="btn">Search</button> &nbsp;&nbsp;
+    <a href="#" id="advance-search">Advance</a> 
+  <% end %>
+ 
+  </fieldset>
+</div>
+
+<div id="advance-search-form" style="display: none">
+  <%= search_form_for q,:url => search_statusreports_path, :html => {method: :post, class: 'form-horizontal'}  do |f| %>
+  <fieldset>
+  <legend>Search Status Reports</legend>
+  <div class="control-group">
+    <%= f.label :report_number_cont, "StatusReport#", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :report_number_cont %>
+    </div>
+  </div>
+ <div class="control-group">
+    <%= f.label :report_date_cont, "Date", class: 'control-label' %>
+    <div class="controls">
+      <% if q.report_date_cont.blank? %>
+    <%= f.text_field :report_date_cont, include_blank: true, default: nil, :id => 'datepicker', :style=>"width:100px;" %> 
+      <% elsif !q.report_date_cont.blank? %>
+      <%= f.text_field :report_date_cont, :value => "#{change_date_format_for_edit_page(q.report_date_cont)}", :id => 'datepicker', :style=>"width:100px;" %> 
+      <% end %> 
+      
+    </div>
+  </div>
+
+  
+  
+  <div class="control-group">
+    <%= f.label :sent_by_cont, "SentBy", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :sent_by_cont %>
+    </div>
+  </div>
+
+      
+  <div class="control-group">
+    <%= f.label :subject_cont, "Subject", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :subject_cont %>
+    </div>
+  </div>
+
+
+ 
+  
+  <div class="form-actions">
+    <%= f.submit class: 'btn btn-primary' %>
+    <input type="reset" class='btn'></input>
+    <a href="#" id="simple-search">Simple</a>
+  </div>  
+  </fieldset>
+  <% end %>
+</div>

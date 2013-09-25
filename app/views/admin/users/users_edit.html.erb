@@ -1,0 +1,73 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+});
+</script>
+
+<script type="text/javascript">
+  $('document').ready(function(){
+      $('#superadminform').submit(function(e){
+              
+  if ( $('#superadmin_pwd').val() != $('#superadmin_pwd_confirm').val())       {               
+ 		  $('#superadmin_pwd').css("border","1px solid red");
+			$('#superadmin_pwd_confirm').css("border","1px solid red");
+             $('.superadminpasswordalert').show();         
+            return false;  
+                                   
+                }     
+            else{
+                           $('#superadminform').submit();           
+                }
+        });
+	 $('.close').click(function(){
+        $(this).parent().fadeOut('slow');       
+    })
+  })
+
+</script>
+
+
+<div class="alert alert-error superadminpasswordalert" style="display:none">
+       <a class="close">x</a>
+          Password and Confirm Password doesnt match
+</div>
+
+<%= simple_form_for @user, :url => url_for("/sup_edit/#{@user.id}"), html: {class: 'form-horizontal', id: "superadminform"} do |f| -%>
+  
+  <fieldset>
+  <% if @user.superadmin.blank? %>
+    <legend>Admin User Form </legend>
+    <% else %>
+    <legend>Super Admin Settings</legend>
+    <% end %>
+    <%= f.input :username, hint: 'Username required for login and are case sensitive. minimum 5 characters'%>
+    <%= f.input :name %>
+    <%= f.input :email %>
+    <%#= @user.id %>
+    <%#= @user.superadmin %>
+   <% if @user.superadmin.blank? %>
+    <%= f.input :active, hint: 'You Can Disable/Enable the Admin Users and where all normal users of admin user will be effected with Same State.' %>
+    <%# else %>
+    
+    <% end %>
+        <% if @user.expiry_date.blank? %>
+    <%= f.input :expiry_date, :as => :string, :input_html => { :id => 'datepicker', :style => 'width: 120px' } %>
+    <% elsif !@user.expiry_date.blank? %>
+    <%= f.input :expiry_date, :as => :string, :input_html => { :id => 'datepicker', :value => change_date_format_for_edit_page(@user.expiry_date), :style => 'width: 120px' } %>
+    <% end %>
+    <div class="well">  
+      <%= f.input :password ,:input_html =>{id: "superadmin_pwd"}%>
+      <%= f.input :password_confirmation ,:input_html =>{id: "superadmin_pwd_confirm"} %>
+    </div>
+     
+     
+    <div class="form-actions">
+        <%= link_to 'Back', '/superadmin', class: 'btn btn-mini-primary' %>&nbsp;&nbsp;<%= f.button :submit, class: 'btn btn-primary' %>
+        <%#= submit_tag "Reset", class: 'btn', type: 'reset' %>
+    </div>
+  </fieldset>
+<% end -%>

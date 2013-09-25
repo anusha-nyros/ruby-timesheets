@@ -1,0 +1,41 @@
+<h1>Listing link_accounts</h1>
+
+<table>
+  <tr>
+    <th>Source</th>
+    <th>Target</th>
+    <th>Source</th>
+    <th>Target</th>
+    <th>Source admin</th>
+    <th>Target admin</th>
+    <th>Accept</th>
+    <th>Request</th>
+    <th>Ignor</th>
+    <th>Remove</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @link_accounts.each do |link_account| %>
+  <tr>
+    <td><%= link_account.source %></td>
+    <td><%= link_account.target %></td>
+    <td><%= link_account.source_id %></td>
+    <td><%= link_account.target_id %></td>
+    <td><%= link_account.source_admin_id %></td>
+    <td><%= link_account.target_admin_id %></td>
+    <td><%= link_account.accept %></td>
+    <td><%= link_account.request %></td>
+    <td><%= link_account.ignor %></td>
+    <td><%= link_account.remove %></td>
+    <td><%= link_to 'Show', link_account %></td>
+    <td><%= link_to 'Edit', edit_link_account_path(link_account) %></td>
+    <td><%= link_to 'Destroy', link_account, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Link account', new_link_account_path %>

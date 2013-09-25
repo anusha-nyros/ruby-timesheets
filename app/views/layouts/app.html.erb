@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Timesheets</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+
+ <script type="text/javascript">
+	$('document').ready(function(){
+		$('.request').click(function(){
+			$('#request').slideToggle();
+		});
+		 $('#link_account').click(function(){
+       		$('#request_accept').slideToggle();        
+     		});
+		$('.dropdown-menu').click(function(event){
+     						event.stopPropagation()
+ 		});
+    $('.accept').click(function(){
+			$('#accept-links').slideToggle();
+		});
+   $('.accept-ok').click(function(){  
+      if (confirm('Are you sure to link this account')) {
+      $.post('/link_accounts/accept',{target: $(this).attr("target"),source: $(this).attr("source") },function(data){	
+				});
+	 $(document).ajaxStop(function(){
+        window.location.reload();
+        });
+        $(this).parent().parent().fadeOut();
+        }
+    });  
+  $('.switch-remove').click(function(){  
+         if (confirm('Are you sure to Unlink Account')) {
+           $.post('/link_accounts/unlink',{id: $(this).attr("value")},function(data){	
+			   	});
+           $(this).parent().fadeOut();
+        }    
+    });
+     $('.accept-remove').click(function(){  
+         if (confirm('Are you sure to Unlink Account')) {
+           $.post('/link_accounts/unlink',{id: $(this).attr("value")},function(data){	
+			   	});
+           $(this).parent().parent().fadeOut();
+        }    
+    });
+        $('#new_link_account').submit(function(e){
+        if ( !$('#link_account_target').val()){               
+			    $('.alert').show();
+              return false;               
+                }     
+            else{
+           $('#new_link_account').submit();           
+                }
+        });
+	 $('.close').click(function(){
+        $(this).parent().fadeOut('slow');       
+    });             
+      
+  
+	});
+</script>
+
+
+</head>
+<body>
+  <div class="navbar">
+    <div class="navbar-inner">
+      <div class="container">
+        <ul class="nav">
+          <% if current_user && current_user.admin? %>
+            <!-- Admin menu here -->
+
+            <li class="<%= menu_active('admin/admin') %>"><%= link_to "Home", admin_root_url %></li>
+            <li class="<%= menu_active('admin/folders') %>"><%= link_to "Folders", admin_folders_url %></li>
+            <li class="<%= menu_active('admin/links') %>"><%= link_to "Link", admin_links_url %></li>
+          <% end %>
+          <% if current_user && !current_user.admin? %>
+           <li class="<%= menu_active('admin/admin') %>"><%= link_to "Home", root_path %></li>            
+          <% end %>
+          <% if current_user %>
+            <!-- User menu here -->
+            <li class="<%= menu_active('categories') %>"><%= link_to "Categories", categories_url %></li>
+            <li class="<%= menu_active('activities') %>"><%= link_to "Activities", activities_url %></li>
+          <% end %>
+          
+        </ul>
+        <ul class="nav pull-right">
+          <% if current_user %>            
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <%= current_user.name %>
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+
+                <% if current_user.admin? %>
+		<!-- Admin Switch -->
+        <% if !LinkAccount.where(:source_id => current_user.id).blank? %>
+        <% switches= LinkAccount.where(:source_id => current_user.id) %>
+          <% switches.each do |switch| %>
+             <% if switch.accept == "1" %>
+        <li class="switch"><span><%= link_to switch.target ,custom_new_path(switch.target_id)%> </span>
+            <%# if switch.target_admin_id == current_user.organization.id %> 
+            <i class="icon-remove switch-remove pull-right" value="<%= switch.id %>"></i>    
+            <%# end %>    
+        </li>
+             <% end %>
+          <% end %>
+      <% end %>
+      <% if LinkAccount.where(:target_id => current_user.id) %>
+          <% switches= LinkAccount.where(:target_id => current_user.id) %>
+          <% switches.each do |switch| %>
+             <% if switch.accept == "1" && switch.remove == false && switch.target_admin_id == current_user.organization.id %>
+              <li class="switch"><span><%= link_to switch.source ,custom_new_path(switch.source_id) %></span>
+              <%# if switch.target_admin_id == current_user.organization.id %> 
+              <i class="icon-remove switch-remove pull-right" value="<%= switch.id %>"></i>   
+              <%# end %>           
+              </li>            
+             <% end %>
+          <% end %>
+      <% end %>                  
+              <!--- Admin Switch -->
+		
+			
+		  <% else %>
+
+		   <!-- User Switch -->
+         <% if !LinkAccount.where(:target_id => current_user.id).blank? %>
+          <% switches = LinkAccount.where(:target_id => current_user.id) %>          
+          <% switches.each do |switch| %>
+            <% if switch.accept == "1" && switch.target == current_user.username %>
+              <li class="switch"><span><%= link_to switch.source ,custom_new_path(switch.source_id)%></span>
+
+              <%# if switch.target_admin_id == current_user.organization.id %> 
+              <i class="icon-remove switch-remove pull-right" value="<%= switch.id %>"></i>   
+              <%# end %>   
+              </li>
+            <% end %>
+          <% end %>
+		    <% end %>
+        <% if LinkAccount.where(:source_id => current_user.id) %>
+          <% switches = LinkAccount.where(:source_id => current_user.id) %>
+          <% switches.each do |switch| %>
+            <% if switch.accept == "1" && switch.source == current_user.username %>
+              <li class="switch"><span><%= link_to switch.target ,custom_new_path(switch.target_id)%></span>
+                <%# if switch.target_admin_id == current_user.organization.id %> 
+              <i class="icon-remove switch-remove pull-right" value="<%= switch.id %>"></i>   
+              <%# end %>              
+              </li>
+            <% end %>
+          <% end %>
+          <% end %>
+
+            <!-- User Switch -->
+
+               <li><span class="switch"><%= link_to "My Account", account_path %></span></li>              
+                <% end %>
+                <li><span class="switch"><%= link_to "Logout", logout_url %></span></li>
+		      </ul>
+	   </li>
+         <% if current_user.admin? %>
+      <% link_accounts %>
+      <li class="<%= menu_active('project_types') %> dropdown" >
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+			Settings
+			<span class="caret"></span>
+			</a>
+		<ul class="dropdown-menu" style="width:250px">
+    <li class="" ><%= link_to "SetUpData", project_types_path %></li>
+    <li><a href="#" id="link_account"> LinkAccounts </a> </li>
+    <div style="display:none;padding-left:20px" id="request_accept">
+    <div><span><%= link_to "Request","#", class: "request"  %></span></div>
+		<div style="display:none;padding-left:20px" id="request">
+	            <%= simple_form_for(@link_account) do |f| %>
+                          <div class="form-inputs">
+                            <%= f.input :source, :as => :hidden, :input_html => { :value =>"#{current_user.username}"} %>
+                            <%= f.input :target, :input_html => { :value => "",:class => "input-small"},:label => "User Name" %>
+                            <%= f.input :source_id, :as => :hidden,:input_html => { :value =>"#{current_user.id}"} %>
+                            <%= f.input :target_id,:as => :hidden %>
+                            <%= f.input :source_admin_id,:as => :hidden,:input_html => { :value =>"#{current_user.organization.id}"} %>
+                            <%= f.input :target_admin_id,:as => :hidden %>
+                <%= f.button :submit ,"send",:class => "btn btn-primary btn-mini",:style =>"margin-top:-10px"  %>
+                         </div>
+            		<% end %>
+		</div>
+	<div class="accept">
+       <% accounts= LinkAccount.find(:all, :conditions => ["target_admin_id=? and request=?",current_user.organization.id , true]) %>
+       <%# accounts= LinkAccount.where(:target_admin_id => current_user.organization.id ) %>
+      <span><%= link_to "Accept", '#',:style =>"text-decoration:none;" %></span>
+    <!--  <span>&#40; -->
+       <%#= accounts.count %>
+    <!-- &#41;</span> -->
+       </div><br/>
+      <div id="accept-links" class="pull-left">
+        <ul class="accept-links pull-left">
+          <% accounts.each do |account| %>
+          <li><span style=""><b><%= account.target %></b>&nbsp;( from <b><%= account.source %> )</b></span>
+              <span class="pull-right" >      
+  <i class="icon-ok accept-ok" target="<%=account.target_id%>" source="<%=account.source_id %>" ></i>
+  <i class="icon-remove accept-remove" value="<%= account.id %>" ></i> 
+              </span>           
+          </li>
+          <% end %>
+        </ul>
+    </div>
+    </div>
+		<li><%#= link_to "Remove", '#',:style =>"text-decoration:none;" %></li>
+		</ul>
+		 </li>
+    
+      <% else %>
+      <% link_accounts %>
+      <li class="<%= menu_active('project_types') %> dropdown" >
+			  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+			    Settings
+			    <span class="caret"></span>
+			  </a>
+		    <ul class="dropdown-menu">
+          <li><%= link_to "Request","#", class: "request"  %></li>
+		      <li style="display:none;padding-left:20px" id="request">
+	                  <%= simple_form_for(@link_account) do |f| %>
+                                <div class="form-inputs">
+                                  <%= f.input :source, :as => :hidden, :input_html => { :value =>"#{current_user.username}"} %>
+                                  <%= f.input :target, :input_html => { :value => "",:class => "input-small"},:label => "User Name" %>
+                                  <%= f.input :source_id, :as => :hidden,:input_html => { :value =>"#{current_user.id}"} %>
+                                  <%= f.input :target_id,:as => :hidden %>
+                                  <%= f.input :source_admin_id,:as => :hidden,:input_html => { :value =>"#{current_user.organization.id}"} %>
+                                  <%= f.input :target_admin_id,:as => :hidden %>
+                     <%= f.button :submit ,"send",:class => "btn btn-primary btn-mini",:style =>"margin-top:-10px"  %>
+                    </div>
+                  <% end %>
+		      </li>
+		    </ul>
+		   </li>
+          <% end %>
+
+
+        <% else %>
+            <li><%= link_to "Login", login_url %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>  
+  <div class="container">
+    
+    <div id="notifications">
+    <% [:error, :notice, :alert].each do |type| %>
+      <% if flash[type] %>
+        <%= content_tag :div, class: "alert #{alert_class(type)}" do %>
+        <a class="close" data-dismiss="alert">x</a>
+        <%= flash[type] %>
+        <% end %>
+      <% end %>
+    <% end %>
+    </div>
+    
+    <% if current_user %>
+      <ul class="breadcrumb">
+      <%= raw breadcrumb %>
+      </ul>
+    <% end %>
+    
+    <div class="row">
+      <div class="span12">
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+
+
+<style type="text/css">
+    .accept span {
+        float:left;
+      }
+    .accept-links li {
+        list-style :none;
+      }
+    .accept-links  {
+        display :block;
+      }
+    .switch a {
+        display :inline; 
+        text-decoration:none;       
+      }
+     .request:hover{
+      text-decoration:none; 
+      }
+   
+  </style>
+
+
+
+</body>
+</html>

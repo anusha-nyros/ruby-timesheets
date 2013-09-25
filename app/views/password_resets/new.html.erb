@@ -1,0 +1,29 @@
+
+<div class="row">
+  <div class="span6">
+    <div class="banner">
+      
+    </div>
+  </div>
+ <div class="span6" style ="float:right;">  
+<%= form_tag password_resets_path, class: 'form-horizontal',  :method => :post do %>
+
+ <fieldset>
+      <legend style ="font-size:18px;"> Forgot Password Form</legend>
+      <div class="control-group">
+        <label class="control-label" for="username"><b>Username</b></label>
+        <div class="controls">
+          <%= text_field_tag :username, nil, class: "input-xlarge" %>
+        </div>
+      </div>
+        <div class="controls">
+          <%= submit_tag "Reset Password !", class: 'btn btn-primary',:onfocus=>"if(this.blur) this.blur();" %>
+      
+      </div>
+    </fieldset>
+  <% end -%>
+  </div>
+ </div>
+    
+
+

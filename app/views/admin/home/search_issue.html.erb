@@ -1,0 +1,88 @@
+<script type="text/javascript" >
+//for selecting all checkboxes
+function update_issue_id() {         
+     var allVals = [];
+     $('.searched_result :checked').each(function() {
+       allVals.push($(this).val());
+     });
+     $('#issue_check').val(allVals);
+  }
+//for selecting individual checkboxes 
+$(function() {
+   $('.searched_result input').click(update_issue_id);
+   update_issue_id();
+ });
+
+ $(document).ready(function (){
+  $(".check_all_or_none").click(function(){
+  $('.searched_result :checkbox').attr('checked', $( this ).is( ':checked' ) ? true : false );
+  update_issue_id();  
+  });
+});
+</script>
+<style type="text/css">
+.last span{
+  display:inline;
+}
+.last {
+  width:80px;
+}
+</style>
+<div id="search-result">
+  <% if @issues.blank? %>
+  <h1> Issues </h1>
+  <div style="float:right;margin-bottom:-75px;">
+  <%= link_to "HOME" , '/admin' ,:class=> 'btn btn-primary' %>
+  </div>
+  <%= render :partial => "admin/home/search_form_issues", locals: {q1: @q1} %>
+    <% if params[:q] %>
+      <p class="well">Your search does not generate a result</p>
+    <% end %>
+<div style="float:left;">
+<% if @issues.blank? %>
+<b style="color:red;">No Records Found </b>
+<% end %>
+</div>
+  <% else %> 
+   <h1> Issues </h1>
+  <div style="float:right;margin-bottom:-75px;">
+  <%= link_to "HOME" , '/admin' ,:class => 'btn btn-primary' %>
+  </div>
+  <%= render :partial => "admin/home/search_form_issues", locals: {q1: @q1} %>
+   <p>Displaying <strong><%= @issues.offset_value + 1 %> - <%= @issues.offset_value + @issues.length %> of <%= @issues.total_count %> </strong> records(s) </p>
+
+
+    <table class="table table-striped">
+   <tr>
+    <th><%= sort_link(@q1, :title , "Title") %></th>
+    <th><%= sort_link(@q1, :issuetype, "Issuetype") %></th>
+    <th><%= sort_link(@q1, :project_type_id, "Project")%></th>
+    <th><%= sort_link(@q1, :project_id, "Task") %></th>
+    <th><%= sort_link(@q1, :description, "Description") %></th>
+    <th><%= sort_link(@q1, :active, "Active") %></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @issues.each do |issue| %>
+  <tr>
+    <td><%= issue.title %></td>
+    <td><%= issue.issuetype.try(:issuetype) %></td>
+    <td><%= issue.project_type.try(:type_name) %></td>
+    <td><%= issue.project.try(:title) %></td>
+    <td><%= issue.description %></td>
+    <%= simple_form_for :issue , url: "/issues/status/#{issue.id}" do %>
+      <% if issue.active == true %>
+        <td> <input type="checkbox" name="active" checked='checked' onclick="this.form.submit();" > </td>   
+      <% else %> 
+        <td> <input type="checkbox" name="inactive" onclick="this.form.submit();"></td>     
+      <% end %>
+    <% end %>    
+    <td><%= link_to 'Edit', edit_issue_path(issue) ,class: 'btn btn-mini' %>
+        <%= link_to 'Destroy', issue, confirm: 'Are you sure?', method: :delete ,class: 'btn btn-danger btn-mini' %></td>
+  </tr>
+<% end %>
+</table>
+<%= paginate @issues %>
+<% end %>
+ </div>

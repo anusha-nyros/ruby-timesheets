@@ -1,0 +1,114 @@
+<script>
+$('document').ready(function() {
+
+$("#dates").click(function () {
+  var $that = $(this);
+  $("#range").toggle("slow", function() {
+    $that.toggleClass("toggled-off");
+  });
+});
+
+$("#date").click(function () {
+  var $that = $(this);
+  $("#ranges").toggle("slow", function() {
+    $that.toggleClass("toggled-off");
+  });
+});	
+});
+</script>
+
+<%= render :partial => "menu" %>
+
+<div style="float:right">
+  <% unless @calendars.count == 0 %>
+  <%= link_to "List View", "#", :id => 'dates', class: 'btn btn-mini-primary', :style => 'background:#DDD;font-size:15px;' %>
+  
+  <% end %>
+</div>
+<div style="width:600px;height:20px;"><br><br><br><br><br><br><br><br></div>
+<div id="range" style="display:none;" >
+<table class="table table-striped">
+ <tr><th colspan="4"><h3>Events Schedule</h3></th><th>
+ <%#= link_to "Close", "#", :id => 'date', :style=>'color:red;float:right;' %></th></tr>
+  <tr>
+  <th>Title Of Event</th>
+  <th>Event Decription</th>
+  <th>Scheduled Event On</th>
+  <th>created By</th>
+  <th></th>
+  </tr>
+
+<% @calendars.each do |c| %>
+    
+  <tr>
+   
+   <td><%= c.event %></td>
+   <td><%= c.activity %></td>
+   <td><%= c.entry_date.strftime("%b-%Y-%d") if !c.entry_date.blank? %></td>
+   <td><%= c.user.name %></td>
+   <td>  
+       <% if !(current_user.id == c.user_id) %>
+           <%= link_to "Edit", '#', class: 'btn btn-mini', :disabled => true %>
+          <%= link_to "Delete",'#', class: 'btn btn-mini btn-danger', :disabled => true %>
+          <% else %>
+        
+        <%= link_to 'Edit', edit_calendar_path(c), class: 'btn btn-mini' %>
+        <%= link_to "Delete", calendar_path(c), method: :delete, confirm: "Delete this record?", class: 'btn btn-mini btn-danger' %>
+        <% end %>
+        </td>
+        
+<script>
+$('document').ready(function() {
+    $('.popover-test').popover({
+       placement: 'right',
+       trigger: 'hover',
+       offset: 4,   
+           
+    /*content: '<%= c.activity %>'*/ 
+     
+        });
+   
+ });
+
+</script>
+        
+        
+        
+   </tr> 
+ <% end %>
+ 
+   </table>
+</div>
+
+<div id="calendar">
+ <h2 id="month">
+    <%= link_to image_tag('backward.png',:width=>'55', :height=>'30'), :month => (@date.beginning_of_month-1).strftime("%Y-%m-01") %>
+    
+    <%= h @date.strftime("%B %Y") %>
+    <%= link_to image_tag('forward.png',:width=>'55', :height=>'30'), :month => (@date.end_of_month+1).strftime("%Y-%m-01")  %>
+  </h2>
+  
+ <center><%= calendar_for @calendars, :year => @date.year, :month => @date.month do |calendar| %>
+   <%= calendar.head('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday')%>
+    <% calendar.day(:day_method => :entry_date) do |date, calendars| %>
+      <%= date.day %>
+     <ul>
+      <% for calendar in calendars %>
+        <li><%= link_to h(calendar.event), calendar, {:class => "popover-test", :rel => "popover", :title => "#{calendar.event} <br> <h6>Created By #{calendar.user.username}</h6>", "data-content" => "#{calendar.activity}"} %></li>
+      <% end %>
+    </ul>
+    <% end %>
+  <% end %>
+</div></center>
+<br><br><br>
+
+
+
+
+
+
+
+
+
+
+

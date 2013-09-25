@@ -1,0 +1,25 @@
+<ul class="nav nav-tabs">
+  <li class="<%= action_active('index') %>">
+    <%= link_to admin_links_path do %>
+        <i class="icon-list-alt"></i>
+        Index
+    <% end %>
+  </li>
+
+  <li class="<%= action_active('new') %>">
+    <%= link_to new_admin_link_path do %>
+      <i class="icon-plus"></i>
+      Create New Link
+    <% end %>
+  </li>
+  
+  
+  <li class="<%= action_active('image_view') %>">
+    <%= link_to '/image_view' do %>
+       <i class="icon-list-alt"></i>
+      Image View
+    <% end %>
+  </li>
+
+
+</ul>

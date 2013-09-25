@@ -1,0 +1,83 @@
+<%= render :partial => "menu" %>
+<%= simple_form_for(@contact, html: {class: 'form-horizontal'}) do |f| %>
+  <%= f.error_notification %>
+    <table>
+      <tr>
+      <td>
+      <%= f.input :contact_type, as: :select, collection: [['Contact', 'contact'], ['Client', 'client'], ['Supplier', 'supplier'],['Employee','employee'],['Associate','associate'],['Contractor','contractor']], :prompt => true %>
+      </td>
+      <td><%= f.input :phone %></td>
+      </tr>
+      <tr>
+       <td><%= f.input :contact %></td>
+        <td> <%= f.input :mobile_phone %> </td>
+      </tr>
+      <tr>
+      <td><%= f.input :company %></td>
+      <td> <%= f.input :fax %></td>
+      </tr>
+      <tr>
+      <td><%= f.input :email %></td>
+       <td> <%= f.input :website %>  </td>
+      </tr>
+      <tr>
+      <td><%= f.input :chat_tool ,:label => "IM Tool" %> </td>
+      <td> <%= f.input :fb , :label => "Facebook" %> </td>
+      <tr>      
+      <td><%= f.input :username, input_html: {value: @contact.user.try(:username)} %></td>
+      <td><%= f.input :linkedin %>  </td>
+      </tr>
+      <tr>    
+      <td><%= f.input :address, hint: 'Enter address separated by comma.' %></td>  
+      <td><%= f.input :skype %></td>      
+      </tr>
+      <tr>
+        <td colspan=2 ><%= f.input :active %> </td>
+      </tr>
+      <tr>
+      <td colspan= 2 ><%= f.input :notes, input_html: {rows: '5', class: 'span9'}%></td>
+      </tr>
+      <tr>
+      <td><%= f.input :photo, :label => "Upload Photo" %></td>
+      </tr>
+   </table>  
+     
+     <% unless current_user.organization.skills.blank? %>
+       <h3>Skills</h3> 
+	<table class="table table-striped">
+	<% for skill in @skills -%>
+	<tr>
+	<td>
+        <%= check_box_tag('skill_list[]', skill.id, @contact.skills.collect {|obj| obj.id}.include?(skill.id)) %>
+ &nbsp; <%= skill.name %>
+        </td></tr>
+	<% end -%>
+	</table>
+        <% end %>	
+        
+        <% if current_user.organization.skills.blank? %>
+        <p style="margin-left:65px;font-size:13px;color:green;">No Skills were created in your Organisation.<%= link_to 'Go', skills_path, class: 'btn btn-info' %></p>
+        <% end %><br>
+        <% if current_user.organization.groups.blank? %>
+        <p style="margin-left:65px;font-size:13px;color:green;">No Groups were created in your Organisation.<%= link_to 'Go', groups_path, class: 'btn btn-info' %></p>
+        <% end %>
+   
+   <% unless current_user.organization.groups.blank? %>
+	<h3>Groups</h3> 
+	<table class="table table-striped">
+	<% for group in @groups -%>
+	<tr>
+	<td>
+        <%= check_box_tag('group_list[]', group.id, @contact.groups.collect {|obj| obj.id}.include?(group.id)) %>
+ &nbsp; <%= group.title %>
+        </td></tr>
+	<% end -%>
+	</table>
+      <% end %>
+      
+    <div class="form-actions">
+      <%= link_to 'Back', contacts_path, class: 'btn btn-mini-primary' %>&nbsp;&nbsp;<%= f.button :submit, class: 'btn btn-primary' %>
+    </div>
+    
+  </fieldset>
+<% end %>

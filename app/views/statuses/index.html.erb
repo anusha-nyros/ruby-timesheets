@@ -1,0 +1,31 @@
+
+<%= render :partial => "menu" %>
+<%= link_to new_status_path, class: 'btn btn btn-success' do %>
+	<i class="icon-plus icon-white"></i>New Status
+<% end %> <br>
+<br>
+<% if @statuses.blank? %>
+  <div class="well">You don't currently have any status </div>
+  <% else %>
+<h1>Status</h1>
+
+
+<table class="table table-striped" >
+  <tr>
+    <th>Name Of Status</th>
+    <th>Usage</th>
+    <th></th>
+   
+  </tr>
+
+<% @statuses.each do |status| %>
+  <tr>
+    <td><%= status.status_name %></td>
+    <td><%= status.usage %></td>   
+    <td><%= link_to 'Edit', edit_status_path(status), class: 'btn btn-mini' %>
+    <%= link_to 'Delete', status, confirm: 'Are you sure?', method: :delete, class: 'btn btn-mini btn-danger' %></td>
+  </tr>
+<% end %>
+</table>
+<% end %>
+

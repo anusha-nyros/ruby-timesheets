@@ -1,0 +1,135 @@
+
+<script type="text/javascript" >
+//for selecting all checkboxes
+function update_issue_id() {         
+     var allVals = [];
+     $('.searched_result :checked').each(function() {
+       allVals.push($(this).val());
+     });
+     $('#issue_check').val(allVals);
+  }
+//for selecting individual checkboxes 
+$(function() {
+   $('.searched_result input').click(update_issue_id);
+   update_issue_id();
+ });
+
+ $(document).ready(function (){
+  $(".check_all_or_none").click(function(){
+  $('.searched_result :checkbox').attr('checked', $( this ).is( ':checked' ) ? true : false );
+  update_issue_id();  
+  });
+});
+</script>
+
+
+<%#= render :partial => "menu1" %>
+<%= render :partial => "menu" %>
+<% if !@issues.blank? %>
+<%= render :partial => "issues/search_form", locals: {q: @q} %>
+<% end %>
+<div style="width:940px;height:50px;">
+<div style="float:left;"><h1>Issues</h1></div>
+
+<div style="float:left;margin-left:30px;">
+     <form name="projectfilters" action="/issues" >
+        <div style="float:left;margin-top:10px;">
+   <%= radio_button_tag 'FILTER', 'Active', @chosen == 'Active' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Active
+           </div>
+                        
+          <div style="float:left;margin-top:10px;margin-left:10px;;">
+  <%= radio_button_tag 'FILTER', 'Inactive', @chosen == 'Inactive' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Inactive
+            </div>
+           <div style="float:left;margin-top:10px;margin-left:10px;">
+  <%= radio_button_tag 'FILTER', 'ALL', @chosen == 'ALL' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;All
+           </li></div>
+          </form>
+       
+      
+  </div>
+
+
+   <div id="side">
+
+<span class="pull-right">
+<%= simple_form_for :issues , url: "/issue_?FILTER=#{@chosen}" do %>
+             
+              <select name="sel" onchange="this.form.submit();" id="paginatevalues" class="span1">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+              </select>
+     
+<% end %>  
+<input type="hidden" id="myid" value='<%= @choosed if !@choosed.blank? %>'>
+</span>
+<span class="pull-right" style="padding:5px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+</span>
+</div>
+
+
+
+</div>
+
+
+<% if @issues.blank? %>
+
+  <% if params[:id] %>
+ <div class="well">
+   currently don't have any issues for this task.
+ </div>
+ <% else %>
+ <div class="well">
+   currently don't have any issues against project and tasks
+ </div>
+ <% end %>
+<% else %>
+
+
+
+
+<table class="table table-striped">
+  <tr>
+    <th style="width:15px;"><input type="checkbox" class="check_all_or_none"> </th>
+    <th><%= sort_link(@q, :title , "Title") %></th>
+    <th><%= sort_link(@q, :issuetype, "Issuetype") %></th>
+    <th><%= sort_link(@q, :project_type_id, "Project")%></th>
+    <th><%= sort_link(@q, :project_id, "Task") %></th>
+    <th><%= sort_link(@q, :description, "Description") %></th>
+    <th><%= sort_link(@q, :active, "Active") %></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @issues.each do |issue| %>
+  <tr>
+    <td class="searched_result" ><input type="checkbox" name="issue_list[]" id="check_<%= issue.id %>"  value= "<%= issue.id %>"></td>
+    <td><%= issue.title %></td>
+    <td><%= issue.issuetype.try(:issuetype) %></td>
+    <td><%= issue.project_type.try(:type_name) %></td>
+    <td><%= issue.project.try(:title) %></td>
+    <td><%= truncate(issue.description, :length => 20) %></td>
+    <%= simple_form_for :issue , url: "/issues/status/#{issue.id}" do %>
+      <% if issue.active == true %>
+        <td> <input type="checkbox" name="active" checked='checked' onclick="this.form.submit();" > </td>   
+      <% else %> 
+        <td> <input type="checkbox" name="inactive" onclick="this.form.submit();"></td>     
+      <% end %>
+    <% end %>    
+    <td><%= link_to 'Edit', edit_issue_path(issue) ,class: 'btn btn-mini', :input_html => { class: 'fav', :id => "select_my_task_edit", :action => " return getTasks_edit()" } %>
+        <%= link_to 'Destroy', issue, confirm: 'Are you sure?', method: :delete ,class: 'btn btn-danger btn-mini' %></td>
+  </tr>
+<% end %>
+</table>
+<%= paginate @issues %> 
+<% end %>
+ <script type="text/javascript">
+    $('document').ready(function(){
+        var n= $('#myid').val();        
+        $('#paginatevalues').val(n);
+        
+    });
+  
+</script>

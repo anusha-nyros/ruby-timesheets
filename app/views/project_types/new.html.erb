@@ -1,0 +1,14 @@
+<%#= render :partial => "menu1" %>
+<% if !@active1.blank? %>
+<%= simple_form_for :project_type, url: "/project_types/stat" do |f| %>
+	   <% if @active1.status_check == 'active' %><input type="checkbox" name="active"  checked='checked' onclick="this.form.submit();"  >&nbsp;&nbsp;<%= "Turn On/Off Budget View " %><br/>
+            <% else  %>
+  		 <input type="checkbox" name="inactive"  onclick="this.form.submit();" >&nbsp;&nbsp;<%= "Turn On/Off Budget View " %><br/>
+           <% end %>
+		
+<% end %>
+<% end %> 
+<%= render :partial => "menu"%>
+<%= render 'form' %>
+
+

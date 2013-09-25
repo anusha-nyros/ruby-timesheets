@@ -1,0 +1,193 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});				
+});
+$('document').ready(function(){
+   
+     $('#advance-search').click(function(){
+        $('#advance-search-form').toggle()
+        $('#simple-search-form').toggle()  
+     
+    }); 
+
+	 $('.s').change(function(){  
+             if($(this).hasClass('up')){
+              var input = $("<input>").attr("type", "hidden").attr("name", "mydata").val($('.s').val());
+              $('.upform').append($(input));
+                $('.upform').submit();
+              }else{
+                 var input = $("<input>").attr("type", "hidden").attr("name", "mydata").val($('.s').val());
+                 $('.downform').append($(input));
+                 $('.downform').submit();
+              }
+        });
+        var n= $('#myid').val();        
+        $('#up').val(n); 
+ });
+
+
+$(function(){
+	$("#select_emails").multiselect();
+});
+$('document').ready(function(){
+
+	 $('#advance-search').click(function(){
+        $('#advance-search-form').toggle()
+        $('#simple-search-form').toggle()  
+        }); 
+
+	
+
+ $('#select_emails :checkbox').removeAttr('checked');  
+ $('.email-link').click(function(e){
+    if (! $(this).hasClass("send")){    
+        e.preventDefault();
+        if(! $('#expense_check').val()){
+          alert("Please select atleast one record ");
+        } else{$('.select-contacts').css("display","block");}
+    }else{
+          if(! $('#expense_check_all').val()){
+            alert("Please select atleast one email address ");
+            return false;
+           }
+           else {
+            if(! $('#expense_check').val()){
+          alert("Please select atleast one  record");
+		return false;
+        } else {
+           $('.mail-form').submit(); } }
+     }
+    
+ });
+
+  $("#select_emails").change(function() {
+      $('.email-link').addClass("send"); 
+      
+  });
+  $('.ui-multiselect-none').click(function(){
+    $('#select :checkbox').removeAttr('checked');  
+    $('#expense_check_all').val("");
+     
+  });
+//getting all checked Values when chekall is clicked
+  $("#select_emails")
+    .multiselect()
+    .bind("multiselectclick multiselectcheckall multiselectuncheckall", function( event, ui ){
+        var checkedValues = $.map($(this).multiselect("getChecked"), function( input ){
+            return input.value;
+          });
+        // alert(checkedValues);
+        $('#expense_check_all').val(checkedValues);
+    });
+});
+
+//getting individual  value when check box is clicked
+
+ $(function() {
+   $('.ui-multiselect-checkboxes input').click(function(){
+    var array_of_checked_values = $("#select_emails").multiselect("getChecked").map(function(){
+    return this.value;	
+    }).get();  
+      $('#expense_check_all').val(array_of_checked_values); 
+     // alert(array_of_checked_values);
+    });
+ });
+
+
+
+</script>
+<% expense_id_array=Array.new %>
+ <% for expense in @expenses %>
+ 	<% expense_id_array.push(expense.id) %>
+ <% end  %>
+<div id="simple-search-form">
+  <%= search_form_for q,:url => search_expenses_path, :html => {method: :post, class: 'well form-search upform'}  do |f| %>
+  <fieldset>
+    <%= f.text_field :exp_number_or_username_or_contact_type_or_reference_cont,:style=>"width:220px;", class: "input-medium search-query" %>
+    <button type="submit" class="btn">Search</button> &nbsp;&nbsp;
+    <a href="#" id="advance-search">Advanced</a> &nbsp;&nbsp;
+     <%= link_to "Reset " , {:controller => "expenses", :action => "index"} %>
+     <input type="hidden" name="up"> 
+  <% end %>
+<% if !@expenses.blank? %> 
+  <%= simple_form_for :expense,:url => url_for(:action=>'expense_mail',:controller=>'expenses'), :html => {method: :post, class: 'form-horizontal'}  do |f| %>
+ <%= hidden_field_tag "expense_check_all" %>
+<%= hidden_field_tag "expense_check" %>
+
+<input type="hidden" name="expense_id_array" value = "<%= expense_id_array%>" >
+<%#= f.submit "Send Expenses Email",:style=>"float:right;margin-top:-25px;",class: 'btn btn-primary email-link' %>
+<%= image_submit_tag("email_icon.png", :class=> "email-link",:style=>"float:right;margin-top:-25px;width:25px;height:25px;") %>
+<% end %>
+<span style="display: none;" class="select-contacts">
+<select style="display: none;" id="select_emails" class="span1 contacts" title="Basic example" multiple="multiple" name="example-basic" size="5">
+   <% @cntcts.each do |contact| %>
+	<% if !contact.email.blank? %>
+	  <option value="<%= contact.id %>"><%= contact.email %></option>
+       <% end %>
+	 <% end %>
+	</select>
+</span>
+
+  <% end %> 
+
+
+
+  </fieldset>
+</div>
+<input type="hidden" id="myid" value='<%= @choosed if !@choosed.blank? %>'>
+<div id="advance-search-form" style="display: none">
+  <%= search_form_for q,:url => search_expenses_path, :html => {method: :post, class: 'form-horizontal downform'}  do |f| %>
+  <fieldset>
+  <legend>Search Expenses</legend>
+	<input type="hidden" name="down"> 
+  <div class="control-group">
+    <%= f.label :exp_number_cont, "Expense#", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :exp_number_cont %>
+    </div>
+  </div>
+      
+  <div class="control-group">
+    <%= f.label :username_cont, "Username", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :username_cont %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :contact_type_cont, "Contact Type ", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :contact_type_cont %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :reference_cont, "Ref#", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :reference_cont %>
+    </div>
+  </div>
+
+ <div class="control-group">
+    <%= f.label :date_cont, "Date", class: 'control-label' %>
+    <div class="controls">
+      <% if q.date_cont.blank? %>
+    <%= f.text_field :date_cont, include_blank: true, default: nil, :id => 'datepicker', :style=>"width:100px;" %> 
+      <% elsif !q.date_cont.blank? %>
+      <%= f.text_field :date_cont, :value => "#{change_date_format_for_edit_page(q.date_cont)}", :id => 'datepicker', :style=>"width:100px;" %> 
+      <% end %> 
+      
+    </div>
+  </div>
+
+  
+  <div class="form-actions">
+    <%= f.submit class: 'btn btn-primary' %>
+    <input type="reset" class='btn'></input>
+    <a href="#" id="simple-search">Simple</a>
+  </div>  
+  </fieldset>
+  <% end %>
+</div> 

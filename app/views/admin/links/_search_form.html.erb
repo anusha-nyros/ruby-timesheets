@@ -1,0 +1,13 @@
+<div id="simple-search-form">
+  <%= search_form_for q,:url => search_admin_links_path, :html => {method: :post, class: 'well form-search'}  do |f| %>
+  <fieldset>
+    <%= f.text_field :product_or_user_name_or_link_or_notes_cont, class: "input-medium search-query" %>
+  <input type="hidden" name="FILTER" value="<%=@chosen %>" >
+    <button type="submit" class="btn">Search</button>
+    
+  <% end %>
+  </fieldset>
+</div>
+
+
+

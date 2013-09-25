@@ -1,0 +1,21 @@
+<h1>Welcome, <%= current_user.name %></h1>
+
+<p class="well">Administrator of <strong><%= current_user.organization.name %></strong></p>
+
+<br>
+<p class="expired">
+Your trails period is expired . please provide your credit card details for furthur use of goteamcloud
+</p>
+
+<%= render 'form' %>
+
+<%#= link_to 'Back', creditcards_path %>
+
+<style>
+.expired{
+  background-color:#FFFFCC;
+  font-weight:bold;
+  font-size:16px;
+  text-align:center;
+}
+</style>

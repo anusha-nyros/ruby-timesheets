@@ -1,0 +1,79 @@
+<script type="text/javascript">
+    $('document').ready(function(){
+        var n= $('#myid').val();        
+        $('#paginatevalues').val(n);
+    });
+</script>
+
+
+<%= render :partial => "search_form", locals: {q: @q} %>
+<div id="search-result">
+  <% if @my_threads.blank? %>
+    <% if params[:q] %>
+      <p class="well" >Your search does not generate a result</p>
+    <% end %>
+
+  <% else %>
+
+    <div style="float:left;margin-bottom:10px;"><b><% unless @my_threads.blank? %>(<%= @my_threads.count %>) Records Found<% end %></b></div>
+
+     <% if controller.action_name != "index" %>     
+     <select name="sel" class="s <%= @secret if !@secret.blank? %> span1" id="up" >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+     </select>
+    <% end %>
+   <span class="pull-right" style="padding:5px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+   </span>
+ 
+
+
+<table class="table table-striped">
+  <tr>
+   <th><%= sort_link(@q, :thread_number, "Thread Number") %></th>
+    <th><%= sort_link(@q, :creation_date, "Date") %></th>
+     
+      <th><%= sort_link(@q, :user, "User") %></th>
+      <th><%= sort_link(@q, :title, "Title") %></th>
+      
+      
+    <th></th>
+    
+  </tr>
+
+<% @my_threads.each do |my_thread| %>
+  <tr>
+   <td><%= my_thread.thread_number %></td>
+    <td><%= my_thread.creation_date.strftime("%b-%d-%Y") if !my_thread.creation_date.blank? %></td>
+     <td><%= my_thread.user.username %></td>
+    <td><%= my_thread.title %></td>
+    
+   
+     <td>
+        
+        <%= link_to 'Show', my_thread, class: 'btn btn-mini active' %>
+        <% if current_user.id == my_thread.user.id %>
+        <%= link_to 'Edit', edit_my_thread_path(my_thread), class: 'btn btn-mini' %>
+        <%= link_to 'Destroy', my_thread, confirm: 'Are you sure?', method: :delete, class: 'btn btn-mini btn-danger' %>
+        <% end %>
+      </td>
+  </tr>
+<% end %>
+</table>
+<%= paginate @my_threads %>
+<%#= will_paginate @my_threads, :renderer => BootstrapPagination::Rails %>
+
+<% end %>
+</div>
+<style>
+#side li{
+  display:inline;
+  list-style:none;
+}
+#up {
+ float:right;
+}
+</style>

@@ -1,0 +1,15 @@
+
+
+<p>
+  <b>Name:</b>
+  <%= @expensetype.expensetype %>
+</p>
+
+<p>
+  <b>Usage:</b>
+  <%= @expensetype.usage %>
+</p>
+<br/>
+<br/>
+<%= link_to 'Edit', edit_expensetype_path(@expensetype) %> |
+<%= link_to 'Back', expensetypes_path %>

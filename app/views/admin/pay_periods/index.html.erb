@@ -1,0 +1,39 @@
+<%= render :partial => "menu" %>
+<h1>Pay Periods</h1>
+<% if @pay_periods.blank? %>
+  <div class="well">
+    There is currenly no pay periods
+  </div>
+<% else %>
+  
+  <table class="table table-striped">
+    <tr>
+      <th>Period Start</th>
+      <th>Period End</th>
+      <th>Pay Day</th>
+	
+      <th>Active</th>
+      <th></th>
+    </tr>
+
+  <% @pay_periods.each do |pay_period| %>
+    <tr>
+      <td><%= pay_period.pay_start.strftime('%b-%d-%Y') %></td>
+      <td><%= pay_period.pay_end.strftime('%b-%d-%Y') %></td>
+      <td><%= pay_period.pay_day.strftime('%b-%d-%Y') if pay_period.pay_day %></td>
+      
+	  <td>
+          <% if pay_period.active? %>
+           &nbsp;&nbsp;<%= image_tag("/assets/check-mark-md.png",:width => 18 , :height => 18) %>
+           <% else %>
+           &nbsp;&nbsp;<%= image_tag("/assets/wrong-icon.jpg",:width => 18 , :height => 18) %>
+           <% end %>
+          </td>
+      <td>
+        <%= link_to 'Edit', edit_admin_pay_period_path(pay_period), class: 'btn btn-mini' %>
+        <%= link_to 'Destroy', admin_pay_period_path(pay_period), confirm: 'Delete this record?', method: :delete, class: 'btn btn-mini btn-danger' %>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>

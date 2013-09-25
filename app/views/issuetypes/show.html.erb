@@ -1,0 +1,16 @@
+
+
+<p>
+  <b>Name:</b>
+  <%= @issuetype.issuetype %>
+</p>
+
+<p>
+  <b>Usage:</b>
+  <%= @issuetype.usage %>
+</p>
+<br/>
+<br/>
+
+<%= link_to 'Edit', edit_issuetype_path(@issuetype) ,class:'btn btn-primary' %> 
+<%= link_to 'Back', issuetypes_path , class:'btn' %>

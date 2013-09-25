@@ -1,0 +1,95 @@
+<br/>
+<table class="table striped">
+  <th>Project Name </th>
+  <th>Task Name </th>
+  <th>Status</th>
+<% @tsks.each do |task| %>
+  <tr>
+      <td><%= task.project_name%></td>
+      <td><%= task.title%> </td>   
+      <td><%= task.action_required %> </td> 
+  </tr>
+ <% end %>
+</table>
+
+<%#= @tsk_array %>
+<br/>
+<div class="bor">You can enter your message here </div>
+<%= simple_form_for :project,:url => url_for(:action=>'email_tasks',:controller=>'projects'), :html => {method: :post, class: 'form-horizontal',:multipart => true ,:id => 'eform'}  do |f| %>
+<%= hidden_field_tag "project_check_all" %>
+<%= f.input :mailed_projects ,:input_html => {:value => @tsk_array} , :as => :hidden %>
+<div class="control-group text optional">
+<label class="text optional control-label" for="project_msg">Message</label>
+<div class="controls">
+<textarea class="text optional span5" cols="35" id="project_msg" name="project[msg]" rows="5">
+</textarea>
+</div>     
+</div>
+<div class="controls">
+<%= f.submit "Send Email" ,class: 'btn btn-mini btn-primary' %> 
+</div>
+<div id="msgError" style="text-align:center;font-size:11px;font-weight:bolder"> </div>    
+<div id="contactError" style="text-align:center;font-size:11px;font-weight:bolder"> </div>    
+<% end %>
+
+<style>
+ #msgError label,#contactError label {
+  color :red;
+  font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
+  font-size : 13px;
+  }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function() {  
+        var serializedData = $("#eform").serialize();
+        $("#eform").validate({ 
+            errorPlacement: function (error, element) {
+               if (element.attr("name") == "project_check_all") 
+                     $("#contactError").append(error); 
+               else 
+                       error.insertAfter(element); 
+                       error.fadeOut(1000);
+                             }  ,            
+            rules: {
+                "project_check_all":{
+                    required: true 
+                }
+              },
+            messages: {
+                "project_check_all":{
+                    required: "Please select atleast one contact" 
+                }
+            }, 
+            submitHandler: function() {
+                  if (confirm("You are about to submit, please recheck...")) {
+                    var project_check_all = $('#project_check_all').val();
+                    var msg = $('#project_msg').val();
+                    var mailed_projects = $('#project_mailed_projects').val();
+                   $.fancybox.showActivity();
+                   $.ajax({
+                            url:"/projects/email_tasks",
+                            type:"POST",
+                            data: { project_check_all: $('#project_check_all').val(),
+                            msg: $('#project_msg').val(),mailed_projects: $('#project_mailed_projects').val() }, 
+                            success: function(data){ 
+                                             $.fancybox({
+                                              'content' : data,
+                                              'overlayShow'	: false,
+				               'transitionIn'	: 'elastic',
+				                                      'transitionOut'	: 'elastic',
+                                              'autoDimensions'	: false,
+			                                        'width'         		: 350,
+			                                        'height'        		: 'auto',
+                                              });     
+                              
+                                            },
+                            error: function() {alert('failed');}
+                    }).done(function() {$("#select_emails").multiselect("uncheckAll");});
+                    return false;
+            }}
+
+        });
+    });
+</script>
+ 

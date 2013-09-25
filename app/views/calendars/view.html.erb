@@ -1,0 +1,37 @@
+
+
+
+
+<script>
+$(function () {
+    $('.popover-test').popover({placement: 'right', trigger: 'hover', offset: 4});
+   
+});
+</script>
+<%= render :partial => "menu" %>
+
+
+
+<div id="calendar">
+ <h2 id="month">
+    <%= link_to image_tag('backward.png',:width=>'55', :height=>'30'), :month => (@date.beginning_of_month-1).strftime("%Y-%m-01") %>
+    <%= h @date.strftime("%B %Y") %>
+    <%= link_to image_tag('forward.png',:width=>'55', :height=>'30'), :month => (@date.end_of_month+1).strftime("%Y-%m-01") %>
+  </h2>
+  
+ <center><%= calendar_for @projects, :year => @date.year, :month => @date.month do |calendar| %>
+   <%= calendar.head('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday')%>
+    <% calendar.day(:day_method => :schedule_date) do |date, projects| %>
+      <%= date.day %>
+     <ul>
+      <% for project in projects %>
+        <li><%= link_to h(project.prq_number), project, {:class => "popover-test", :rel => "popover", :title => "#{project.title}<br><h6>Task Status '#{project.action_required}'</h6>", "data-content" => "#{project.notes}"} %></li>
+      <% end %>
+    </ul>
+    <% end %>
+  <% end %>
+</div></center>
+<br><br><br>
+
+
+

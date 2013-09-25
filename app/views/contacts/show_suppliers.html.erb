@@ -1,0 +1,55 @@
+<%= render :partial => "menu2" %>
+<br/>
+<% if !@suppliers.blank? %>
+<%#= render :partial => "search_form", locals: {q: @q} %>
+<% end %>
+<% if @suppliers.blank? %>
+  <div class"well">You currently have no suppliers</div>
+<% else %>
+<h1>Suppliers</h1>  
+ 
+  <table class="table table-striped">
+    <tr>
+      <th>Image </th>	
+      <th>Supplier</th>
+      <th>Contact</th>
+      <th>Company</th>
+      <th>Email</th>
+      <th>IM Tool</th>
+      <th>User</th>
+      <th>Active</th>
+      <th class=""></th>
+    </tr>
+
+  <% @suppliers.each do |supplier| %>
+    <tr>
+  <td>
+  <%if !supplier.photo.blank? %>
+  <%= image_tag(supplier.photo_url(:thumb), :width => '60', :height => '40') if supplier.photo_url %>
+  <% else %>
+  <img src="/assets/sample/business_man_blue.png" height="40" width="60"> </img>
+  <% end %>  
+  </td>
+      <td><%= supplier.contact_type.capitalize %></td>
+      <td><%= supplier.contact %></td>
+      <td><%= supplier.company %></td>
+      <td><%= supplier.email %></td>
+      <td><%= supplier.chat_tool %></td>
+      <td><%= supplier.user.try(:username) %></td>
+       <td>  <% if supplier.active? %>
+           &nbsp;&nbsp;<%= image_tag("/assets/check-mark-md.png",:width => 18 , :height => 18) %>
+           <% else %>
+           &nbsp;&nbsp;<%= image_tag("/assets/wrong-icon.jpg",:width => 18 , :height => 18) %>
+           <% end %>
+     </td>
+      <td>
+        <%#= link_to 'Show', supplier, class: 'btn btn-mini' %>
+        <%#= link_to 'Edit', edit_supplier_path(supplier), class: 'btn btn-mini' %>
+        <%#= link_to 'Destroy', supplier, confirm: 'Delete this record?', method: :delete, class: 'btn btn-danger btn-mini' %>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+<%= paginate @suppliers %>
+<% end %>
+

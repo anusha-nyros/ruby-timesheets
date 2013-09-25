@@ -1,0 +1,33 @@
+<%= render :partial => "menu" %>
+
+<%= link_to new_expensetype_path ,class: 'btn btn-success' do %>
+    <i class="icon-plus icon-white"></i>New Expense Type
+<% end %>
+<br/><br/>
+<% if @expensetypes.blank?%>
+  <div class="well"> currently you don't have any expense types </div>
+<% else %>
+
+
+<h1>Expense Types</h1>
+
+<table class="table table-striped">
+  <tr>
+    <th>Name</th>
+    <th>Usage</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @expensetypes.each do |expensetype| %>
+  <tr>
+    <td><%= expensetype.expensetype %></td>
+    <td><%= expensetype.usage %></td>
+    <td><%= link_to 'Edit', edit_expensetype_path(expensetype) ,class: 'btn btn-mini' %>
+    <%= link_to 'Delete', expensetype, confirm: 'Are you sure?', method: :delete,class: 'btn btn-mini btn-danger' %></td>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

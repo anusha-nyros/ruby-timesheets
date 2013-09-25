@@ -1,0 +1,26 @@
+<%= render :partial => "menu" %>
+
+
+<p>
+  <b>Tasktype:</b>
+  <%= @tasktype.tasktype %>
+</p>
+
+<p>
+  <b>Datecreated:</b>
+  <%= @tasktype.datecreated %>
+</p>
+
+<p>
+  <b>Organization:</b>
+  <%= @tasktype.organization_id %>
+</p>
+
+<p>
+  <b>Projects count:</b>
+  <%= @tasktype.projects_count %>
+</p>
+
+<br/>
+<%= link_to 'Edit', edit_tasktype_path(@tasktype),class: "btn" %> 
+<%= link_to 'Back', tasktypes_path,class: "btn" %>

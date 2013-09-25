@@ -1,0 +1,159 @@
+
+ <%= render :partial => 'statistics/search_form',locals: {q:@q} %> 
+   <ul class="nav nav-tabs" id="myTab">
+    <li class="active"><a href="#home">Recap By Status</a></li>
+    <li><a href="#profile">Recap By Project</a></li>
+    
+    </ul>
+     
+    <div class="tab-content">
+    <div class="tab-pane active" id="home">
+    <table class="table table-striped">
+
+    <tr><th>Recap by Status</th>
+      <th> No of Records </th>
+      <th> Amount </th>  
+      <th> Actual </th>
+     </tr>
+   
+    <% cnt = (@projects.find(:all, :conditions => {:action_required => 'Estimate'})).count %>
+    
+      <% ecnt = @projects.find(:all, :conditions => {:action_required => 'Estimate'}) %> 
+      <% if ecnt.count != 0  %>
+      <tr>     
+      	<td> Estimate </td>
+        <td> <%= ecnt.count %></td>
+        <td><%= @projects.where(:action_required => 'Estimate').sum(:amount) %> </td>
+        <% cnt =0 %>
+        <% ecnt.each do |t| %>       
+          <% cnt += t.time_records.sum(&:total_hours) %>        
+        <% end %>
+        <td><%= cnt %></td>
+      </tr>      
+      <% end %>
+     
+     
+    <% recnt = @projects.find(:all, :conditions => {:action_required => 'Review Estimate'})  %>
+      <% if recnt.count != 0  %>
+      <tr> 
+    	<td> Review Estimate </td>
+        <td><%= recnt.count %></td>
+        <td><%= @projects.where(:action_required => 'Review Estimate').sum(:amount) %> </td>
+       
+        <% cnt =0 %>
+        <% recnt.each do |t| %>       
+          <% cnt += t.time_records.sum(&:total_hours) %>        
+        <% end %>
+        <td><%= cnt %></td>
+     </tr>
+      <% end %>
+      
+<% acnt = @projects.find(:all, :conditions => {:action_required => 'Approved'}) %>
+      <% if acnt.count !=0 %>
+      <tr> 
+    	<td> Approved </td>
+      <td><%= acnt.count %></td>
+      <td><%= @projects.where(:action_required => 'Approved').sum(:amount) %> </td>
+        
+       <% cnt =0 %>
+       <% acnt.each do |t| %>       
+          <% cnt += t.time_records.sum(&:total_hours) %>        
+       <% end %>
+       <td><%= cnt %></td>
+
+
+      </tr>
+      <% end %>
+
+
+
+ <% pcnt = @projects.find(:all, :conditions => {:action_required => 'In Progress'}) %>
+      <% if pcnt.count !=0 %>
+      <tr> 
+    	<td> In Progress </td>
+      <td><%= pcnt.count %></td>
+      <td> <%= @projects.where(:action_required => 'In Progress').sum(:amount) %></td>
+      
+       <% cnt =0 %>
+       <% pcnt.each do |t| %>       
+          <% cnt += t.time_records.sum(&:total_hours) %>        
+       <% end %>
+       <td><%= cnt %></td>
+    
+     </tr>
+      <% end %>
+
+
+      <% qcnt = @projects.find(:all, :conditions => {:action_required => 'QA'}) %>
+      <% if qcnt !=0 %>
+      <tr> 
+    	<td> QA </td>
+      <td><%= qcnt.count %></td>
+      <td><%= @projects.where(:action_required => 'QA').sum(:amount) %> </td>
+        
+        <% cnt =0 %>
+        <% qcnt.each do |t| %>       
+          <% cnt += t.time_records.sum(&:total_hours) %>        
+        <% end %>
+        <td><%= cnt %></td>
+      </tr>
+      <% end %>
+
+
+
+
+
+  <% ccnt = @projects.find(:all, :conditions => {:action_required => 'Completed'}) %>
+      <% if ccnt.count !=0 %>
+      <tr> 
+    	<td> Completed </td>
+        <td><%= ccnt.count %></td>
+        <td><%= @projects.where(:action_required => 'Completed').sum(:amount) %></td>
+        
+        <% cnt =0 %>
+        <% ccnt.each do |t| %>       
+          <% cnt += t.time_records.sum(&:total_hours) %>        
+        <% end %>
+        <td><%= cnt %></td>
+     </tr>
+      <% end %>
+
+ 
+    </table> 
+
+    </div>
+    <div class="tab-pane" id="profile">
+     <table class="table table-striped">
+      <tr></tr>
+      <tr>    
+        <td><b>Recap by Project</b></td>
+        <td><b>No Of Records</b></td>
+        <td><b>Amount </b></td>
+        <td><b>Actual</b></td>      
+      </tr>
+      <% @projects.group(:project_name).each do |f| %>
+      <tr>
+        <td><%= f.project_name %></td> 
+        <td> <%= @projects.find(:all, :conditions => { :project_name => f.project_name} ).count %></td> 
+        <td><%=  @projects.where(:project_name => f.project_name).sum(:amount) %></td>
+             <% cnt=0 %>
+             <% if !f.project_type_id.blank?  %>
+             <% ProjectType.find(f.project_type_id).projects.each do |t|  %>
+                 <% cnt= cnt + t.time_records.to_a.sum(&:total_hours) %>            
+             <% end %>
+             <% end %> 
+        <td><%= cnt %></td>      
+        </tr>
+      <% end %>
+      </table>
+    </div>
+    <div class="tab-pane" id="messages">...</div>
+    <div class="tab-pane" id="settings">...</div>
+    </div>
+     
+    <script>
+       $('#myTab a').click(function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+    })
+    </script>

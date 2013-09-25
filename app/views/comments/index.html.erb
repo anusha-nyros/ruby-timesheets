@@ -1,0 +1,38 @@
+<% if @projects.blank? %>
+  <div class="well">You don't currently have any project to comment</div>
+<% else %>
+ <h1>Comments</h1>
+  <table class="table table-striped">
+    <tr>
+      <th>Type</th>	 
+      <th>Title</th>
+     <th>Comments</th>
+ <th>Last Posted by</th>
+
+<th>Action</th>
+      </tr>
+  <% @projects.each do |project|  %>
+    <tr>
+      <td><%= project.project_type %></td>	 			
+      <td><%= truncate(project.title,:length=>50) %></td>
+  <% if  !project.comments.blank? %>
+     <td><%= link_to(truncate(project.comments.first.coment,:length=>20),{:controller => 'comments', :action => "new", :project_id => project.id}) if  !project.comments.blank?   %> (<%= link_to((project.comments.count),{:controller => 'comments', :action => "new", :project_id => project.id  }) if  !project.comments.blank? %>)</td>
+    <% else %>
+    <td> </td>
+  <% end %>   
+<% if  !project.comments.blank? %>
+     <td ><%= project.comments.first.uname %> on <%= project.comments.first.created_at.strftime("%b-%d-%Y %H:%M:%S") if  !project.comments.blank? %> </td>
+ <% else %>
+    <td> </td>
+  <% end %>  
+
+       <td>
+        <%#= link_to 'AddComment',:controller => 'comments', :action => 'new', :project_id => project.id  %>
+        <%= link_to 'View/Add Comment', {:controller => 'comments', :action => "new", :project_id => project.id  }, class: 'btn btn-mini btn-primary' %>
+       </td>
+
+    </tr>
+  <% end %>
+  </table>
+<% end %>
+

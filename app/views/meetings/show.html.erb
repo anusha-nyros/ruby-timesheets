@@ -1,0 +1,55 @@
+<%= render :partial => "menu" %>
+<p>
+  <b>Meeting number:</b>
+  <%= @meeting.meeting_number %>
+</p>
+
+<p>
+  <b>Meeting date:</b>
+  <%= @meeting.meeting_date.strftime("%b-%d-%Y") if !@meeting.meeting_date.blank? %>
+</p>
+
+
+<p>
+  <b>Meeting location:</b>
+  <%= @meeting.meeting_location %>
+</p>
+
+<p>
+  <b>Subject:</b>
+  <%= @meeting.subject %>
+</p>
+
+<p>
+  <b>Meeting notes:</b>
+  <%= @meeting.meeting_notes %>
+</p>
+
+<p>
+  <b>Action items:</b>
+  <%= @meeting.action_items %>
+</p>
+
+<% unless @meeting.attendees.blank? %>
+<p><b>Attendees:</b>
+ <%= @meeting.attendees.count %></p>
+<% @meeting.attendees.each do |r| %>
+<b>.</b>&nbsp;<%= r.name %></br>
+<% end %>
+
+<% end %>
+
+
+<% unless @meeting.meeting_attachments.blank? %>
+  <p>
+    <b>Attachments:</b>
+  <%= @meeting.meeting_attachments.count %></p>
+  <% @meeting.meeting_attachments.each do |a| %>
+  <%= link_to a.doc.uploaded_filename, a.doc.url %><br>
+  <% end %>
+  <% end %>
+
+<br/>
+
+<%= link_to 'Edit', edit_meeting_path(@meeting), class: 'btn' %>
+<%= link_to "Delete", meeting_path(@meeting), method: :delete, confirm: "Delete this record?", class: 'btn btn-danger' %>

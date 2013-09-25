@@ -1,0 +1,14 @@
+
+<%= render :partial => "menu" %>
+<%= simple_form_for @timecode, :html=>{:multipart => true, class: 'form-horizontal'} do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs"><br>
+    <%= f.input :code %>
+    <%= f.input :usage, input_html: {rows: '5', class: 'span9'} %>
+  </div>
+  <br>
+  <div class="form-actions">
+       <%= link_to 'Back', timecodes_path, class: 'btn btn-mini-primary' %> &nbsp;&nbsp;<%= f.button :submit, class: 'btn btn-primary' %>
+  </div>
+<% end %>

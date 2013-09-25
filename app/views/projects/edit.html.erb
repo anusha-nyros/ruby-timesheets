@@ -1,0 +1,24 @@
+<%#= render :partial => "menu1" if current_user.admin? %><br/>
+<fieldset>
+<ul class="nav">
+   <li class="pull-left"><h1>Editing Task <%= @project.prq_number %> </h1> </li>
+   <li class="pull-right">
+      <ul class="nav">
+        <li>  
+<span style="font-weight:bold;color:#868383;"><%= @project.created_at.strftime("%b-%Y-%d") %>
+            </span>       
+        </li>
+        <li>
+        <span style="text-transform:capitalize;font-weight:bold;color: #868383;">
+              <%= current_user.username %> 
+            </span> 
+        </li> 
+      </ul> 
+  </li>
+</ul>
+</fieldset>
+
+<%= render 'form' %>
+
+<%#= link_to 'Show', @project %> 
+<%#= link_to 'Back', projects_path %>

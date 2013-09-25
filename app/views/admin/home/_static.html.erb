@@ -1,0 +1,430 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"  lang="en">
+<head>
+	<link rel="stylesheet" href="/assets/samplecss/style1.css" type="text/css" />
+	<script>
+		$('document').ready(function() {
+		 $('.popover-test').popover({
+		    placement: 'top',
+		    trigger: 'hover',
+		    offset: 4,
+		     });
+			$('#select_function_link').change(function(){
+				if ($(this).val() == 'This Week'){			
+					$('#this_week').css("display","block");
+					$('#today').css("display","none");	
+					$('#this_month').css("display","none");
+					$('#nxt_week').css("display","none");
+					$('#nxt_month').css("display","none");
+					$('#last_week').css("display","none");
+					$('#last_month').css("display","none");			
+				}
+				if ($(this).val() == 'Today'){			
+					$('#this_week').css("display","none");
+					$('#today').css("display","block");	
+					$('#this_month').css("display","none");
+					$('#nxt_week').css("display","none");
+					$('#nxt_month').css("display","none");
+				               $('#last_week').css("display","none");
+					$('#last_month').css("display","none");			
+				}
+				if ($(this).val() == 'This Month'){			
+					$('#this_week').css("display","none");
+					$('#today').css("display","none");	
+					$('#this_month').css("display","block");
+					$('#nxt_week').css("display","none");
+					$('#nxt_month').css("display","none");
+				               $('#last_week').css("display","none");
+					$('#last_month').css("display","none");			
+				}
+				if ($(this).val() == 'Next Week'){		
+					$('#this_week').css("display","none");
+					$('#today').css("display","none");
+					$('#this_month').css("display","none");
+					$('#nxt_week').css("display","block");
+					$('#nxt_month').css("display","none");
+				               $('#last_week').css("display","none");
+					$('#last_month').css("display","none");			
+				}
+				if ($(this).val() == 'Next Month'){			
+					$('#this_week').css("display","none");
+					$('#today').css("display","none");	
+					$('#this_month').css("display","none");
+					$('#nxt_week').css("display","none");
+					$('#nxt_month').css("display","block");
+				               $('#last_week').css("display","none");
+					$('#last_month').css("display","none");			
+				}
+				if ($(this).val() == 'Last Week'){			
+					$('#this_week').css("display","none");
+					$('#today').css("display","none");	
+					$('#this_month').css("display","none");
+					$('#nxt_week').css("display","none");
+					$('#nxt_month').css("display","none");
+					$('#last_week').css("display","block");
+					$('#last_month').css("display","none");
+				}
+				if ($(this).val() == 'Last Month'){			
+					$('#this_week').css("display","none");
+					$('#today').css("display","none");	
+					$('#this_month').css("display","none");
+					$('#nxt_week').css("display","none");
+					$('#nxt_month').css("display","none");
+					$('#last_week').css("display","none");
+					$('#last_month').css("display","block");			
+				}
+			});
+		});
+	</script>
+	<style>
+		#home
+		{
+			/*background:black;*/
+			width:1000px;
+			height:580px;
+		}
+		.home_th{
+			width:93.5%;
+			/*background:#F2DEDE;*/
+			background:#DDD;
+			border-radius:20px;
+			height:45px;
+			margin-bottom:15px;
+			padding-left:30px;
+		}
+		.home_td{
+			width:400px;
+			height:40px;
+		}
+		.first_box{
+		/*background:black;*/
+			width:400px;
+			height:40px;
+			margin-left:20px;
+			margin-bottom:30px;
+		}
+		.first_box .first_th{
+			float:left;
+			width:75px;
+			//height:36px;
+			background:whiteSmoke;
+			font-size:13px;
+			font-weight:bolder;
+			padding-top:6px;
+			text-align:center;
+			box-shadow:5px 5px 5px #DDD;
+			-webkit-box-shadow: 5px 5px 5px #DDD;
+			-moz-box-shadow: 5px 5px 5px #DDD;
+		}
+		.first_box .first_td{
+			float:left;
+			width:65px;
+			height:36px;
+			background:whiteSmoke;
+			text-align:center;
+			padding-top:6px;
+			font-weight:bolder;
+			font-size:13px;
+		}
+		.first_box .first_td_name{
+			float:left;
+			width:120px;
+			height:36px;
+			background:whiteSmoke;
+			margin-left:13px;
+			padding-top:6px;
+			font-weight:bolder;
+			font-size:16px;
+		}
+		.first_box .first_2td{
+			float:left;
+			width:284px;
+			height:22px;
+			/*background:yellow;*/
+			margin-top:10px;
+			margin-left:11px;
+			font-weight:bolder;
+			font-size:13px;
+		}
+		.first_box .first_22td{
+			float:left;
+			width:75px;
+			height:22px;
+			/*background:red;*/
+			margin-top:10px;
+			margin-left:-2px;
+			font-weight:bolder;
+			font-size:13px;
+			//text-align:center;
+		}
+		.past_due_color{
+			color: #F59B00
+		}
+		.past_due_color:hover{
+			color: #F59B00
+		}
+		.red{
+			color:#FF0000
+		}
+		.red:hover{
+			color:#FF0000
+		}
+		.search_below_links{
+			padding-left:3px;
+			font-size:14px;
+			font-weight:bold;
+		}
+	</style>
+</head>
+<body>
+	<br/>
+	<div style="margin:0 auto 13px;overflow:hidden">
+		<div>
+	<!-- start for dashboard -->
+			<div id="home_stats" >
+				<div class="home_th"><br>
+					<span style="font-size:18px;font-weight:bolder;">Dashboard</span>
+				</div>
+				<div class="first_box" style="margin:0 auto">
+					<div class="first_td_name"></div>
+					<div class="first_td" >Projects</div>
+					<div class="first_td">Tasks</div>
+					<div class="first_td">Issues</div>
+					<div class="first_td_name">
+						<h3 style="font-size:13px;">
+						<%= image_tag('home_active.png') %>&nbsp;Active</h3>
+					</div>
+					<div class="first_td">
+						<%= link_to @active_projects.count, project_types_path(:name => 'active') %>
+					</div>
+					<div class="first_td"><%= link_to @active_tasks.count, projects_path %></div>
+					<div class="first_td"><%= link_to @active_issues.count, issues_path %></div>
+					<div class="first_td_name"><h3 style="font-size:13px;">
+						<%= image_tag('due.png') %>&nbsp;Past-Due</h6>
+					</div>
+					<div class="first_td">
+						<% if @past_due_projects.count > 0 %>
+						<%= link_to @past_due_projects.count, project_types_path(:name => 'past_due'), class: 'past_due_color' %>
+						<% else %>
+						<%= link_to @past_due_projects.count, project_types_path(:name => 'past_due')%>
+						<% end %>
+					</div>
+					<div class="first_td">
+						<% if @past_due_tasks.count > 0 %>
+						<%= link_to @past_due_tasks.count, projects_path(:due => 'past'), class: 'past_due_color' %>
+						<% else %>
+						<%= link_to @past_due_tasks.count, projects_path(:due => 'past') %>
+						<% end %>
+					</div>
+					<div class="first_td">
+						<% c = 0 %>
+						<% @past_due_projects.each do |p| %>
+						<% c += p.issues.count %>
+						<% end %>
+						<% if c > 0 %>
+						<%= link_to c, issues_path(:FILTER => 'pas_due_projects_issues'), class: 'past_due_color' %>
+						<% else %>
+						<%= link_to c, issues_path(:FILTER => 'pas_due_projects_issues') %>
+						<% end %>
+					</div>
+					<div class="first_td_name" ><h3 style="font-size:13px;"><%= image_tag('Estimate.png', :width=>'25', :height=>'25') %>&nbsp;Over-Estimate</h3></h3></div>
+					<div class="first_td">
+						<% if @over_projct_expense.count > 0 %>
+						<%= link_to @over_projct_expense.count, {:controller => '/project_types', :action => 'over_budget_view'}, class: 'red' %>
+						<% else %>
+						<%= link_to @over_projct_expense.count, {:controller => '/project_types', :action => 'over_budget_view'}%>
+						<% end %>
+					</div>
+					<div class="first_td">
+						<% if @over_budget.count > 0 %>
+						<%= link_to @over_budget.count, {:controller => '/projects', :action => 'estimate_actual', :budget => "over"},class: 'red' %>
+						<% else %>
+						<%= link_to @over_budget.count, {:controller => '/projects', :action => 'estimate_actual', :budget => "over"} %>
+						<% end %>
+					</div>
+					<div class="first_td">
+						<% if @bug > 0 %>
+						<%= link_to @bug, issues_path(:FILTER => 'over_budget_project_issues'), class: 'red' %>
+						<% else %>
+						<%= link_to @bug, issues_path(:FILTER => 'over_budget_project_issues') %>
+						<% end %>
+					</div>
+					<div class="first_2td">Tasks scheduled
+						<select id= "select_function_link"  style="margin-left:50px;width:100px;height:26px;border-radius:10px;">
+							<option>This Week</option>
+							<option>Next Week</option>
+							<option>Today</option>
+							<option>This Month</option>
+							<option>Next Month</option>
+							<option>Last Week</option>
+							<option>Last Month</option>
+						</select>
+						<br/>
+					</div>
+					<div class="first_22td">
+						<div style="display:block;" id ="this_week" >
+							<%= link_to @week_schedule_tasks.count, projects_path(:scheduled => 'this_week')%>
+							( <% twact = 0 %>
+							<% @week_schedule_tasks.each do |y| %>
+								<% twact += y.time_records.sum(&:total_hours) %>
+							<% end %>
+							<%= twact %>
+							 )
+						</div>
+						<div style="display:none;" id ="today" >
+							<%= link_to @today_schedule_tasks.count, projects_path(:scheduled => 'today') %>
+							( <% tdact = 0 %>
+							<% @today_schedule_tasks.each do |y| %>
+								<% tdact += y.time_records.sum(&:total_hours) %>
+							<% end %>
+							<%= tdact %>
+							 )
+						</div>
+						<div style="display:none;" id ="this_month" >
+							<%= link_to @this_month_schedule_tasks.count, projects_path(:scheduled => 'this_month') %>
+							( <% tmact = 0 %>
+							<% @this_month_schedule_tasks.each do |y| %>
+								<% tmact += y.time_records.sum(&:total_hours) %>
+							<% end %>
+							<%= tmact %>
+							 )
+						</div>
+						<div style="display:none;" id ="nxt_week" >
+							<%= link_to @next_week_schedule.count, projects_path(:scheduled => 'nxt_week') %>
+							( <% nwact = 0 %>
+							<% @next_week_schedule.each do |y| %>
+								<% nwact += y.time_records.sum(&:total_hours) %>
+							<% end %>
+							<%= nwact %>
+							 )
+						</div>
+						<div style="display:none;" id ="nxt_month" >
+							<%= link_to @next_month_schedule.count, projects_path(:scheduled => 'nxt_month') %>
+							( <% nmact = 0 %>
+							<% @next_month_schedule.each do |y| %>
+							<% nmact += y.time_records.sum(&:total_hours) %>
+							<% end %>
+							<%= nmact %>
+							 ) 
+						</div>
+						<div style="display:none;" id ="last_week" >
+							<%= link_to @last_week_schedule.count, projects_path(:scheduled => 'last_week') %>
+							( <% lwact = 0 %>
+							<% @last_week_schedule.each do |y| %>
+							<% lwact += y.time_records.sum(&:total_hours) %>
+							<% end %>
+							<%= lwact %>
+							 )
+						</div>
+						<div style="display:none;" id ="last_month" >
+							<%= link_to @last_month_schedule.count, projects_path(:scheduled => 'last_month') %>
+							( <% lmact = 0 %>
+
+							<% @last_month_schedule.each do |y| %>
+
+							<% lmact += y.time_records.sum(&:total_hours) %>
+							<% end %>
+							<%= lmact %>
+							 )
+						</div>                     
+					</div>
+					<div class="first_2td">Tasks with Recent Activity</div>
+					<div class="first_22td"><%= link_to @recent_activityof_task.count, projects_path(:recent => 'recorded') %></div>
+					<div class="first_2td">Upcoming Meetings/Reminders</div>
+					<div class="first_22td"><%= link_to @upcoming_meetings.count, meetings_path(:upcomming => 'meets') %></div>
+					<div class="first_2td">Expenses Pending  Approval</div>
+					<div class="first_22td"><%= link_to @expenses_pending.count, expenses_path(:expense => 'approval') %></div>
+					<div class="first_2td">Time Sheets Pending Approval</div>
+					<div class="first_22td"><%= link_to @timesheets_pending_approval.count, time_records_path(:status => 'Pending') %></div>
+					<div class="first_2td">Documents Checked-Out</div>
+					<div class="first_22td"><%= link_to @documents_checked_out.count, activities_path(:checked => 'out') %></div>
+					<div class="first_2td">Open Threads</div>
+					<div class="first_22td"><%= link_to @open_threads.count, my_threads_path %></div>
+					<div class="first_2td">Status Reports waiting to be sent</div>
+					<div class="first_22td"><%= link_to @sr_wait_to_sent.count, statusreports_path(:waiting_for => 'sent') %> </div>
+				</div>
+			</div>
+		</div>
+	<!-- end for dashboard -->
+	
+		<div style="width:20%;float:left;margin:0px auto;padding:5px 20px 35px 25px">
+			<br/>
+			<div style="display: block;" class="search_task_link" >
+				<%= render :partial => "admin/home/search_form_tasks", locals: {q: @q} %>
+			</div>
+			<div style="display:none;" class = "search_issue_link" >
+				<%= render :partial => "admin/home/search_form_issues" 	 %>
+			</div>
+			<p style = "padding-left:20px;">
+				<b><a class="search_below_links" target="_blank" href="/project_types/new"><i class="fam-add"> </i> Add Project </a></b><br/><br/>
+				<b><a class="search_below_links" target="_blank" href="/projects/new"><i class="fam-add"> </i> Add Task</a></b><br/><br/>
+				<b> <a class="search_below_links" target="_blank" href="/project_types/new"><i class="fam-add"> </i> Add Issue/Ticket </a>
+				</b><br/><br/>
+			</p>
+		</div>
+		<div id="header1" style="float:right;width:36%" >
+			<ul id="nav">
+				<li class="calendar">
+					<%= link_to image_tag('sample/clear.gif',:alt=>'Projects',:style =>"width:75px;height:23px;",:onfocus=>"if(this.blur)this.blur()"),project_types_url, :class => "popover-test", :rel => "popover", :title => "Projects", "data-content" => "Manage and schedule your projects along with their tasks." %>
+						</a>
+					<span id ='icontxt' >Projects</span>
+				</li>
+				<li class="tasks">
+					<%= link_to image_tag('sample/clear.gif',:alt=>'Tasks',:style =>"width:75px;height:23px;",:onfocus=>"if(this.blur)this.blur()"),projects_url, :class => "popover-test", :rel => "popover", :title => "Tasks", "data-content" => "With the tasks being well-defined, the hope is that various people will be able to assist to carry out the tasks and so not rely on a couple of individuals to do all the work." %>
+						</a>
+					<span id ='icontxt' >Tasks</span>
+				 </li>
+				<li class="issues">
+				<%= link_to image_tag('sample/clear.gif',:alt=>'Tasks',:style =>"width:75px;height:23px;",:onfocus=>"if(this.blur)this.blur()"),issues_url, :class => "popover-test", :rel => "popover", :title => "Issues", "data-content" => "In the life cycle of any project, there will almost always be unexpected problems and questions that crop up." %>
+						</a>
+				<span id ='icontxt' >Issues</span>
+				</li>
+			</ul>
+			<ul id="nav">
+				<li class="timesheets">
+						<%= link_to image_tag('sample/clear.gif',:alt=>'Time Sheets',:style =>"width:75px;height:23px;",:onfocus=>"if(this.blur)this.blur()"),time_records_url, :class => "popover-test", :rel => "popover", :title => "Time Sheets", "data-content" => "Time Sheet shows the recorded work hours for that period with detailed screens." %>
+					</a><span id ='icontxt' >Time Sheets</span>
+				</li>
+				<li class="projects">
+						<%= link_to image_tag('sample/clear.gif',:alt=>'Calendars',:style =>"width:75px;height:23px;",:onfocus=>"if(this.blur)this.blur()"),calendars_url, :class => "popover-test", :rel => "popover", :title => "Calendars", "data-content" => "Let your co-workers see your schedules that others have shared with you. When you know when everyone is free or busy,scheduling is a snap." %>
+								 <span id ='icontxt' >Calendar</span>
+				</li>
+				<li class="statusreports">
+				<%= link_to image_tag('sample/clear.gif',:alt=>'Status Reports',:style =>"width:75px;height:23px;",:onfocus=>"if(this.blur)this.blur()"), statusreports_url, :class => "popover-test", :rel => "popover", :title => "Status Reports", "data-content" => "Manage Reports which will show you the status of the projects." %>
+					 <span id ='icontxt' >Status Reports</span>
+				</li>
+			</ul>
+			<ul id="nav">
+				<li class="timerecords">
+				<%= link_to image_tag('sample/clear.gif',:alt=>'Documents',:style =>"width:75px;height:23px;",:onfocus=>"if(this.blur)this.blur()"),'#', :class => "popover-test", :rel => "popover", :title => "Documents", "data-content" => "Documents will explain you the activities and other things." %>
+						</a>
+					<span id ='icontxt' >Documents</span>
+				</li>
+				<li class="meetings">
+				<%= link_to image_tag('sample/clear.gif',:alt=>'Meetings',:style =>"width:75px;height:23px;",:onfocus=>"if(this.blur)this.blur()"),meetings_url, :class => "popover-test", :rel => "popover", :title => "Meetings", "data-content" => "Meeting held to provide a status update to the team members." %>
+					 <span id ='icontxt' >Meetings</span>
+				</li>
+				<li class="timeperiods">
+				<%= link_to image_tag('sample/clear.gif',:alt=>'Threads',:style =>"width:75px;height:23px;",:onfocus=>"if(this.blur)this.blur()"),my_threads_url, :class => "popover-test", :rel => "popover", :title => "Threads", "data-content" => "Threads will expose the reccuring problem/issue or any post by employee." %>
+						</a>
+						<span id ='icontxt' >Threads</span>
+				</li>
+			</ul>
+			<ul id="nav">				  
+				<li class="expenses">
+				<%= link_to image_tag('sample/clear.gif',:alt=>'Contacts',:style =>"width:75px;height:23px;",:onfocus=>"if(this.blur)this.blur()"),expenses_url, :class => "popover-test", :rel => "popover", :title => "Expenses", "data-content" => "Managing project expenses ensures that other than timesheet expenses are tracked and cleared in both directions, towards employees as well as clients." %>
+				</a>
+				<span id ='icontxt' >Expenses</span>
+			</li>			  
+			<li class="links">
+				<%= link_to image_tag('sample/clear.gif',:alt=>'links',:style =>"width:75px;height:23px;",:onfocus=>"if(this.blur)this.blur()"),admin_links_url, :class => "popover-test", :rel => "popover", :title => "Links", "data-content" => "Links will describe the your product features." %>
+				<span id ='icontxt' >Links/URLs</span>
+			</li>
+			<li class="people">
+				<%= link_to image_tag('sample/clear.gif',:alt=>'Contacts',:style =>"width:75px;height:23px;",:onfocus=>"if(this.blur)this.blur()"),contacts_url, :class => "popover-test", :rel => "popover", :title => "Contacts", "data-content" => "Manage people who were working in your organization with different contact types." %>
+				</a>
+				<span id ='icontxt'> Contacts </span>
+			</li>
+		</ul>
+	</div>		
+</body>
+</html>

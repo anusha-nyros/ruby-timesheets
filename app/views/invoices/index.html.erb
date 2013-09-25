@@ -1,0 +1,108 @@
+<style>
+  ul li
+  {
+  display:inline;
+  
+  }
+</style>
+
+<script type="text/javascript">
+    $('document').ready(function(){
+        var n= $('#myid').val();        
+        $('#paginatevalues').val(n);
+        
+    }); 
+</script>
+<%= render :partial => "menu" %>
+<% if @invoices.blank? %>
+  <div class="well">You don't currently have any Invoices.</div>
+<%else%>
+<%= render :partial => "search_form", locals: {q: @q} %>
+<%=link_to "New Invoice" , new_invoice_path,:class=>"btn btn-primary" %> </br></br>
+<div style="float:left"><h1>Invoice</h1></div>
+<div style="float:left;margin-top:10px;">
+ 
+        <ul style="padding-left:50px;"> 
+        <form name="invoicefilters" action="/invoices" >
+        <li >
+   <%= radio_button_tag 'FILTER','PAID', @chosen == 'PAID' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Paid	
+           </li>
+                          
+          <li >
+  <%= radio_button_tag 'FILTER', 'UNPAID', @chosen == 'UNPAID' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;UnPaid
+            </li>
+           <li >
+  <%= radio_button_tag 'FILTER', 'ALL', @chosen == 'ALL' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;All
+           </li>
+          </form>
+        </ul>  
+		 
+      
+  </div>
+<div class="pull-right">	
+		<span class="pull-right">
+<%= simple_form_for :invoices , url: "/invoice_?FILTER=#{@chosen}" do %>
+             
+              <select name="sel" onchange="this.form.submit();" id="paginatevalues" class="span1">
+              
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+              </select>
+     
+<% end %>  
+<input type="hidden" id="myid" value='<%= @choosed if !@choosed.blank? %>'>
+</span>
+<span class="pull-right" style="padding:5px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+</span>
+</div>
+
+<table class="table table-striped">
+  <tr>
+    <th>Invoice</th>
+    <th>Date</th>
+    <th>Client</th>
+    <th>Reference</th>
+    <th >Amount</th>
+    <th>Paid</th>
+    <th>Balance</th>
+    <th>Last payment</th>
+    <th>Days old</th>
+    <th>Aging</th>
+    <th></th>
+  </tr>
+<%amount=0%>
+<%balance=0%>
+<% @invoices.each do |invoice| %>
+
+  <tr>
+    <td><%= invoice.invoice %></td>
+    <td><%= invoice.date.strftime("%b-%d-%Y") if  !invoice.date.blank? %></td>
+    <td><%= invoice.client %></td>
+    <td><%= invoice.reference %></td>
+    <td style="text-align:right;"><%= invoice.amount %></td>
+    <td><%= invoice.paid_convert %></td>
+    <td style="text-align:right;"><%= invoice.balance %></td>
+    <td><%= invoice.last_payment.strftime("%b-%d-%Y") if  !invoice.last_payment.blank? %></td>
+    <td><%= invoice.days_old %></td>
+    <td><%= invoice.aging %></td>
+    <td><%= link_to 'Show', invoice ,:class=>"btn btn-mini"%>
+    <%= link_to 'Edit', edit_invoice_path(invoice) ,:class=>"btn btn-mini"%>
+    <%#= link_to 'Destroy', invoice, confirm: 'Are you sure?', method: :delete,:class=>"btn btn-mini btn-danger " %></td>
+  </tr>
+  		<%amount=invoice.amount+amount unless invoice.amount.blank?%>
+  		<%balance=invoice.balance+balance unless invoice.balance.blank?%>
+<% end %>
+  <tr>
+  	<td colspan="3"> Totals </td>
+  	<td colspan="1"><td style="text-align:right;"> <b> <%= number_with_delimiter(amount)%> </td> </td>
+  	<td><td style="text-align:right;"> <b> <%= number_with_delimiter(balance)%> </td> </td> 
+  	<td colspan="4"></td>
+  </tr>
+
+</table>
+<%= paginate @invoices %>
+<%end%>
+

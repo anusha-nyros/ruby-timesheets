@@ -1,0 +1,72 @@
+<head>
+<style type="text/css">
+.last span{
+  display:inline;
+}
+.last {
+  width:80px;
+}
+  ul li
+  {
+  display:inline;
+  
+  }
+</style>
+</head>
+<script type="text/javascript">
+$('.preview').click(function(){
+   $('#mydata').toggle("slow"); 
+});
+
+</script>
+
+<%#= render :partial => "menu" %>
+<% if @project_preview.blank? %>
+  <div class="well">You don't currently have any task(s) to preview. </div>
+<br/>
+<% else %>
+  
+<br/><br/>
+<div id="whole">
+<div style="float:left">
+<h3>List Of The Tasks To Be Imported</h3>
+<h5 style="padding:3px 0px">Tasks Count : <%= @project_preview.size %></h5>
+</div>
+<br/>
+<br/>
+<div style="float:right;margin-top:20px;"></div>
+
+  <table class="table table-striped">
+     <tr>  
+          <th>Type</th>
+          <th>Title </th>
+          <th>Description </th>
+          <th>Status</th>
+          <th>Schedule Date</th>
+          <th>Assigned To</th>  
+          <th>Owner</th>  
+      </tr>
+
+  <% @project_preview.each do |project| %>
+    <tr>
+    <td><%= project.project_name %></td>
+    <td><%= project.title %></td>
+    <td><%= project.notes %></td>
+	  <td><%= project.action_required %></td>
+	  <td><%= project.schedule_date.strftime("%b-%d-%Y") if !project.schedule_date.blank? %></td>
+	  <td><%= project.supplier.company %></td>
+    <%# contact_array = current_user.organization.contacts.where(contact_type: 'supplier') %>
+    <%# contact_array.each do |contact| %>
+        <%# if contact.contact == project.owner %>   
+          <% if current_user.organization.contacts.find_by_contact(project.owner) %>          
+      <td><%= current_user.organization.contacts.find_by_contact(project.owner).contact %></td>
+          <% else %>
+      <td style=""> - </td>          
+          <% end %>
+        <%# end %>
+    <%# end %>
+    </tr>
+  <% end %>
+  </table>
+  <% end %>
+<%= link_to "Close",'#',class: 'btn btn-mini btn-danger preview ' %>

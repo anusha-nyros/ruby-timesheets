@@ -1,0 +1,77 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});				
+});
+</script>
+
+<div id="simple-search-form">
+  <%= search_form_for q,:url => esearch_projects_path, :html => {method: :post, class: 'well form-search'}  do |f| %>
+  <fieldset>
+    <%= f.text_field :title_or_project_name_or_action_required_or_prq_number_or_notes_cont,:style=>"width:220px;", class: "input-medium search-query" %>
+    <button type="submit" class="btn">Search</button>
+    <a href="#" id="advance-search">Advance</a> &nbsp;&nbsp;
+    <%= link_to "Reset " , {:controller => "projects", :action => "expand" , :FILTER => "ALL" } %>&nbsp;&nbsp;
+    <%= link_to "Expand" , '/expand' %>
+  <% end %>
+  </fieldset>
+</div>
+
+<div id="advance-search-form" style="display: none">
+  <%= search_form_for q,:url => esearch_projects_path, :html => {method: :post, class: 'form-horizontal'}  do |f| %>
+  <fieldset>
+  <legend>Search Project</legend>
+  <div class="control-group">
+    <%= f.label :title_cont, "Title", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :title_cont %>
+    </div>
+  </div>
+  
+  
+  <div class="control-group">
+    <%= f.label :project_name_cont, "Project Type", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :project_name_cont %>
+    </div>
+  </div>
+  
+ 
+
+ <div class="control-group">
+    <%= f.label :schedule_date_cont, "Schedule Date", class: 'control-label' %>
+    <div class="controls">
+      <% if q.schedule_date_cont.blank? %>
+    <%= f.text_field :schedule_date_cont, include_blank: true, default: nil, :id => 'datepicker', :style=>"width:100px;" %> 
+      <% elsif !q.schedule_date_cont.blank? %>
+      <%= f.text_field :schedule_date_cont, :value => "#{change_date_format_for_edit_page(q.schedule_date_cont)}", :id => 'datepicker', :style=>"width:100px;" %> 
+      <% end %> 
+      
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :action_required_cont, "Action required", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :action_required_cont %>
+    </div>
+  </div>
+<div class="control-group">
+    <%= f.label :prq_number_cont, "Project#", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :prq_number_cont %>
+    </div>
+  </div>
+ 
+  
+  <div class="form-actions">
+    <%= f.submit class: 'btn btn-primary' %>
+    <input type="reset" class='btn'></input>
+    <a href="#" id="advance-search">Simple</a>
+  </div>  
+  </fieldset>
+  <% end %>
+</div>

@@ -1,0 +1,80 @@
+
+
+<%= render :partial => "menu" %>
+
+ <div style="width:940px;height:50px;">
+<div style="float:left;"><h1>Links/URLs</h1></div>
+
+<div style="float:left;margin-left:30px;">
+     <form name="links" url="/admin/links/image_view" >
+          
+           <div style="float:left;margin-top:10px;">
+   <%= radio_button_tag 'FILTER', 'My', @chosen == 'My' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;My Links
+           </div>
+                        
+          <div style="float:left;margin-top:10px;margin-left:10px;;">
+  <%= radio_button_tag 'FILTER', 'Other', @chosen == 'Other' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Shared Links
+           </div>
+           
+          </form>
+       
+      
+  </div> </div>
+<% if @links.blank? %>
+ <% if params[:FILTER] == 'My' %>
+  <div class="well">You don't currently have any Image links.</div>
+ <% elsif params[:FILTER] == 'Other' %>
+  <div class="well">You don't currently have any Shared Image Links.</div>
+  <% else %>
+  <div class="well">You don't currently have any Image links.</div>
+ <% end %>
+<% else %>
+<table class="table table-striped" >
+  <tr>
+    <th>Image</th>
+    <th>Category</th>
+    <th>Link</th>
+    <th>User</th>
+    <th>Notes</th>
+    <th>Shared Option</th>
+    <th>Created By</th>
+    <th></th>
+  </tr>
+
+<% @links.each do |link| %>
+  <tr>
+  <td>
+ <% link.linkimages.find(:first) do |a| %>
+  <%= image_tag(a.link_image_url(:thumb), :width => '60', :height => '40') if a.link_image_url %>
+    <% end %>
+  </td>
+  
+    <td><%= link.product %></td>
+    
+    <td><%= auto_link(web_presence(link.link), :html => {:target => '_blank' }) do |text|      
+         truncate(text, :length =>30)      
+        end %></td>
+    <td><%= link.user_name %></td>
+   
+    <td><%= truncate(link.notes, :length => 50) %></td>
+    
+     <td><%= link.share_option %></td>
+    
+    
+   <td><%= link.user.try(:username) %></td>
+    
+    <td><%= link_to 'Show', admin_link_path(link), class: 'btn btn-mini'  %>
+    
+    <% if current_user.id == link.user_id %>
+    <%= link_to 'Edit', edit_admin_link_path(link), class: 'btn btn-mini'  %>
+    <%= link_to 'Destroy', admin_link_path(link), confirm: 'Delete this record?', method: :delete, class: 'btn btn-mini btn-danger' %>
+    <% end %>
+    
+    </td>
+  </tr>
+<% end %>
+</table>
+<% end %>
+<br />
+
+

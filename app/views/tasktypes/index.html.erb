@@ -1,0 +1,30 @@
+
+<%= render :partial => "menu" %>
+<%= link_to new_tasktype_path, class: 'btn btn btn-success' do %>
+	<i class="icon-plus icon-white"></i>New Task Type
+<% end %>
+<br/><br/>
+<h1>Task Types</h1>
+
+<% if @tasktypes.blank? %>
+    <div class="well">You currently dont have any tasktypes</div>
+<% else %>
+
+<table class="table table-striped">
+  <tr>
+    <th>Task Type</th>
+    <th>Usage</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @tasktypes.each do |tasktype| %>
+  <tr>
+    <td><%= tasktype.tasktype %></td>
+    <td><%= tasktype.usage %></td>
+    <td><%= link_to 'Edit', edit_tasktype_path(tasktype), class: 'btn btn-mini' %>
+    <%= link_to 'Delete', tasktype, confirm: 'Are you sure?', method: :delete, class: 'btn btn-mini btn-danger' %></td>
+ </tr>
+<% end %>
+</table>
+<% end %>

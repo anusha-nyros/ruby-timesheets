@@ -1,0 +1,55 @@
+<%= render :partial => "menu1" %>
+<br/>
+<% if !@clients.blank? %>
+<%#= render :partial => "search_form", locals: {q: @q} %>
+<% end %>
+<% if @clients.blank? %>
+  <div class"well">You currently have no clients</div>
+<% else %>
+ <h1>Clients </h1>
+ 
+  <table class="table table-striped">
+    <tr>
+      <th>Image </th>	
+      <th>Client</th>
+      <th>Contact</th>
+      <th>Company</th>
+      <th>Email</th>
+      <th>IM Tool</th>
+      <th>User</th>
+      <th>Active</th>
+      <th class=""></th>
+    </tr>
+  
+  <% @clients.each do |client| %>
+ <tr>
+  <td>
+  <%if !client.photo.blank? %>
+  <%= image_tag(client.photo_url(:thumb), :width => '60', :height => '40') if client.photo_url %>
+  <% else %>
+  <img src="/assets/sample/business_man_blue.png" height="40" width="60"> </img>
+  <% end %> 
+  </td>
+      <td><%= client.contact_type.capitalize %></td>
+      <td><%= client.contact %></td>
+      <td><%= client.company %></td>
+      <td><%= client.email %></td>
+      <td><%= client.chat_tool %></td>
+      <td><%= client.user.try(:username) %></td>
+       <td>  <% if client.active? %>
+           &nbsp;&nbsp;<%= image_tag("/assets/check-mark-md.png",:width => 18 , :height => 18) %>
+           <% else %>
+           &nbsp;&nbsp;<%= image_tag("/assets/wrong-icon.jpg",:width => 18 , :height => 18) %>
+           <% end %>
+     </td>
+      <td>
+        <%#= link_to 'Show', client, class: 'btn btn-mini' %>
+        <%#= link_to 'Edit', edit_client_path(client), class: 'btn btn-mini' %>
+        <%#= link_to 'Destroy', client, confirm: 'Delete this record?', method: :delete, class: 'btn btn-danger btn-mini' %>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+<%#= paginate @clients %>
+<% end %>
+

@@ -1,0 +1,89 @@
+<style>
+.last span{
+  display:inline;
+}
+.last {
+  width:90px;
+}
+  ul li
+  {
+  display:inline;
+
+  }
+  </style>
+
+
+<%= render :partial => "search_form", locals: {q: @q} %>
+<div id="search-result">
+  <% if @statusreports.blank? %>
+    <% if params[:q] %>
+      <p class="well" >Your search does not generate a result</p>
+    <% end %>
+<div style="float:left;">
+<% if @statusreports.blank? %>
+<b style="color:red;">No Records Found </b>
+<% end %>
+</div>
+  <% else %>
+    <div style="float:left;"><b><% unless @statusreports.blank? %>(<%= @statusreports.count %>) Records Found<% end %></b></div>
+<br/>
+  
+ <table class="table table-striped">
+
+    
+    <tr>
+    <th><%= sort_link(@q, :report_number, "Report#") %></th>
+     
+      <th><%= sort_link(@q, :report_date, "Date") %></th>
+      
+      <th><%= sort_link(@q, :report_time, "Time") %></th>
+      <th class="span2" ><%= sort_link(@q, :send_to, "Send To") %></th>
+      <th><%= sort_link(@q, :sent_by, "Sent By") %></th>
+      <th><%= sort_link(@q,:report_user ,"User") %></th>
+      <th><%= sort_link(@q, :sent_date, "Sent Date/Time") %></th>
+     <th><%= sort_link(@q, :subject, "Subject") %></th>
+       
+      
+      <th></th><th></th>
+    </tr>
+<% @statusreports.each do |statusreport| %>
+    <tr>
+    <td><%= statusreport.report_number %></td>
+	  
+			
+      <td><%= statusreport.report_date.strftime("%b-%d-%Y") if !statusreport.report_date.blank? %></td>
+      
+	  <td><%= statusreport.report_time.strftime('%H:%M') %></td>
+           
+	  <td><%= statusreport.send_to %></td>
+          <td><%= statusreport.sent_by %></td>
+          
+          <td><%= statusreport.sent_date.strftime("%b-%d-%Y %H:%M") if !statusreport.sent_date.blank? %></td>
+          <td><%= statusreport.subject %></td>
+
+      <td>
+        <div class='last'>
+        <span> <%= link_to 'Show', statusreport, class: 'btn btn-mini' %> </span>
+        <span><%= link_to "Edit ", edit_statusreport_path(statusreport), class: 'btn btn-mini' %></span>
+        </div>
+      </td>
+    <td>
+    <div>
+         <%= simple_form_for :statusreport,:url => url_for(:action=>'resend_mail',:controller=>'statusreports',:id => statusreport), :html => {method: :post,:onsubmit=>"return confirm('Are you sure. You want to send mail ?');",:style=>'width:80px;', class: 'form-horizontal'}  do |f| %>
+              
+        <%= f.input "",:input_html => {:name=>"project_format",:value=>'Format1',:type=>'hidden',:style=>'display:none;width:10px;'} %>
+        <% if statusreport.sent_by.blank? %>
+        <%= f.submit "Send Email",:style=>"margin-left:-22px;width:80px;margin-top:-52px;",:onfocus=>"if(this.blur)this.blur()",class: 'btn btn-mini btn-primary' %>
+        <% else %>
+         <%= f.submit "ReSend Email",:style=>"margin-left:-22px;width:80px;margin-top:-52px;",:onfocus=>"if(this.blur)this.blur()",class: 'btn btn-mini btn-primary' %>
+       <% end %>
+      <% end %>
+     </div>
+     </div>
+    </td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>
+
+</div>

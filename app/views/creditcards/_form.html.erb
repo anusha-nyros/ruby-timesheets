@@ -1,0 +1,51 @@
+
+<script type="text/javascript">
+$(function() {
+$('#expiryDate').datepicker( {
+changeMonth: true,
+changeYear: true,
+showButtonPanel: true,
+dateFormat: 'mm/yy',
+minDate:'m', // restrict to show month greater than current month
+onClose: function(dateText, inst) {
+// set the date accordingly
+var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+$(this).datepicker('setDate', new Date(year, month, 1));
+},
+beforeShow : function(input, inst) {
+if ((datestr = $(this).val()).length > 0) {
+year = datestr.substring(datestr.length-4, datestr.length);
+month = jQuery.inArray(datestr.substring(0, datestr.length-5), $(this).datepicker('option', 'monthNames'));
+$(this).datepicker('option', 'defaultDate', new Date(year, month, 1));
+$(this).datepicker('setDate', new Date(year, month, 1));
+}
+}
+});
+});
+</script>
+<style type="text/css">.ui-datepicker-calendar { display: none; }</style>
+
+
+
+
+<%= simple_form_for @creditcard, html: {class: 'form-horizontal',id: 'myuserform'} do |f| -%>
+  <%= f.error_notification %>
+  <fieldset>
+    <legend></legend>
+    
+    <%= f.input :number, hint: 'Creditcard number is required '%>
+    <%#= f.input :creditnumber, hint: 'Creditcard number is required '%>
+    <% if @creditcard.expiryon.blank? %>   
+    <%= f.input :expiryon,:as => :string ,:input_html => {class: 'date-picker',id: 'expiryDate'} %>
+    <% else %>
+    <%= f.input :expiryon,:as => :string ,:input_html => {class: 'date-picker',id: 'expiryDate',:value => change_creditcard_date_for_edit_page(@creditcard.expiryon)} %>
+    <% end %>
+    <%#= f.date_select :expiryon, :discard_day => true, :start_year => Date.today.year, :end_year => (Date.today.year+10), :use_month_numbers => true %>
+    <div class="form-actions">
+        <%#= link_to 'Back', admin_users_path, class: 'btn btn-mini-primary' %>&nbsp;&nbsp;
+        <%= submit_tag "Submit Details", class: 'btn btn-primary' %>
+        <%#= submit_tag "Reset", class: 'btn', type: 'reset' %>
+    </div>
+  </fieldset>
+<% end -%>

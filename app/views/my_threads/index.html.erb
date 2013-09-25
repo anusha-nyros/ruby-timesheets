@@ -1,0 +1,98 @@
+<script type="text/javascript">
+    $('document').ready(function(){
+        var n= $('#myid').val();        
+        $('#paginatevalues').val(n);
+        
+    });
+  
+</script>
+
+<%= render :partial => "menu" %>
+<%= link_to 'New Thread', new_my_thread_path, class: 'btn btn btn-primary' %>
+<br><br>
+<% if !@my_threads.blank? %>
+<%= render :partial => "my_threads/search_form", locals: {q: @q} %>
+<% end %>
+<% if @my_threads.blank? %>
+  <div class="well">You don't currently have any threads </div>
+<% else %>
+<div id="side">
+<span class="pull-left"><h1>Threads</h1>
+</span>
+<span class="pull-right">
+<%= simple_form_for :my_threads , url: "/my_thread_" do %>
+             
+              <select name="sel" onchange="this.form.submit();" id="paginatevalues" class="span1">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+              </select>
+     
+<% end %> 
+<input type="hidden" id="myid" value='<%= @chosen if !@chosen.blank? %>'>
+</span>
+<span class="pull-right" style="padding:5px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+</span>
+</div>
+
+<table class="table table-striped">
+  <tr>
+  <th><%= sort_link(@q, :thread_number, "Thread Number") %></th>
+     <th><%= sort_link(@q, :creation_date, "Date") %></th>
+     
+      <th><%= sort_link(@q, :user_username, "User") %></th>
+      <th><%= sort_link(@q, :title, "Title") %></th>
+      <th>Replies</th>
+      <th>Last Activity</th> 
+    <th></th>
+    
+  </tr>
+
+<% @my_threads.each do |my_thread| %>
+  <tr>
+   <td>
+   <% if !my_thread.thread_comments.blank? %>   
+   <%= link_to '', my_thread, class: 'icon-comment' %>
+   <% end %>
+   <%= my_thread.thread_number %></td>
+    <td><%= my_thread.creation_date.strftime("%b-%d-%Y") if !my_thread.creation_date.blank? %></td>
+     <td><%= my_thread.user.username %></td>
+    <td class ="span3" ><%= truncate(my_thread.title, :length => 50) %></td>
+    <td><% if my_thread.thread_comments.count > 0 %>
+       (<%= link_to my_thread.thread_comments.count, my_thread %>)
+       <% else %>
+        -
+       <% end %>
+   
+     </td>
+     
+    <td class ="span3">
+      <% unless my_thread.thread_comments.blank? %>
+      <% tc = my_thread.thread_comments.find(:last) %>
+      <%= tc.created_at.strftime("%b-%d-%Y at %I:%M%p ") %>
+      <% end %>
+   </td>
+   
+     <td>
+        <%= link_to 'Reply', my_thread, class: 'btn btn-mini active' %>
+        <%= link_to 'Show', my_thread, class: 'btn btn-mini' %>
+        <% if current_user.id == my_thread.user.id %>
+        <%= link_to 'Edit', edit_my_thread_path(my_thread), class: 'btn btn-mini' %>
+        <%= link_to 'Destroy', my_thread, confirm: 'Are you sure?', method: :delete, class: 'btn btn-mini btn-danger' %>
+        <% end %>
+      </td>
+  </tr>
+<% end %>
+</table>
+
+<%= paginate @my_threads %>
+<% end %>
+
+<style>
+#side span{
+  display:inline;
+}
+</style>
+

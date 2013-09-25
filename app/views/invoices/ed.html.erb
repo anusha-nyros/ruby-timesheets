@@ -1,0 +1,33 @@
+<h2>Editing Line Item </h2>
+<%= simple_nested_form_for @inv_line_item, :html=>{ class: 'form-horizontal' }, :url=>{:action => "update_inv_line_item"} do |f| %>
+
+  <%= f.error_notification %>
+
+    <table>
+      <tr>
+        <td><%= f.input :reference  %> </td>
+        <td><%= f.input :extended  %></td>
+      </tr>
+      <tr>
+        <td><%= f.input :quantity  %></td>
+        <td><%= f.input :unit %></td>
+      </td>
+      </tr>
+      <tr>
+        <td><%= f.input :amount  %></td>
+        <td></td> 
+      </tr>
+       <tr>
+        <td colspan="2"><%= f.input :description ,input_html:{rows: '5', class: 'span8'}%> </td>
+      </tr>  
+
+      <tr>
+        <td colspan="2"><%= f.input :text_comment,input_html:{rows: '5', class: 'span8'} %> </td>
+      </tr>  
+     </table>
+
+  <div class="form-actions">
+    <%= f.button :submit,'Update Line Item', class: 'btn btn-primary' %>
+  </div>
+<% end %>
+

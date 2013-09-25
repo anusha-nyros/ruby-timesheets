@@ -1,0 +1,41 @@
+<%= render :partial => "menu" %>
+
+<h1>Reports (<%= short_period(@pay_period) %>)</h1>
+
+<div class="reports_content">
+<% if @user_time_records.blank? %>
+  <div class="well">
+    There is currently no time record!
+  </div>
+<% else %>
+  <% @user_time_records.each do |user, time_records| %>
+    <h2><%= user.name %> (<%= user.username %>)</h2>
+    <% if time_records.blank? %>
+      <div class="well">There is currently no record for this user</div>
+    <% else %>
+      
+    <table class="table table-striped">
+      <tr>
+        <th class="span2">Date</th>
+        <th id="activity">Activity</th>
+        <th class="span2">Total Hours</th>
+      </tr>
+      <% total = 0 %>
+      <% for time_record in time_records %>
+      <tr>
+        <td><%= time_record.activity_date.to_s(:short) %></td>
+        <td><%= simple_format(time_record.description) %></td>
+        <td><%= time_record.total_hours %></td>
+      </tr>
+      <% total = total + time_record.total_hours %>
+      <% end %>
+      <tr>
+        <td></td>
+        <td><strong>Total</strong></td>
+        <td><strong><%= total %></strong></td>
+      </tr>
+    </table>
+    <% end %>
+  <% end %>
+<% end %>
+</div>

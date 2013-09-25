@@ -1,0 +1,65 @@
+
+<div id="activities">
+  <p><%= link_to "Add Activity", new_activity_path, class: 'btn btn-primary btn-medium' %></p>
+  <%= render :partial => "activities/search_form", locals: {q: @q} %>
+  <% if @activities.blank? %>
+    
+    <% if params[:checked] == 'out' %>
+     <p class="well">You don't currently have ChekedOut Documents.</p>
+    <% else %>
+    <p class="well">You don't currently have activity.</p>
+    <% end %>
+
+  <% else %>
+    <h2>Your Activities</h2>
+    <p>Displaying <strong></p>
+    <table class="table table-striped">
+      <tr>
+        <th><%= sort_link(@q, :date) %></th>
+        <th><%= sort_link(@q, :category_name, "Category") %></th>
+        <th><%= sort_link(@q, :info) %></th>
+        <th><%= sort_link(@q, :tags) %></th>
+        <th><%= sort_link(@q, :activity_user_name, "Created By") %></th>
+        <th><%= sort_link(@q, :doc_check, "Checked Out") %>&nbsp;<i class="icon-check"></i></th><th></th><th></th>
+      </tr>
+    <% for activity in @activities %>
+      <tr>
+        <td><%= activity.date.to_s(:long) %></td>
+        <td><%= activity.category.try(:name) %></td>
+        <td>
+          <% if activity.attachment? %>
+            <i class="icon-file"></i>
+          <% end %>
+          <%= activity.info %>
+        </td>
+        <td><%= activity.tags %></td>
+        <td><%= activity.user.name %></td>
+       <% if activity.doc_check == true  %>
+	  <td>&nbsp;&nbsp;&nbsp;&nbsp;<%= image_tag("/assets/check-mark-md.png",:width => 18 , :height => 18) %></td>
+	  <% else %>
+	  <td>&nbsp;&nbsp;&nbsp;&nbsp;<%= image_tag("/assets/wrong-icon.jpg",:width => 18 , :height => 18) %></td>
+	  <% end %>
+        <td>
+           
+          <%= link_to "Detail", activity_path(activity), class: 'btn btn-mini' %>
+          
+          <% if !(current_user.id == activity.user_id) && activity.doc_check == true %>
+          <%= link_to "Edit", edit_activity_path(activity), class: 'btn btn-mini'%>
+          <%= link_to "Delete",'#', class: 'btn btn-mini btn-danger', :disabled => true %>
+          <% end %>
+          
+          <% if current_user.id == activity.user_id && activity.doc_check == true || current_user.id == activity.user_id && activity.doc_check == false %>
+          <%= link_to "Edit", edit_activity_path(activity), class: 'btn btn-mini'%>
+          <%= link_to "Delete", activity_path(activity), class: 'btn btn-mini btn-danger', method: :delete, confirm: 'Are you sure?'%>
+          <% end %>
+          <% if !(current_user.id == activity.user_id) && activity.doc_check == false %>
+           <%= link_to "Edit", '#', class: 'btn btn-mini', :disabled => true %>
+          <%= link_to "Delete",'#', class: 'btn btn-mini btn-danger', :disabled => true %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </table>
+    <%#= paginate @activities %>
+  <% end %>
+</div>

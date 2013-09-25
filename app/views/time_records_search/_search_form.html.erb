@@ -1,0 +1,220 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});				
+});
+ $('document').ready(function(){
+     $('#advance-search').click(function(){
+        $('#advance-search-form').toggle()
+        $('#simple-search-form').toggle()  
+     
+    }); 
+
+    $('.s').change(function(){  
+             if($(this).hasClass('up')){
+              var input = $("<input>").attr("type", "hidden").attr("name", "mydata").val($('.s').val());
+              $('.upform').append($(input));
+                $('.upform').submit();
+              }else{
+                 var input = $("<input>").attr("type", "hidden").attr("name", "mydata").val($('.s').val());
+                 $('.downform').append($(input));
+                 $('.downform').submit();
+              }
+        });
+        var n= $('#myid').val();        
+        $('#up').val(n); 
+
+  });
+
+
+$(function(){
+	$("#select_emails").multiselect();
+});
+$('document').ready(function(){
+
+	 $('#advance-search').click(function(){
+        $('#advance-search-form').toggle()
+        $('#simple-search-form').toggle()  
+        }); 
+
+	
+
+ $('#select_emails :checkbox').removeAttr('checked'); 
+
+ $('.email-link').click(function(e){ 
+        e.preventDefault();
+       
+        if($('#time_record_check').val() == ''){
+          alert("Please select atleast one task ");
+              return false;
+          } 
+        if($('#time_record_check').val() != ''){
+                  var task_ids = $('#time_record_check').val();
+                  $('.select-contacts').css("display","block");
+                  $('#various2').fancybox();  
+			              	$.ajax({
+                          type: "POST",
+                          url: "/timerec_maillist",
+                          traditional: true,
+                          data: {
+                              ids: task_ids
+                                  },
+                          success:function(data, textStatus, XMLHttpRequest){
+                                $('#data').html(data);   
+                                                           
+                               }  
+				                    });                        
+                }  
+ });
+
+
+
+  $("#select_emails").change(function() {
+      $('.email-link').addClass("send"); 
+      
+  });
+  $('.ui-multiselect-none').click(function(){
+    $('#select :checkbox').removeAttr('checked');  
+    $('#time_record_check_all').val("");
+     
+  });
+//getting all checked Values when chekall is clicked
+  $("#select_emails")
+    .multiselect()
+    .bind("multiselectclick multiselectcheckall multiselectuncheckall", function( event, ui ){
+        var checkedValues = $.map($(this).multiselect("getChecked"), function( input ){
+            return input.value;
+          });
+        // alert(checkedValues);
+        $('#time_record_check_all').val(checkedValues);
+    });
+});
+
+//getting individual  value when check box is clicked
+
+ $(function() {
+   $('.ui-multiselect-checkboxes input').click(function(){
+    var array_of_checked_values = $("#select_emails").multiselect("getChecked").map(function(){
+    return this.value;	
+    }).get();  
+      $('#time_record_check_all').val(array_of_checked_values); 
+     // alert(array_of_checked_values);
+    });
+ });
+
+
+</script>
+<style>
+ .bor{
+    font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
+    padding-bottom :3px;
+    margin-bottom :10px;
+    line-height :2em;    
+    }
+</style>
+
+	
+<% time_record_id_array=Array.new %>
+ <% for time_record in @time_records %>
+ 	<% time_record_id_array.push(time_record.id) %>
+ <% end  %>
+<div id="simple-search-form">
+  <%= search_form_for q,:url => '/TimeRecords/search', :html => {method: :post, class: 'well form-search upform'}  do |f| %>
+  <fieldset>
+    <%= f.text_field :description_or_project_title_or_user_username_or_project_prq_number_cont, class: "input-medium search-query" %>
+    <button type="submit" class="btn">Search</button>
+    <a href="#" id="advance-search">Advanced</a>&nbsp;&nbsp;
+    <%= link_to "Reset " , {:controller => "time_records_search", :action => "all_time"  } %>
+     <input type="hidden" name="up"> 
+  <% end %>
+<% if !@time_records.blank? %>
+   <%= simple_form_for :time_record,:url => url_for(:action=>'timerecords_mail',:controller=>'time_records_search'), :html => {method: :post, class: 'form-horizontal'}  do |f| %>
+ <%#= hidden_field_tag "time_record_check_all" %>
+<%= hidden_field_tag "time_record_check" %>
+
+<input type="hidden" name="time_record_id_array" value = "<%= time_record_id_array%>" >
+<%#= f.submit "Send TimeRecords Email",:style=>"float:right;margin-top:-25px;",class: 'btn btn-primary email-link' %>
+<a id="various2" href="#nenu" title="Sending Email TimeRecords"><%= image_submit_tag("email_icon.png", :class=> "email-link",:style=>"float:right;margin-top:-25px;width:25px;height:25px;") %></a>
+<% end %>
+<% end %>
+  </fieldset>
+</div>
+
+<div style="display: none;">
+    
+		<div id="nenu" style="width:700px;height:500px;overflow:auto;">
+		<span class="select-contacts pull-right">
+      <select style="display:none;width:250px" id="select_emails" class="span1 contacts" title="Email Projects" multiple="multiple" name="email_contacts" size="5">
+         <% @cntcts.each do |contact| %>
+	          <% if !contact.email.blank? %>
+	            <option value="<%= contact.id %>"><%= contact.email %></option>
+            <% end %>
+	       <% end %>
+	      </select>
+   </span>
+    <br/>
+    <div class="bor"><h4>List of the task to be sent </h4></div>
+    <div id="data"></div>
+   </div>
+	 </div>
+
+
+<input type="hidden" id="myid" value='<%= @choosed if !@choosed.blank? %>'>
+<div id="advance-search-form" style="display: none">
+  <%= search_form_for q,:url => '/TimeRecords/search', :html => {method: :post, class: 'form-horizontal downform'}  do |f| %>
+  <fieldset>
+  <legend>Search Time Records</legend>
+  
+   <input type="hidden" name="down"> 
+  <div class="control-group">
+    <%= f.label :activity_date_cont, "Activity Date", class: 'control-label' %>
+    <div class="controls">
+      <% if q.activity_date_cont.blank? %>
+    <%= f.text_field :activity_date_cont, include_blank: true, default: nil, :id => 'datepicker' %> 
+      <% elsif !q.activity_date_cont.blank? %>
+      <%= f.text_field :activity_date_cont, :value => "#{change_date_format_for_edit_page(q.activity_date_cont)}", :id => 'datepicker' %> 
+      <% end %> 
+      
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :time_record_type_cont, "Activity", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :description_cont %>
+    </div>
+  </div>
+  
+  
+  <div class="control-group">
+    <%= f.label :project_title_cont, "Project", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :project_title_cont %>
+    </div>
+  </div>
+     <div class="control-group">
+    <%= f.label :project_prq_number_cont, "Project#", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :project_prq_number_cont %>
+    </div>
+  </div>
+  <% if current_user.admin %>
+   <div class="control-group">
+    <%= f.label :user_name_cont, "User", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :user_username_cont %>
+    </div>
+  </div>
+  <% end %>
+
+  <div class="form-actions">
+    <%= f.submit class: 'btn btn-primary' %>
+    <input type="reset" class='btn'></input>
+    <a href="#" id="simple-search">Simple</a>
+  </div>
+ 
+  </fieldset>
+  <% end %>
+</div>

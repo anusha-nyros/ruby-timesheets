@@ -1,0 +1,242 @@
+<script type="text/javascript">
+ $('document').ready(function(){
+     $('#advance-search').click(function(){
+        $('#advance-search-form').toggle()
+        $('#simple-search-form').toggle()  
+     
+    }); 
+  $('.s').change(function(){  
+             if($(this).hasClass('up')){
+              var input = $("<input>").attr("type", "hidden").attr("name", "mydata").val($('.s').val());
+              $('.upform').append($(input));
+                $('.upform').submit();
+              }else{
+                 var input = $("<input>").attr("type", "hidden").attr("name", "mydata").val($('.s').val());
+                 $('.downform').append($(input));
+                 $('.downform').submit();
+              }
+        });
+        var n= $('#myid').val();        
+        $('#up').val(n);
+
+
+
+
+
+  /* for selection */ 
+ });
+/* fror selection */ 
+$(function(){
+// Datepicker
+$('#datepicker1').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});		
+});
+
+/* for emails sending*/
+$(function(){
+	$("#select_emails").multiselect();
+});
+$('document').ready(function(){
+
+	 $('#advance-search').click(function(){
+        $('#advance-search-form').toggle()
+        $('#simple-search-form').toggle()  
+        }); 
+
+	
+
+ $('#select_emails :checkbox').removeAttr('checked');  
+ $('.email-link').click(function(e){ 
+        e.preventDefault();
+       
+        if($('#issue_check').val() == ''){
+          alert("Please select atleast one issue ");
+              return false;
+          } 
+        if($('#issue_check').val() != ''){
+                  var task_ids = $('#issue_check').val();
+                  $('.select-contacts').css("display","block");
+                  $('#various2').fancybox();  
+			              	$.ajax({
+                          type: "POST",
+                          url: "/issuemaillist",
+                          traditional: true,
+                          data: {
+                              ids: task_ids
+                                  },
+                          success:function(data, textStatus, XMLHttpRequest){
+                                $('#data').html(data);   
+                                                           
+                               }  
+				                    });                        
+                }  
+ });
+
+  $("#select_emails").change(function() {
+      $('.email-link').addClass("send"); 
+      
+  });
+  $('.ui-multiselect-none').click(function(){
+    $('#select :checkbox').removeAttr('checked');  
+    $('#issue_check_all').val("");
+     
+  });
+//getting all checked Values when chekall is clicked
+  $("#select_emails")
+    .multiselect()
+    .bind("multiselectclick multiselectcheckall multiselectuncheckall", function( event, ui ){
+        var checkedValues = $.map($(this).multiselect("getChecked"), function( input ){
+            return input.value;
+          });
+        // alert(checkedValues);
+        $('#issue_check_all').val(checkedValues);
+    });
+});
+
+//getting individual  value when check box is clicked
+
+ $(function() {
+   $('.ui-multiselect-checkboxes input').click(function(){
+    var array_of_checked_values = $("#select_emails").multiselect("getChecked").map(function(){
+    return this.value;	
+    }).get();  
+      $('#issue_check_all').val(array_of_checked_values); 
+     // alert(array_of_checked_values);
+    });
+ });
+
+
+
+
+</script>
+
+<style>
+ .bor{
+    font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
+    padding-bottom :3px;
+    margin-bottom :10px;
+    line-height :2em;    
+    }
+</style>
+
+	
+<% issue_id_array=Array.new %>
+ <% for issue in @issues %>
+ 	<% issue_id_array.push(issue.id) %>
+ <% end  %>
+<div id="simple-search-form">
+  <%= search_form_for q,:url => search_issues_path, :html => {method: :post, class: 'well form-search upform'}  do |f| %>
+   <fieldset>
+    <%= f.text_field :title_or_issuetype_issuetype_or_project_type_type_name_or_project_title_cont,:style=>"width:220px;", class: "input-medium search-query" %>
+    <button type="submit" class="btn btn-success">Search</button>
+  &nbsp;&nbsp; <a href="#" id="advance-search">Advanced</a> &nbsp;&nbsp;
+    <%= link_to "Reset " , {:controller => "issues", :action => "index"} %>&nbsp;&nbsp;
+     <input type="hidden" name="up"> 
+  <% end %>
+<% if !@issues.blank? %> 
+<%= simple_form_for :issue,:url => url_for(:action=>'sendmail',:controller=>'issues'), :html => {method: :post, class: 'form-horizontal'}  do |f| %>
+
+<%= hidden_field_tag "issue_check" %>
+
+<input type="hidden" name="issue_id_array" value = "<%= issue_id_array%>" >
+<%#= f.submit "Send Issues Email",:style=>"float:right;margin-top:-25px;",class: 'btn btn-primary email-link' %>
+<a id="various2" href="#nenu" title="Sending Email Issues"><%= image_submit_tag("email_icon.png", :class=> "email-link",:style=>"float:right;margin-top:-25px;width:25px;height:25px;") %></a>
+<% end %>
+<% end %>
+</fieldset>
+</div>
+<input type="hidden" id="myid" value='<%= @choosed if !@choosed.blank? %>'>
+<div style="display: none;">
+    
+		<div id="nenu" style="width:800px;height:500px;overflow:auto;">
+		<span class="select-contacts pull-right">
+
+      <select style="display: none;width:280px" id="select_emails" class="span1 contacts" title="Email Projects" multiple="multiple" name="email_contacts" size="5">
+         <% @cntcts.each do |contact| %>
+	          <% if !contact.email.blank? %>
+	            <option value="<%= contact.id %>"><%= contact.email %></option>
+            <% end %>
+	       <% end %>
+	      </select>
+   </span>
+    <br/>
+    <div class="bor"><h4>List of the Projects to be sent </h4></div>
+    <div id="data"></div>
+
+   </div>
+	 </div>
+
+
+
+<div id="advance-search-form" style="display: none">
+  <%= search_form_for q,:url => search_issues_path, :html => {method: :post, class: 'form-horizontal downform'}  do |f| %>
+  <fieldset>
+  <legend>Search Issues</legend>
+   <input type="hidden" name="down"> 
+<br/>
+<table>
+<tr>
+  <td>
+    <div class="control-group">
+    <%= f.label :title_cont, "Issue Title", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :title_cont %>
+    </div>
+  </div>
+    </td>
+  <td>
+</tr> 
+<tr>
+  <td>
+    <div class="control-group">
+      <%= f.label :project_type_type_name_cont, "Project", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :project_type_type_name_cont %>
+    </div>
+  </div>
+    </td>
+</tr>
+<tr>  
+<td>
+    <div class="control-group">
+    <%= f.label :project_title__cont, "Task", class: 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :project_title_cont %>
+    </div>
+  </div>
+  </td>
+</tr> 
+<tr>
+    <td>
+<div class="control-group">
+    <%= f.label :date_created_cont, "Date", class: 'control-label' %>
+    <div class="controls">
+      <% if q.date_created_cont.blank? %>
+    <%= f.text_field :date_created_cont, include_blank: true, default: nil, :id => 'datepicker1', :style=>"width:100px;" %> 
+      <% elsif !q.date_created_cont.blank? %>
+      <%= f.text_field :date_created_cont, :value => "#{change_date_format_for_edit_page(q.date_created_cont)}", :id => 'datepicker1', :style=>"width:100px;" %> 
+      <% end %>
+    </div>
+  </div>
+   </td>
+</tr> 
+</table>  
+  <div class="form-actions">
+    <%= f.submit class: 'btn btn-success' %>
+    <input type="reset" class='btn'></input>
+    <a href="#" id="simple-search">Simple</a>
+  </div>  
+  </fieldset>
+  <% end %>
+</div>
+<style>
+#side li{
+  display:inline;
+  list-style:none;
+}
+#up {
+ float:right;
+}
+</style>

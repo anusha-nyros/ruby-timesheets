@@ -1,0 +1,98 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});				
+});
+ $('document').ready(function(){
+     $('#advance-search').click(function(){
+        $('#advance-search-form').toggle()
+        $('#simple-search-form').toggle()  
+     
+    }); 
+
+	$('.s').change(function(){  
+             if($(this).hasClass('up')){
+              var input = $("<input>").attr("type", "hidden").attr("name", "mydata").val($('.s').val());
+              $('.upform').append($(input));
+                $('.upform').submit();
+              }else{
+                 var input = $("<input>").attr("type", "hidden").attr("name", "mydata").val($('.s').val());
+                 $('.downform').append($(input));
+                 $('.downform').submit();
+              }
+        });
+        var n= $('#myid').val();        
+        $('#up').val(n); 
+
+
+
+
+  });
+
+</script>
+
+
+
+<div id="simple-search-form">
+  <%= search_form_for q,:url => search_contacts_path, :html => {method: :post, class: 'well form-search upform'}  do |f| %>
+  <fieldset>
+    <%= f.text_field :contact_type_or_company_or_fax_or_chat_tool_cont, class: "input-medium search-query" %>
+    <button type="submit" class="btn">Search</button>
+    <a href="#" id="advance-search" style="margin-left:3px">Advance</a>
+	<input type="hidden" name="up"> 
+  <% end %>
+  </fieldset>
+</div>
+
+
+<input type="hidden" id="myid" value='<%= @choosed if !@choosed.blank? %>'>
+
+<div id="advance-search-form" style="display: none">
+  <%= search_form_for q,:url => search_contacts_path, :html => {method: :post, class: 'form-horizontal downform'}  do |f| %>
+  <fieldset>
+  <legend>Search Contacts</legend>
+ <input type="hidden" name="down"> 
+  <div class="control-group">
+    <%= f.label :contact_type_cont, "Contact Type", class: 'control-label' %>
+    <div class="controls">
+      <%= f.select :contact_type_cont,  [ "Associate", "Client", "Contact", "Contractor", "Employee", "Supplier"], :prompt => "All" %>
+    </div>
+  </div>
+ 
+  <div class="control-group">
+    <%= f.label :company_cont, "Company", class: 'control-label' %>
+    <div class="controls">
+    <%= f.text_field :company_cont %>      
+    </div>
+  </div>
+  
+
+  <div class="control-group">
+    <%= f.label :chat_tool_cont, "Chat Tool", class: 'control-label' %>
+    <div class="controls">
+    <%= f.text_field :chat_tool_cont %>      
+    </div>
+  </div>
+  
+  <div class="control-group">
+    <%= f.label :fax_cont, "Fax", class: 'control-label' %>
+    <div class="controls">
+    <%= f.text_field :fax_cont %>      
+    </div>
+  </div>
+  
+  
+  <div class="form-actions">
+    <%= f.submit class: 'btn btn-primary' %>
+    <input type="reset" class='btn'></input>
+    <a href="#" id="simple-search">Simple</a>
+  </div>  
+  </fieldset>
+  <% end %>
+</div>
+
+
+

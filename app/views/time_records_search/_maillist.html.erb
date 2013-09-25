@@ -1,0 +1,116 @@
+<br/>
+<table class="table table-striped">
+    <tr>
+     
+      <th class="span3">Date</th>
+      <th>Activity</th>
+      <th>Hours</th>
+      <% if current_user.organization.account_type == "Project" || current_user.organization.account_type == "project" %> 
+      <th>Project Name</th><% end %>
+      <th>Project#</th>
+	    <th>User</th>  
+	<th class="span2"></th>
+    </tr>
+    <%#= @time_records.size %>
+    <% total = 0 %>
+    <% for time_record in @tmrec %>
+      <tr>
+        <td><%= time_record.activity_date.strftime('%b-%d-%Y') %></td>
+        <td><%= simple_format(two_lines_or_200(time_record.description)) %></td>
+        <td><%= time_record.total_hours %></td>
+        <td><%= time_record.project.try(:title) if !time_record.project_id.blank?  %></td>
+        <td><%= time_record.project.try(:prq_number) %></td>
+        <td><%= time_record.user.try(:username) if !time_record.user_id.blank?  %></td>
+        <td></td>
+     </tr>
+       <% total = total + time_record.total_hours %>
+    <% end %>
+   <tr>
+        <td></td>
+        <td><strong>Total</strong></td>
+        <td><strong><%= total %></strong></td><td></td><td></td><td></td><td></td>
+      </tr>
+  </table>
+
+<%#= @tsk_array %>
+<br/>
+<div class="bor">You can enter your  valuable message here </div>
+
+<%= simple_form_for :time_record,:url => url_for(:action=>'timerecords_mail',:controller=>'time_records_search'), :html => {method: :post, class: 'form-horizontal',:multipart => true ,:id => 'eform'}  do |f| %>
+<%= hidden_field_tag "time_record_check_all" %>
+<%= f.input :mailed_projects ,:input_html => {:value => @tmrec_array} ,:as => :hidden %>
+<div class="control-group text optional">
+<label class="text optional control-label" for="project_msg">Message</label>
+<div class="controls">
+<textarea class="text optional span5" cols="35" id="time_record_msg" name="project[msg]" rows="5">
+</textarea>
+</div>     
+</div>
+<div class="controls">
+<%= f.submit "Send Email" ,class: 'btn btn-mini btn-primary' %> 
+</div>
+<div id="msgError" style="text-align:center;font-size:11px;font-weight:bolder"> </div>    
+<div id="contactError" style="text-align:center;font-size:11px;font-weight:bolder"> </div>    
+<% end %>
+
+<style>
+ #msgError label,#contactError label {
+  color :red;
+  font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
+  font-size : 13px;
+  }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function() {  
+        var serializedData = $("#eform").serialize();
+        $("#eform").validate({ 
+            errorPlacement: function (error, element) {
+               if (element.attr("name") == "time_record_check_all") 
+                     $("#contactError").append(error); 
+               else 
+                       error.insertAfter(element); 
+                       error.fadeOut(1000);
+                             }  ,            
+            rules: {
+                "time_record_check_all":{
+                    required: true 
+                }
+              },
+            messages: {
+                "time_record_check_all":{
+                    required: "Please select atleast one contact" 
+                }
+            }, 
+            submitHandler: function() {
+                  if (confirm("You are about to submit, please recheck...")) {
+                    var project_check_all = $('#time_record_check_all').val();
+                    var msg = $('#time_record_msg').val();
+                    var mailed_projects = $('#time_record_mailed_projects').val();
+                   $.fancybox.showActivity();
+                   $.ajax({
+                            url:"/time_records_search/timerecords_mail",
+                            type:"POST",
+                            data: { time_record_check_all: $('#time_record_check_all').val(),
+                            msg: $('#time_record_msg').val(),mailed_projects: $('#time_record_mailed_projects').val() }, 
+                            success: function(data){ 
+                                             $.fancybox({
+                                              'content' : data,
+                                              'overlayShow'	: false,
+				                                      'transitionIn'	: 'elastic',
+				                                      'transitionOut'	: 'elastic',
+                                              'autoDimensions'	: false,
+			                                        'width'         		: 350,
+			                                        'height'        		: 'auto',
+                                              });     
+                              
+                                            },
+                            error: function() {alert('failed');}
+                    }).done(function() {$("#select_emails").multiselect("uncheckAll");});
+                    return false;
+            }}
+
+        });
+    });
+</script>
+ 

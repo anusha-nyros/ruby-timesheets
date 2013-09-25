@@ -1,0 +1,46 @@
+<script type="text/javascript">
+
+$(function(){
+// Datepicker
+$('#datepicker2').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});
+
+$('#datepicker3').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});
+
+});
+
+
+</script>
+
+
+<div id="advance-search-form">
+<%= search_form_for q,:url => search_statistics_path, :html => {method: :post, class: 'form-horizontal'}  do |f| %>
+  <div class="form-actions" style="height:70px">
+  <div class="control-group" >
+    <%= f.label :date_created_gteq, "Select Range", class: 'control-label' %>
+    <div class="controls">
+      <% if q.date_created_gteq.blank? %>
+      <%= f.text_field :date_created_gteq, include_blank: true, default: nil, :id => 'datepicker2', :style=>"width:100px;" %>
+      <% elsif !q.date_created_gteq.blank? %>
+      <%= f.text_field :date_created_gteq, :value => "#{change_date_format_for_edit_page(q.date_created_gteq)}", :id => 'datepicker2', :style=>"width:100px;" %> 
+      <% end %>
+       - 
+       <% if q.date_created_lteq.blank? %>
+      <%= f.text_field :date_created_lteq, include_blank: true, default: nil, :id => 'datepicker3', :style=>"width:100px;"  %>
+       <% elsif !q.date_created_lteq.blank? %>
+       <%= f.text_field :date_created_lteq, :value => "#{change_date_format_for_edit_page(q.date_created_lteq)}", :id => 'datepicker3', :style=>"width:100px;" %> 
+       <% end %>
+    </div><br/>
+     <div class="controls" style="margin-left:200px">
+      <%= f.submit class: 'btn btn-success' %>
+      <%= link_to 'Reset' , statistics_url , class: 'btn' %>
+     </div>   
+  </div>
+</div> 
+<% end %>
+</div>

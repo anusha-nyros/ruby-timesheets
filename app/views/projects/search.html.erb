@@ -1,0 +1,132 @@
+<style type="text/css">
+.last span{
+  display:inline;
+}
+.last {
+  width:80px;
+}
+#up {
+ float:right;
+}
+</style>
+<script type="text/javascript" >
+//for selecting all checkboxes
+function update_project_id() {         
+     var allVals = [];
+     $('.searched_result :checked').each(function() {
+       allVals.push($(this).val());
+     });
+     $('#project_check').val(allVals);
+     $('#project_chec').val(allVals);
+  }
+//for selecting individual checkboxes 
+$(function() {
+   $('.searched_result input').click(update_project_id);
+   update_project_id();
+ });
+
+ $(document).ready(function (){
+  $(".check_all_or_none").click(function(){
+  $('.searched_result :checkbox').attr('checked', $( this ).is( ':checked' ) ? true : false );
+  update_project_id();  
+  });
+});
+</script>
+<%#= render :partial => "menu1" if current_user.admin? %><br/>
+<%= render :partial => "menu" %>
+<%= render :partial => "search_form", locals: {q: @q} %>
+
+<div id="search-result">
+  <% if @projects.blank? %>
+    <% if params[:q] %>
+      <p class="well">Your search does not generate a result</p>
+    <% end %>
+<div style="float:left;">
+<% if @projects.blank? %>
+<b style="color:red;">No Records Found </b>
+<% end %>
+</div>
+  <% else %>
+    <div style="float:left;margin-bottom:10px;"><b><% unless @projects.blank? %>(<%= @projects.count %>) Records Found<% end %></b></div>
+    
+ 
+  <% if controller.action_name != "index" %>     
+     <select name="sel" class="s <%= @secret if !@secret.blank? %> span1" id="up" >
+                
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+     </select>
+    <% end %>
+   <span class="pull-right" style="padding:5px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+   </span>
+
+
+
+<br/>
+    <table class="table table-striped ">
+      <tr>
+         <th style="width:10px;"><input type="checkbox" class="check_all_or_none"> </th>
+         <th style="width:90px"><%= sort_link(@q, :project_name, "Project") %></th>
+         <th><%= sort_link(@q, :priority, "Priority") %> </th>
+         <th><%= sort_link(@q, :title, "Title") %></th>
+         
+         <th><%= sort_link(@q, :action_required, "Status") %></th>
+	  <th><%= sort_link(@q, :schedule_date, "Schedule Date") %></th>
+         <th><%= sort_link(@q, :amount, "Amount") %></th>
+         <th><%= sort_link(@q, :actual, "Actual") %></th>
+         <th style="width:20px;"><%= sort_link(@q, :active, "Active") %></th>
+         <th><%= sort_link(@q, :prq_number, "Tasks#") %></th>	  
+      <th></th>
+      </tr>
+   <% act_tot=0 %>
+    <% for project in @projects %>
+      <tr>
+       <td class="searched_result" ><input type="checkbox" name="project_list[]" id="check_<%= project.id %>"  value= "<%= project.id %>"></td>
+       <td style="width:90px"><%= project.project_name %></td>
+       <td><%=  project.priority%> </td>
+       
+        <td>
+            <p>
+              <span style="display:block" class="proj_title"><%= project.title %></span>
+              <span style="display:none;text-indent:10px" class="proj_notes"><%=  project.notes %></span>
+            </p>
+          </td>
+        
+        <td><%= project.action_required %></td>
+        <td><%= project.schedule_date.strftime("%b-%d-%Y") if !project.schedule_date.blank? %></td>
+        <td><%= number_with_precision(project.amount,:precision => 1, :strip_insignificant_zeros => true) %></td>
+        <td><%= number_with_precision(project.actual,:precision => 1, :strip_insignificant_zeros => true)  %></td>
+	 <% if !project.actual.nil? %> 
+            <% act_tot=act_tot + project.actual %>
+        <% end %>
+        <%= simple_form_for :project, url: "/projects/status/#{project.id}" do |f| %>
+	   <% if project.active == true  %><td><input type="checkbox" name="active"  checked='checked' onclick="this.form.submit();"  ></td>   <% else  %>
+		<td style="width:20px"> <input type="checkbox" name="inactive"  onclick="this.form.submit();" ></td>
+		<% end %>
+		
+		<% end %>
+        <td><%= project.prq_number %></td>
+        <td>
+		<div class='last'>
+              <span><%= link_to 'Show', project, class: 'btn btn-mini' %> </span>
+              <span><%= link_to 'Edit', edit_project_path(project), class: 'btn btn-mini' %></span>
+            </div>
+        <%#= link_to 'TimeRecords', {:controller=>'projects',:action=>'time_rec',:id=>project},class: 'btn btn-mini' %>
+        </td>
+      </tr>
+    <% end %>
+    <tr>
+    <th colspan=5> </th>
+    <th > Total Amount: </th>
+    <td><b><%= @projects.sum(&:amount).to_f %> </b></td>
+    <td><b><%= number_with_precision(act_tot,:precision => 1,:strip_insignificant_zeros => true)%></b></td><td></td><td></td><td></td><td></td>
+    </tr>
+</table>
+ 
+    <%= paginate @projects %>
+  <% end %>
+  
+</div>

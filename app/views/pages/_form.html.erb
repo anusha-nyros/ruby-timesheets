@@ -1,0 +1,57 @@
+<div class="bor">
+<%= simple_form_for @page,:html => {method: :post, class: 'form-horizontal'} do |f| %>
+  <%= f.error_notification %>
+
+  <fieldset > 
+    <legend>Contact Us / Feedback </legend>
+    <div style="text-indent:50px;text-align:justify">
+      You are encouraged to use the online feedback form below to send us your valuable comments and suggesstions as well as any queries about our services that you may have as a part of our continual improvement program to optimize customer service , we request you to please provide your valuble feedback . You may also email your queries / feedback / suggestions to support@goteamcloud.com. All feedback received are fully responded in a timely manner. Your patience in getting our reply is most appreciated. This survey should take less than few minutes to complete and your feedback will be of immense value in contributing to the improvement of service .We look forward to your feedback today.
+    </div>
+     <br/>
+      <div class="form-inputs">
+    
+      <%= f.input :first_name %>
+      <%= f.input :last_name  %>
+   
+      <%= f.input :email %>
+      <%= f.input :company_name %>
+      <%= f.input :message,:input_html=>{:class => 'span7',:style=>"height:100px;"},:label => "Feedback" %>
+    </div>
+  </fieldset>
+  
+ <div class="form-actions">
+  <p><%= f.submit "Send Email" , class: 'btn btn-primary' %></p>
+  </div>
+
+ <div class="pull-right" style="padding-top:10px;">
+    Thank you for your participation, <br/>
+    <span class="pull-right">Goteamcloud.</span> 
+ </div>
+
+
+<% end %>
+</div>
+<script type="text/javascript">
+	$('document').ready(function(){
+		$('.sub_link').click(function(){
+			$('#msg').slideDown('slow');
+			$('#msgtype').val($(this).attr('subject'));
+			$('#subject').val($(this).attr('subject'));
+			
+		});	
+	
+	});
+</script>
+<style>
+#msgtype{
+	width:64px;
+}
+
+.bor{
+    font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
+    border-bottom:1px solid #EBEBEB;
+    padding-bottom :3px;
+    margin-bottom :10px;
+    line-height :2em;    
+}
+</style>

@@ -1,0 +1,130 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+$('#datepicker1').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+$('#datepicker2').datepicker({
+  
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+$(".simple_form").delegate('.my-datepicker', 'mouseenter', function(){
+        $(this).datepicker({
+            dateFormat: 'yy-dd-mm'
+          });
+     });
+
+$(".simple_form").delegate('.fav', 'change', function(){
+        $.post('/expenses/pj',{id: $(this).attr("value")},function(data){	
+			   	});
+     });
+});
+
+
+</script>
+  
+<%= simple_nested_form_for(@expense,:html=>{:multipart => true, class: 'form-horizontal' } ) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%#= f.input :exp_number %>
+    <table>
+      <tr>
+        <td><%= f.input :username ,:placeholder => "#{current_user.username}",:disabled => true,:input_html=>{:style => "text-transform:capitalize"} %></td>
+        <td><%= f.input :expensetype_id , :collection => current_user.organization.expensetypes.map{|e| [e.expensetype , e.id]} ,:label => "Expense Type",:prompt => "Choose Expense Type" ,:include_blank => false %> </td>
+      </tr>
+      <tr>
+        <td>
+    <% if @expense.date.blank? %>
+    <%= f.input :date, :as => :string, :input_html => { :id => 'datepicker' }  %>
+      <% elsif !@expense.date.blank? %>
+       <%= f.input :date, :as => :string, :input_html => { :id => 'datepicker' , :value => change_date_format_for_edit_page(@expense.date)}  %>
+ <% end %>
+      </td>
+      <td><%= f.input :contact_type ,:collection => ["supplier","contractor"] ,:label => "Contact Type" ,:prompt => "Choose ContactType"%></td>
+      </tr>
+      <tr>
+        <td><%= f.input :amount,:disabled => true %></td>
+        <td><%= f.input :reference ,:label => "Ref#" %></td>
+      </tr>
+      <tr>
+        <td colspan="2"><%= f.input :description, :label=>"Description", input_html: {rows: '5', class: 'span9'}%></td>
+      </tr>
+  </table>
+
+    <!-- for Payments -->
+    <div><b>Payment Section</b></div> <br/>
+    <div style="display:none" id="add_form">
+    <%= f.simple_fields_for :payments do |builder| %>
+    <table>
+      <tr>
+        <td><%= builder.input :vendor  %> </td>
+        <td><%= builder.input :project_type_id,:collection => current_user.organization.project_types.find(:all, :order => 'type_name').map {|p| [p.type_name,p.id]} , :label => " Project", :prompt => "Choose a Project",:input_html => { class: 'fav'} %></td>
+      </tr>
+      <tr>
+        <td><%= builder.input :paymethod  %></td>
+        <%#= f.collection_select :project_id, @projects, :id, :title, {:prompt => "Select Task"},:style =>"margin-left:15px;margin-bottom:15px;width:300px;" %>
+        <td>
+        <%#= builder.label "Select Task", :style => "font-weight:bold" %>          
+      <%= builder.input :project_id,:collection => current_user.organization.projects.find(:all, :order => 'title').map {|p| [p.title,p.id]} ,:label => "Task", :prompt => "Choose a Task",:input_html => { class: 'fav'} %></td>
+        
+      </td>
+      </tr>
+      <tr>
+        <td><%= builder.input :date ,:as => :string, :input_html => { class: 'my-datepicker'} %> </td>
+        <td><%= builder.input :amount %></td> 
+        
+      </tr>
+      <% if current_user.admin && controller.action_name == "ed" %>
+       <tr>
+        <td colspan="2"><%= builder.input :approved_amt %> </td>
+      </tr>  
+       <% end %> 
+      <tr>
+        <td colspan="2"><%= builder.input :exp_description , input_html: {rows: '5', class: 'span9'} %> </td>
+      </tr>  
+     </table>
+    <%#= builder.input :date, :as => 'date_picker', :input_html => { :data => {:datepicker => :datepicker} } %>
+    <%= builder.link_to_remove "Remove Paymethod",class: "btn btn-primary" %><br/><br/>   
+    <% end %>
+   </div>
+   <%= f.link_to_add "Add Paymethod", :payments ,class: "btn btn-primary"%> 
+  <!-- for attachments -->
+  
+<br/>
+<br/>
+<div class="controls">
+<%= f.fields_for :expense_attachments do |attachment_form|  %>
+ <%= link_to attachment_form.object.doc.uploaded_filename, attachment_form.object.doc.url if attachment_form.object.doc?%>
+    <%= attachment_form.file_field :doc %>
+    <%= attachment_form.link_to_remove "Remove" , :style=>"margin-left:60px;"%>
+<% end %>
+
+  <%= f.link_to_add "Add attachment", :expense_attachments %>
+</div>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit , class: "btn btn-primary" %>
+  </div>
+<% end %>
+
+<style>
+.builds{
+margin-left:20px;
+margin-top:10px;
+}
+.build{
+margin-top:10px;
+}
+#exp_attach tr td{
+margin-left:10px;
+padding-right:10px;
+}
+</style>

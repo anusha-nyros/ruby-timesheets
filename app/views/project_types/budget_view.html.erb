@@ -1,0 +1,45 @@
+
+<%#= render :partial => "menu1" %>
+<% if !@active1.blank? %>
+<%= simple_form_for :project_type, url: "/project_types/stat" do |f| %>
+	   <% if @active1.status_check == 'active' %><input type="checkbox" name="active"  checked='checked' onclick="this.form.submit();"  >&nbsp;&nbsp;<%= "Turn On/Off Budget View " %><br/>
+            <% else  %>
+  		 <input type="checkbox" name="inactive"  onclick="this.form.submit();" >&nbsp;&nbsp;<%= "Turn On/Off Budget View " %><br/>
+           <% end %>
+		
+<% end %>
+<% end %> 
+
+<%= render :partial => "menu"%>
+
+<% if @projects.blank? %>
+  <div class="well">You don't currently have any  projects </div>
+<% else %>
+<table class="table table-striped" >
+  <tr>
+         <th> Project Name </th>
+         
+         <th>Project#</th>
+	  <th> Status </th>
+         <th> Hours Budget </th>
+         <th> Expense Budget </th>
+         <th>Hours</th>
+         <th>Expenses </th>
+    
+  </tr>
+
+<% @projects.each do |project_type| %>
+  <tr>
+    <td><%= project_type.type_name %></td>
+    
+    <td><%= project_type.proj_number %></td>
+    <td><%= project_type.status? ? "#{project_type.status}" : "-" %></td>
+    <td><%= project_type.hours_budget %></td>
+    <td><%= project_type.expense_budget %></td>
+    <td><%= project_type.projects.to_a.sum(&:amount)%></td>
+    <td><%=  number_to_currency(Payment.find(:all ,:conditions => {:project_type_id => project_type.id }).sum(&:pay_amount),:precision=> 1) %></td>
+
+  </tr>
+<% end %>
+</table>
+<% end %> 

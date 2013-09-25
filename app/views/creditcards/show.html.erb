@@ -1,0 +1,17 @@
+<p id="notice"><%= notice %></p>
+
+<p>Your Transaction Details </p>
+
+<p><b> Plan : </b> <%= @creditcard.user.chosed_plan %> </p>
+
+<p><b> Amount Charged </b> :<% if @creditcard.user.chosed_plan == 'Plan1' %>
+                        <b>$5</b>
+                       <% elsif @creditcard.user.chosed_plan == 'Plan2' %>
+                         <b>$15</b>
+                       <% elsif @creditcard.user.chosed_plan == 'Plan3' %>
+                         <b>$25</b>
+                       <% end %>
+      </p> 
+
+
+<%= link_to 'Home', admin_root_url %>

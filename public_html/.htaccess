@@ -1,0 +1,12 @@
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} !rortime\.com$ [NC]
+RewriteRule ^/(.*)$ http://rortime.com/$1 [L,R=301]
+RewriteRule ^(.*)$ "http\:\/\/0\.0\.0\.0\:3001\/$1" [P,L]
+
+<Files 403.shtml>
+order allow,deny
+allow from all
+</Files>
+
+

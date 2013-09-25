@@ -1,0 +1,37 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat:  'mm/dd/yy'
+});				
+});
+</script>
+
+<%= simple_nested_form_for @statusreport, :html=>{:multipart => true, class: 'form-horizontal'} do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+       <% if @statusreport.report_date.blank? %>
+    <%= f.input :report_date, :as => :string,:readonly=>true , :input_html => { :id => 'datepicker' } %>
+    <% elsif !@statusreport.report_date.blank?%>
+    <%= f.input :report_date, :as => :string,:readonly=>true,:input_html => { :id => 'datepicker', :value => change_date_format_for_edit_page(@statusreport.report_date) } %>
+    <% end %>
+     <%= f.input :report_time, :default => {:hour => '00', :minute => '00'},:input_html => { :style => "width:103px;",:disabled=>true} %>
+     <%= f.input :send_to ,:readonly=>true %>
+     <%= f.input :sent_by ,:readonly=>true %>
+     <%= f.input :report_date, :as => :string,:readonly=>true %>
+     <%= f.input :subject  %>
+     <%= f.input :report_user , :label=>"User",:readonly=>true %>
+     <%= f.input :custom_message, input_html: {rows: '5', class: 'span6'}   %>
+
+     
+  </div>
+  
+  <div class="form-actions">
+  <p><%= f.button :submit, class: 'btn btn-primary' %></p>
+  </div>
+<% end %> 
+
+
+

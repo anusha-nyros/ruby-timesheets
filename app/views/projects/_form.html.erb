@@ -1,0 +1,343 @@
+
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+$('#datepicker1').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+$('#datepicker2').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+$('#datepicker3').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});	
+$('#datepicker4').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});			
+});
+$('document').ready(function(){
+	 $('#advance-search').click(function(){
+        $('#advance-search-form').toggle()
+        $('#simple-search-form').toggle()  
+     
+    }); 
+
+      $('.easy_import').click(function(){
+          $('.easy_import_form').toggleClass('slide');
+            if ($('.easy_import_form').hasClass("slide")){
+                    $('.main_project').css("display","none");                   
+                    $('.easy_import_form').slideDown(); 
+                    $('.easy_import').text('Normal');            
+            }
+            else{              
+                $('.easy_import_form').slideUp();
+                $('.easy_import').text('Easy Import');                  
+                $('.main_project').css("display","block");
+             }
+      });
+      $('.easy_import_form').submit(function(e){
+        if ( !$('#project_supplier_id').val()){               
+ 		    	$('#project_supplier_id').css("border","1px solid red");
+			    $('.alert').show();
+              return false;               
+                }     
+            else{
+                           $('.easy_import_form').submit();           
+                }
+        });
+	 $('.close').click(function(){
+        $(this).parent().fadeOut('slow');       
+    }); 
+
+   $("#dates").click(function () {
+  var $that = $(this);
+  $("#range").toggle("slow", function() {
+    $that.toggleClass("toggled-off");
+  });
+});	
+
+$("#date").click(function () {
+  var $that = $(this);
+  $("#range").toggle("slow", function() {
+    $that.toggleClass("toggled-off");
+  });
+});
+/* for switching tab between analysis and description */
+ $('#analysis').click(function(e){
+   /* if ( $(this).hasClass("analysis")){    */
+        e.preventDefault();
+        $('#description').css("display","block");
+        $('#analysis').css("display","none");
+        $('#pro_analysis').css("display","block");
+        $('#pro_description').css("display","none");
+    /*}*/
+    
+ });
+$('#description').click(function(e){
+    /*if ( $(this).hasClass("description")){    */
+        e.preventDefault();
+        $('#description').css("display","none");
+        $('#analysis').css("display","block");
+        $('#pro_analysis').css("display","none");
+        $('#pro_description').css("display","block");
+    /*}*/
+    
+ });
+/* end for switching tab between analysis and description */
+
+                     
+});
+</script>
+<div class="alert alert-error" style="display:none">
+       <a class="close">x</a>
+         Supplier can't be blank!
+</div>
+<% if controller.action_name != 'edit' %>
+<div class="form-actionss">
+  <p style="float:left;"><%#= link_to 'Easy Import','#',class: 'btn btn-primary easy_import' %></p>
+  </div>
+<% end %>
+
+<div class="easy_import_form" style="display:none">
+
+<%= simple_form_for @project, :url => url_for(:action=>'easy_import',:controller=>'projects'),:html=>{:multipart => true, class: 'form-horizontal easy_import_form' } do |f| %>
+ 
+ <%= f.error_notification %>
+
+  <div class="form-inputs">
+    
+    <%= f.input :project_name, :collection => current_user.organization.project_types.find(:all, :order => 'type_name').map { |r| [r.type_name, r.type_name] }, :prompt => "Choose a Project Type" %>
+    
+    <%= f.input :entered_by,:as=>'hidden',input_html: { value: "#{current_user.name}" }  %>
+	
+    <div class="controls" style="margin-left:-1px;margin-top :8px;">
+    <%= f.label "status"%>
+    <%= f.input :action_required, :collection => current_user.organization.statuses.find(:all).map { |r| [r.status_name, r.status_name] },:input_html => {},:prompt => "Choose a Status", :label => false %>
+    </div>
+    <% if @project.schedule_date.blank? %>
+    <%= f.input :schedule_date, :as => :string, :input_html => { :id => 'datepicker4' } %>
+    <% elsif !@project.schedule_date.blank? %>
+    <%= f.input :schedule_date, :as => :string, :input_html => { :id => 'datepicker4', :value => change_date_format_for_edit_page(@project.schedule_date) } %>
+    <% end %>
+    
+    <%= f.input :supplier_id, collection: current_user.organization.contacts.where(contact_type: 'supplier'), label_method: :company, name: 'supplier_id', :prompt => "Please Select"  %>
+    
+    <%= f.input :notes, :label=>"Project Description", input_html: {rows: '5', class: 'span9'}%>
+    <%= f.input :active, :input_html => { :checked => true } %>
+
+  </div>
+  
+  <div class="form-actions">
+  <p><%= f.submit "Create Task" ,class: 'btn btn-primary' %></p>
+  </div>
+<% end %>
+ 
+
+</div>
+
+
+<%#= button_tag 'Easy Import', class: 'btn btn btn-primary' %>
+<div class="main_project">
+<div id="range" style="display:none" >
+<table class="table table-striped">
+ <tr><th colspan="3"><h3>View Status History</h3></th><th>
+ <%= link_to "Close", "#", :id => 'date', :style=>'color:red;float:right;' %></th></tr>
+  <tr>
+  <th>Date</th>
+  <th>Status Report#</th>
+  <th>Info</th>
+  <th>% Completed</th>
+  </tr>
+<% if controller.action_name == 'edit' %>
+<% @project_history.each do |s| %>
+    
+  <tr>
+   <td><%= s.statusreport.try(:report_date).strftime("%b-%Y-%d") %></td>
+   <td><%= s.statusreport.try(:report_number) %></td>
+   <td><%= s.status_details %></td>
+   <td><%= s.per_completed %></td>
+   </tr> 
+ <% end %>
+ <% end %>
+   </table>
+</div>
+<%= simple_nested_form_for @project, :html=>{:multipart => true, class: 'form-horizontal' } do |f| %>
+ <%= f.error_notification %>
+   <table>
+   <tr>
+   <td colspan="2">
+    <%= f.input :title, :input_html => {:style => 'width: 60%'} ,:label => "Task Title"%></td></tr>
+    <tr>
+    <td>
+     <%= f.label "Project"%>
+    <%= f.input :project_type_id , :collection => current_user.organization.project_types.find(:all, :order => 'type_name',:conditions => {:status => ["active","pending","active"]}).map {|t| [t.type_name,t.id ]}, :prompt => "Choose a Project" ,  :label => false %>
+    </td><td>
+     <%= f.input :priority %>
+    </td>
+    </tr>
+    <tr><td>
+    <%= f.label "status"%>
+    <%= f.input :action_required, :collection => current_user.organization.statuses.find(:all).map { |r| [r.status_name, r.status_name] },:input_html => {},:prompt => "Choose a Status", :label => false %>
+    </td>
+    <td>
+    <%= f.input :reference, :label => "Reference #" %>
+    </td></tr>
+    <tr>
+    <td>
+    <% if @project.schedule_date.blank? %>
+    <%= f.input :schedule_date, :as => :string, :input_html => { :id => 'datepicker', :style => 'width: 120px' } %>
+    <% elsif !@project.schedule_date.blank? %>
+    <%= f.input :schedule_date, :as => :string, :input_html => { :id => 'datepicker', :value => change_date_format_for_edit_page(@project.schedule_date), :style => 'width: 120px' } %>
+    <% end %>
+    </td>
+    <td>
+    <% if @project.start_date.blank? %>
+    <%= f.input :start_date, :as => :string, :input_html => { :id => 'datepicker1', :style => 'width: 120px' } %>
+    <% elsif !@project.start_date.blank? %>
+    <%= f.input :start_date, :as => :string, :input_html => { :id => 'datepicker1', :value => change_date_format_for_edit_page(@project.start_date), :style => 'width: 120px' } %>
+    <% end %>
+    </td>
+    </tr>
+    <tr>
+    <td>
+     <%= f.input :amount %>
+    </td>
+    <td>
+    <% if @project.end_date.blank? %>
+    <%= f.input :end_date, :as => :string, :input_html => { :id => 'datepicker2', :style => 'width: 120px' } %>
+    <% elsif !@project.end_date.blank? %>
+    <%= f.input :end_date, :as => :string, :input_html => { :id => 'datepicker2', :value => change_date_format_for_edit_page(@project.end_date), :style => 'width: 120px' } %>
+    <% end %>
+    </td>
+    </tr>
+    <tr><td>
+    <%= f.input :supplier_id, collection: current_user.organization.contacts.where(contact_type: 'supplier'), label_method: :company, name: 'supplier_id',:label=>"Assigned To", :prompt => "Please Select "  %>
+    </td>
+      
+    
+    <td>
+    <% unless @project.statusreports.blank? %>
+    <% if controller.action_name=="edit" %>
+    <%= f.input :@project, :label => "Status Report#", :disabled => true, :input_html => {:style => 'background:whiteSmoke', :value => statusreport(@project)} %>
+    <% end %>
+    <% end %>
+    </td></tr>
+    <tr><td>
+    <%= f.input :owner, :collection => current_user.organization.contacts.where(contact_type: 'supplier').map { |r| [r.contact, r.contact] }, :prompt => "Select Owner" %>
+    </td>
+    <td>
+
+    <% unless @project.statusreports.blank? %>
+    <% if controller.action_name=="edit" %>
+    <%= f.input :@project, :label => "Status Sent", :disabled => true, :input_html => {:style => 'background:whiteSmoke', :value => statussent(@project)} %>
+    <% end %>
+    <% end %>
+    </td>
+    </tr>
+    <tr>
+    <td>
+<% unless @project.project_reports.blank? %>
+    <% if controller.action_name=="edit" %>
+    <%= f.input :@project, :label => "Pdf Report#", :disabled => true, :input_html => {:style => 'background:whiteSmoke', :value => pdfreportval(@project)} %>
+    <% end %>
+    <% end %>
+    </td>
+    <td>
+
+    <% unless @project.statusreports.blank? %>
+    <% if controller.action_name=="edit" %>
+    <%= f.input :@project, :label => "Sent Date/Time", :disabled => true, :input_html => {:style => 'background:whiteSmoke', :value => statussentdate(@project)} %>
+    <% end %>
+    <% end %>
+    </td>
+    </tr>
+
+<!-- for pdf report # -->
+   <tr>
+    <td>
+<%= f.input :tasktype_id , :collection => current_user.organization.tasktypes.find(:all, :order => 'tasktype').map {|t| [t.tasktype,t.id ]}, :prompt => "Choose a Task Type" ,:lable => "Task Type" %>
+    </td>
+    <td>
+
+    
+    </td>
+    </tr>
+<!-- for pdf report # -->
+    <%= f.input :entered_by,:as=>'hidden',input_html: { value: "#{current_user.name}" }  %>
+	
+  
+    <tr><td colspan=2>
+    
+    <div id ="pro_analysis" style="display:none;">
+    <% if controller.action_name == 'edit' %>
+    <%= f.input :analysis, :label=>"Task Analysis", input_html: {rows: '5',:value =>change_analysis_for_edit_page(@project.notes,@project.analysis) , class: 'span8'}%> <% end %> 
+     </div> 
+    <div id ="pro_description" style="display:block;">
+    <%= f.input :notes, :label=>"Task Description",input_html: {rows: '5', class: 'span8'}%>
+    </div>
+     </td>
+    <% if controller.action_name == 'edit' %>
+     <td> 
+      
+      <%= link_to "Analysis", "#", :id => 'analysis',:style=>'display:block;margin-left:-60px;margin-bottom:85px;', class:  'btn btn-primary' %>
+     <%= link_to "Description", "#",:id => 'description', :style=>'display:none;margin-left:-60px;margin-bottom:85px;' , class: 'btn btn-primary ' %>
+        </td>
+      <% end %> 
+       </tr>
+     <tr><td>
+     
+     <% if @project.status_date.blank? %>
+    <%= f.input :status_date, :as => :string, :input_html => { :id => 'datepicker3' } %>
+    <% elsif !@project.status_date.blank? %>
+    <%= f.input :status_date, :as => :string, :input_html => { :id => 'datepicker3', :value => change_date_format_for_edit_page(@project.status_date) } %>
+    <% end %>
+    </td></tr>
+    <tr><td colspan="2">
+    <%= f.input :status_details, :label=>"Status Details", input_html: {rows: '5', class: 'span9'}%>
+    </td></tr>
+    <tr><td>
+    <%= f.input :per_completed, :label=>"% Completed" %>
+    </td></tr>
+    <tr><td>
+    <% if controller.action_name == 'edit' %>     <%= f.input :active %>     <% else  %>     <%= f.input :active, :input_html => { :checked => true } %>     <% end %>
+    </td></tr>
+    </table>
+    <div style="margin-left:500px;">
+  <%= f.link_to_add "Add attachment", :attachments %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <% if controller.action_name=="edit" %>
+  <% if !@project.statusreports.blank? %>
+  <%= link_to "View Status History", "#", :id => 'dates' %>
+  <% end %>
+  <% end %>
+  </div>
+    <%= f.fields_for :attachments do |attachment_form|  %>
+   <%= link_to attachment_form.object.doc.uploaded_filename, attachment_form.object.doc.url if attachment_form.object.doc?%>
+    <%#= image_tag(attachment_form.object.doc.filename) if attachment_form.object.doc? %>
+    
+     <% if !attachment_form.object.doc? %>
+    <%= attachment_form.file_field :doc %>
+     <% end %>
+    <%= attachment_form.link_to_remove "", :class => "icon-remove" %>
+   
+  <% end %>
+  
+  
+  <div class="form-actions">
+  <%= link_to 'Back', projects_path, class: 'btn btn-mini-primary' %>&nbsp;&nbsp;
+  <% if controller.action_name == "new"%>
+  <%= f.submit "Create Task", class: 'btn btn-primary' %>
+  <% else %>
+  <%= f.submit "Update Task", class: 'btn btn-primary' %>
+  <% end %>
+  </div>
+<% end %>
+ 
+  </div> <!-- Main Project -->

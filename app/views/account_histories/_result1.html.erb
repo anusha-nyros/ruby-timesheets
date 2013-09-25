@@ -1,0 +1,39 @@
+  <table class="table table-striped">
+      <tr>
+        <th>Date</th>
+        <th>Inovice#</th>
+        <th>Type</th>
+        <th>Reference</th>
+        <th>Supplier</th>
+        <th>Description</th>
+        <th style="text-align:right">Amount</th>
+        <th style="text-align:right">Balance</th>
+        <th>Statement</th>     
+        <th></th>
+      </tr> 
+
+<% @account_histories.each do |account_history| %>
+  <tr>    
+    <td><%= account_history.date %></td>
+    <td><%= account_history.num_invoice %></td>
+    <td><%= account_history.type_of_account %></td>
+    <td><%= account_history.reference %></td>
+    <td><%= account_history.assign_to %></td>
+    <td ><%= account_history.description %></td>
+    <td style="text-align:right"><%= put_parenthesis(account_history.amount,account_history.type_of_account)  %></td>
+
+    <td style="text-align:right"> 
+    		<%=put_parenthesis(account_history.balance,nil)%>
+    </td>
+    
+    <td><%=link_to account_history.statement_attachment.uploaded_filename,account_history.statement_attachment.url unless !account_history.statement_attachment? %></td>
+    <td>
+    	<% if current_user.admin?%>
+    <%= link_to 'Edit', edit_account_history_path(account_history),:class=>"btn btn-mini" %>
+    <%#= link_to 'Destroy', account_history, confirm: 'Are you sure?', method: :delete ,:class=>"btn btn-mini btn-danger"%></td>
+    	<%end%>
+  </tr>
+  			
+<% end %>
+</table>
+

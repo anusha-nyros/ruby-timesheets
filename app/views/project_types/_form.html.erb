@@ -1,0 +1,92 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+$('#datepicker1').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+$('#datepicker2').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});
+});
+</script>
+
+<%#= render :partial => "menu" %>
+<%= simple_form_for @project_type, :html=>{:multipart => true, class: 'form-horizontal'}  do |f| %>
+  <%= f.error_notification %>
+  <table>
+    
+  <div class="form-inputs"><br>
+     <tr>
+      <td> <%= f.input :type_name ,:label => "Project Name" %></td>
+  
+      <td>
+      <% if @project_type.start_date.blank? %> 
+      <%= f.input :start_date ,:as => :string, :label => "Start Date",:input_html => { :id => 'datepicker1',:class => "span2"}%>
+    <% else %>
+       <%= f.input :start_date, :as => :string,:label => "Start Date", :input_html => { :id => 'datepicker1',:class => "span2",:value => change_date_format_for_edit_page(@project_type.start_date)} %>
+     <% end %>  
+     
+      </td>
+     </tr>
+     <tr>
+      <td><%= f.input :status , :collection => ["Active","Closed","Pending","Approved"],:prompt => "Choose Status"%></td>
+      <td>
+       <% if @project_type.end_date.blank? %> 
+      <%= f.input :end_date ,:as => :string, :label => "End Date",:input_html => { :id => 'datepicker2',:class => "span2"}%>
+    <% else %>
+       <%= f.input :end_date, :as => :string,:label => "End Date", :input_html => { :id => 'datepicker2',:class => "span2",:value => change_date_format_for_edit_page(@project_type.end_date)} %>
+     <% end %>  
+      
+     </td>
+     </tr>
+     <tr>
+      <td><%= f.input :budget_info ,:label => "Budget Info ",:input_html => {:class => "span2"} %></td>
+      <td><%= f.input :projecttype_id, :collection => current_user.organization.projecttypes.map{|p| [p.projecttype , p.id]} ,:prompt => "Choose Project Type"%></td>
+     </tr>
+     <tr>
+      <td><%= f.input :hours_budget %></td>
+      <td><%= f.input :expense_budget %></td>
+     </tr>
+      <tr>
+      <td><%= f.input :project_group ,:label => "Project Group",:input_html => {:class => "span2"}%></td>
+      <td><%= f.input :active %></td>
+     </tr>
+     <tr>
+      <td colspan="2"><%= f.input :proj_desc,:label => "Project Description",:input_html => {rows: 5 ,:class => "span8"}%></td>
+     </tr>
+  </div>
+  </table>
+    <% unless current_user.organization.contacts.blank? %>
+       <h3>Notification Contacts</h3> 
+	<table class="table table-striped">
+	<% for contact in @contacts -%>
+	<tr>
+	<td>
+        <%= check_box_tag('contact_list[]', contact.id, @project_type.contacts.collect {|obj| obj.id}.include?(contact.id)) %>
+ &nbsp;<b><%= contact.contact %></b>(<%= contact.email %>)
+        </td></tr>
+	<% end -%>
+	</table>
+        <% end %>	
+        
+        <% if current_user.organization.contacts.blank? %>
+        <p style="margin-left:65px;font-size:13px;color:green;">No contacts found.%></p>
+        <% end %><br>
+  <br>
+
+  <div class="form-actions">
+    <%= link_to 'Back', project_types_path, class: 'btn btn-mini-primary' %> &nbsp;&nbsp;
+   <%if controller.action_name == "edit" %>
+   <%= link_to "Delete Project", project_type_path(@project_type), class: 'btn btn-small btn-danger', method: :delete, confirm: 'Are you sure?'%>	
+   <%= f.submit "Update Project", class: 'btn btn-primary' %>
+   <% else %>
+   <%= f.submit "Create Project", class: 'btn btn-primary' %>
+   <% end %>
+  </div>
+<% end %>

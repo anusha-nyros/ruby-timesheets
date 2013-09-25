@@ -1,0 +1,31 @@
+
+<%= render :partial => "menu" %>
+<%= link_to new_timecode_path, class: 'btn btn btn-success' do %>
+	<i class="icon-plus icon-white"></i>New Time Code
+<% end %>
+<br>
+<br>
+<% if @timecodes.blank? %>
+  <div class="well">You don't currently have any time code </div>
+  <% else %>
+<h1>Time Codes</h1>
+
+<table class="table table-striped" >
+  <tr>
+    <th>Code</th>
+    <th>Usage</th>
+    <th></th>
+   
+  </tr>
+
+<% @timecodes.each do |timecode| %>
+  <tr>
+    <td><%= timecode.code %></td>
+    <td><%= timecode.usage %></td>
+    <td><%= link_to 'Edit', edit_timecode_path(timecode), class: 'btn btn-mini' %>
+    <%= link_to 'Delete', timecode, confirm: 'Are you sure?', method: :delete, class: 'btn btn-mini btn-danger' %></td>
+  </tr>
+<% end %>
+</table>
+<% end %>
+

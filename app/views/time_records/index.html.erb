@@ -1,0 +1,76 @@
+
+<%= render :partial => "menu1" %>
+<div style="width:940px;height:50px;">
+<div style="float:left;"><h1>Time sheets</h1></div>
+<% if current_user.admin==true %>
+<div style="float:left;margin-left:30px;">
+     <form name="projectfilters" action="/time_records" >
+        <div style="float:left;margin-top:10px;">
+   <%= radio_button_tag 'FILTER', 'Active', @chosen == 'Active' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Active
+           </div>
+                        
+          <div style="float:left;margin-top:10px;margin-left:10px;;">
+  <%= radio_button_tag 'FILTER', 'Inactive', @chosen == 'Inactive' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Inactive
+            </div>
+           <div style="float:left;margin-top:10px;margin-left:10px;">
+  <%= radio_button_tag 'FILTER', 'ALL', @chosen == 'ALL' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;All
+           </li></div>
+          </form>
+       
+      
+  </div>
+<% end %>
+</div>
+
+<% if @pay_periods.blank? %>
+   
+  <% if params[:status] == "Open" %>
+  <div class="well">Currently, you don't have any Open TimeSheets</div>
+  <% elsif params[:status] == "Pending" %>
+   <div class="well">Currently, you don't have any Pending TimeSheets.</div>
+  <% else %>
+  <div class="well">You don't currently have any TimeSheets </div>
+  <% end %>
+<% else %>
+  
+  <table class="table table-striped">
+    <tr>
+    <% if current_user.admin? %><th>Active</th><% end %>
+      <th>Time#</th>
+      <th>Status</th>
+      <th>Period Start</th>
+      <th>Period End</th>
+      <th>Pay Day</th>
+      <th>Total Hours</th>
+	
+      <th></th>
+    </tr>
+
+  <% @pay_periods.each do |pay_period| %>
+    <tr><% if current_user.admin? %>
+    <%= simple_form_for :pay_period, url: "/time_records/status/#{pay_period.id}" do |f| %>
+	   <% if pay_period.active == true  %><td><input type="checkbox" name="active"  checked='checked' onclick="this.form.submit();"  ></td>   <% else  %>
+		<td> <input type="checkbox" name="inactive"  onclick="this.form.submit();" ></td>
+		<% end %>
+		
+		<% end %><% end %>
+      <td><%= pay_period.timesheet_number %></td>
+       <td><%= pay_period.status %></td>
+      <td><%= pay_period.pay_start.strftime('%b-%d-%Y') %></td>
+      <td><%= pay_period.pay_end.strftime('%b-%d-%Y') %></td>
+      <td><%= pay_period.pay_day.strftime('%b-%d-%Y') if !pay_period.pay_day.blank? %></td>
+     <% if current_user.admin %>
+      <td><%= pay_period.time_records.sum('total_hours') %></td>
+     <% else %>
+      <td><%= pay_period.time_records.where(user_id: current_user).sum('total_hours') %></td>
+     <% end %>
+      
+	  <td>
+        <%= link_to 'View', "/view/#{pay_period.id}", class: 'btn btn-mini btn-primary' %>
+        <%= link_to 'Edit', time_record_path(pay_period), class: 'btn btn-mini btn-primary' %>
+       <%= link_to 'Record', new_time_record_path(pay_period: pay_period), class: 'btn btn-mini' if pay_period.active? %>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>

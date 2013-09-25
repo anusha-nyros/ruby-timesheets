@@ -1,0 +1,40 @@
+<script type="text/javascript">
+$(".simple_form").delegate('.my-datepicker', 'mouseenter', function(){
+        $(this).datepicker({
+            dateFormat: 'mm/dd/yy'
+          });
+     });
+</script>
+
+<br/>
+<!-- <table class="table striped">
+  <th>Schedule Date </th>
+  <th>Project </th>
+  <th>Priority</th>
+<%# @tsks.each do |task| %>
+  <tr>
+      <td><%#= task.schedule_date.strftime("%b-%d-%Y") if !task.schedule_date.blank? %></td>
+      <td><%#= task.project_name %> </td>   
+      <td><%#= task.priority  %> </td> 
+  </tr>
+ <%# end %>
+</table> --> 
+<div class="bor"></div>
+<%= simple_form_for :project,:url => url_for(:action=>'update_individual',:controller=>'projects'), :html => {method: :post, class: 'form-horizontal',:multipart => true,:onsubmit=>"return confirm('Do you want to update the records in bulk ?');"}  do |f| %>
+<% for t in @bulk_projects %>
+<%= f.simple_fields_for "bulk_projects[]" , t  do |p| %>
+  
+<p style="margin-left:55px;"><b>Title : <%= t.title %> </b>  </p>
+  <% date_value = change_date_format_for_edit_page(t.schedule_date) if !t.schedule_date.blank? %>
+ <%= p.input :schedule_date ,:as => :string, :input_html => { class: 'my-datepicker',:value => date_value } %>   
+<%= p.input :project_name , :collection => current_user.organization.project_types.find(:all, :order => 'type_name').map { |r| [r.type_name, r.type_name] }, :prompt => "Choose a Project Type" %> 
+<%= p.input :priority %> 
+<hr style="border:1px solid grey;">
+<% end %>
+<% end %>
+
+<div class="controls">
+<%= f.submit "Bulk Update" ,class: 'btn btn btn-primary' %> 
+</div>
+  
+<% end %>

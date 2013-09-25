@@ -1,0 +1,121 @@
+<style>
+.last span{
+  display:inline;
+}
+.last {
+  width:90px;
+}
+  ul li
+  {
+  display:inline;
+ 
+  }
+  </style>
+
+<%= render :partial => "menu" %>
+<p>
+  <b>Exp number:</b>
+  <%= @expense.exp_number %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%= @expense.username %>
+</p>
+
+<p>
+  <b>Date:</b>
+  <%= @expense.date.strftime("%b-%d-%Y") if !@expense.date.blank? %>
+   
+</p>
+
+<p>
+  <b>Amount:</b>
+  <%= @expense.amount %>
+</p>
+<% if current_user.admin? %>
+<p>
+  <b>Status:</b>
+  <% if  @expense.status == false %>
+  <span> UnApproved </span>  
+  <% else %>
+  <span> Approved </span>  
+  <% end %>
+</p>
+<% end %>
+<p>
+  <b>Approved At:</b>
+  <%= @expense.approved_date.strftime("%b-%d-%Y") if !@expense.approved_date.blank? %>
+</p>
+
+
+<% unless @expense.expense_attachments.blank? %>
+ <p>
+  <b>Attachments:</b>
+  <%= @expense.expense_attachments.count %></p>
+  <% @expense.expense_attachments.each do |a| %>
+  <%= link_to a.doc.uploaded_filename, a.doc.url %><br>
+  <% end %>
+</p>
+  <% end %>
+
+<br/><br/>
+<% if @expense.payments.blank? %>
+<%#= link_to 'Add tickets', new_ticket_path, class: 'btn btn btn-primary' %>
+    <span class="well"> don't have any Payments </span> 
+    <br/><br/><br/>
+  <% else %>
+ <h3>Payment Methods</h3> <br/>
+<table class="table table-striped" >
+  <tr>
+    <th>Project</th>
+    <th>Task</th>
+    <th>Amount</th>
+    <th>Vendor</th>
+    <th>Description</th>
+    <th>Approved Amount</th>
+    <th>Date</th>
+   
+    <th></th>
+
+   </tr>
+
+
+<% @expense.payments.each do |payment| %>
+	
+  <tr>
+    <td><%= payment.project_type.try(:type_name) %></td>
+    <td><%= payment.project.try(:title) %></td>
+    <td><%= payment.amount %></td>
+    <td><%= payment.vendor %></td>
+    <td><%= payment.exp_description %></td>
+    <td><%= payment.approved_amt %></td>
+    <td><%= Date.strptime(payment.date, "%Y-%d-%m").strftime("%b-%d-%Y") if !payment.date.blank? %></td>
+   
+   <td>
+     <div class ="last">
+      <% if  current_user.admin? %> 
+	  <span>  <%= link_to 'Edit', payment_edit_path(payment) ,class: 'btn btn-mini'%></span>
+        <%# end %>
+
+        <% end %>
+        <% if !current_user.admin? && @expense.status == false %>
+             <span>  <%= link_to 'Edit', payment_edit_path(payment) ,class: 'btn btn-mini'%></span>
+        <% end %>
+	 
+	 <span><%= link_to 'delete', payment_delete_path(:id => payment) ,confirm: 'Delete this record ?',class: 'btn btn-mini btn-danger'%></span>
+    </div>
+   </td>
+
+  </tr>
+	
+<% end %>
+</table>
+<% end %>
+
+<%= link_to 'Destroy', @expense, confirm: 'Are you sure?', method: :delete , class: 'btn btn-mini btn-danger'%>
+
+
+
+
+

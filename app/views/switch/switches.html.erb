@@ -1,0 +1,22 @@
+
+<%#= simple_form_for :switch_tab,:url => url_for(:action=>'switches',:controller=>'switch'), :html => {method: :post,class: 'form-horizontal'}  do |f| %>
+  <%#= f.error_notification %>
+  <fieldset>
+    <legend>Switch Form</legend>
+<p> </p> Here you can Turn on/off your module access provided by the admin  , by checking on the checkboxes </p>
+<% if !@orgtabs.blank? %>
+<% for modl in @orgtabs %>
+<%= simple_form_for :switch_tab,:url => url_for(:action=>'status',:controller=>'switch',:id=>modl.id) do |f| %>
+	   <% if modl.state == true  %><td><input type="checkbox" name="active"  checked='checked' onclick="this.form.submit();"  >&nbsp;<b><%= modl.module_name %></b> </td>   <% else  %>
+		<td> <input type="checkbox" name="inactive"  onclick="this.form.submit();" >&nbsp;<b><%= modl.module_name %></b></td>
+		<% end %>
+		
+		<% end %>
+		<%#= check_box_tag('module_list[]', modl.id, current_user.orgtabs.collect {|obj| obj.id}.include?(modl.id),:class => 'leftspace') %> &nbsp;&nbsp;&nbsp;<%#= modl.tabname %><br />
+	<% end %>
+<% else %>
+<div class="well" > <p> You dont have any modules to switch on/off </p> </div>
+<% end %>
+</fieldset>
+ <%#= f.submit  %>
+<% #end %>

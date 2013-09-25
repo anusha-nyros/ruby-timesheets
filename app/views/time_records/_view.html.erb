@@ -1,0 +1,22 @@
+<ul class="nav nav-tabs">
+  <li class="<%= action_active('view') %>">
+    <%= link_to "/view/#{@pay_period.id}" do %>
+        <i class="icon-list-alt"></i>
+        Detail View
+    <% end %>
+  </li>
+  
+  <li class="<%= action_active('project_recap') %>">
+    <%= link_to "/project_recap/#{@pay_period.id}" do %>
+      <i class="icon-list-alt"></i>
+      Task Recap
+    <% end %>
+  </li>
+  
+   <li class="<%= action_active('user_recap') %>">
+    <%= link_to "/user_recap/#{@pay_period.id}" do %>
+      <i class="icon-list-alt"></i>
+      User Recap
+    <% end %>
+  </li>
+</ul>

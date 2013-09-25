@@ -1,0 +1,190 @@
+<% if @project_changes.blank? %>
+<div class="well">
+<p> You Dont Have any Project Changes for this project  </p>
+</div>
+<% else %>
+<table class="table table-striped">
+    <tr>
+      <th>Date Modified</th>
+      <th >User</th>
+      <th>Item Changed</th>
+      <th> Previous Value </th>
+      <th>New Value</th>
+    </tr>
+     <% for  change in @project_changes %>
+      <% if change.project_type != change.prev_project_type  %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Project" %></td>
+	<td><%= change.prev_project_type %></td>
+	<td><%= change.project_type %></td>
+     </tr>
+     <% end %> 
+      <% if change.title != change.prev_title %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Title" %></td>
+	<td><%= change.prev_title %></td>
+	<td><%= change.title %></td>
+     </tr>
+     <% end %> 
+      <% if change.tasktype != change.prev_tasktype %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "TaskType" %></td>
+	<td><%= change.prev_tasktype %></td>
+	<td><%= change.tasktype %></td>
+     </tr>
+     <% end %> 
+ <% if change.action_required != change.prev_action_required  %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Status" %></td>
+	<td><%= change.prev_action_required %></td>
+	<td><%= change.action_required %></td>
+     </tr>
+     <% end %>
+<% if change.schedule_date != change.prev_schedule_date  %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Schedule Date" %></td>
+	<td><%= change.prev_schedule_date.strftime("%b-%d-%Y") if  !change.prev_schedule_date.blank?  %></td>
+	<td><%= change.schedule_date.strftime("%b-%d-%Y") if  !change.schedule_date.blank? %></td>
+     </tr>
+     <% end %>
+<% if change.start_date != change.prev_start_date  %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Start Date" %></td>
+	<td><%= change.prev_start_date.strftime("%b-%d-%Y") if  !change.prev_start_date.blank? %></td>
+	<td><%= change.start_date.strftime("%b-%d-%Y") if  !change.start_date.blank? %></td>
+     </tr>
+     <% end %>
+<% if change.end_date != change.prev_end_date    %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "End Date" %></td>
+	<td><%= change.prev_end_date.strftime("%b-%d-%Y") if  !change.prev_end_date.blank? %></td>
+	<td><%= change.end_date.strftime("%b-%d-%Y") if  !change.end_date.blank? %></td>
+     </tr>
+     <% end %>
+<% if change.status_date != change.prev_status_date   %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Status Date" %></td>
+	<td><%= change.prev_status_date.strftime("%b-%d-%Y") if !change.prev_status_date.blank? %></td>
+	<td><%= change.status_date.strftime("%b-%d-%Y") if  !change.prev_status_date.blank? %></td>
+     </tr>
+     <% end %>
+<% if change.suppliername != change.prev_suppliername   %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Supplier" %></td>
+	<td><%= change.prev_suppliername  %></td>
+	<td><%= change.suppliername  %></td>
+     </tr>
+     <% end %>
+<% if change.analysis != change.prev_analysis   %>
+      <tr >
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Analysis" %></td>
+	<td><%= change.prev_analysis  %></td>
+	<td><%= change.analysis %></td>
+     </tr>
+     <% end %>
+<% if change.amount != change.prev_amount   %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Amount" %></td>
+	<td><%= change.prev_amount  %></td>
+	<td><%= change.amount %></td>
+     </tr>
+     <% end %>
+<% if change.owner != change.prev_owner  %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Owner" %></td>
+	<td><%= change.prev_owner  %></td>
+	<td><%= change.owner %></td>
+     </tr>
+     <% end %>
+<% if change.notes != change.prev_notes   %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Description" %></td>
+	<td><%= change.prev_notes  %></td>
+	<td><%= change.notes %></td>
+     </tr>
+     <% end %>
+
+<% if change.status_details != change.prev_status_details   %>
+      <tr >
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Status Details" %></td>
+	<td><%= change.prev_status_details  %></td>
+	<td><%= change.status_details %></td>
+     </tr>
+     <% end %>
+<% if change.per_completed != change.prev_per_completed   %>
+      <tr >
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "%Completed" %></td>
+	<td><%= change.prev_per_completed  %></td>
+	<td><%= change.per_completed %></td>
+     </tr>
+     <% end %>
+<% if change.priority != change.prev_priority   %>
+      <tr >
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Priority" %></td>
+	<td><%= change.prev_priority  %></td>
+	<td><%= change.priority %></td>
+     </tr>
+     <% end %>
+<% if change.reference != change.prev_reference   %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Reference#" %></td>
+	<td><%= change.prev_reference  %></td>
+	<td><%= change.reference %></td>
+     </tr>
+     <% end %>
+
+<% if change.active != change.prev_active   %>
+      <tr>
+        <td><%= change.updated_at.strftime("%b-%d-%Y %H:%M:%S") %></td>  
+        <td><%= change.updated_by %></td>
+	<td><%= "Active" %></td>
+	<td> <% if change.prev_active == "1" %>
+           &nbsp;&nbsp;<%= image_tag("/assets/check-mark-md.png",:width => 18 ,:height => 18) %> 
+           <% else %>
+            &nbsp;&nbsp;<%= image_tag("/assets/wrong-icon.jpg",:width => 18 ,:height => 18) %> 
+            <% end %></td>
+	<td> <% if change.active == "1" %>
+           &nbsp;&nbsp;<%= image_tag("/assets/check-mark-md.png",:width => 18 ,:height => 18) %> 
+           <% else %>
+            &nbsp;&nbsp;<%= image_tag("/assets/wrong-icon.jpg",:width => 18 ,:height => 18) %> 
+            <% end %></td>
+     </tr>
+     <% end %>
+    
+    <% end %>
+  </table>
+<% end %>

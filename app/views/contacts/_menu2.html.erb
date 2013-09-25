@@ -1,0 +1,27 @@
+<ul class="nav nav-tabs">
+  <li class="<%= action_active('show_suppliers') %>">
+    <%= link_to show_suppliers_path do %>
+        <i class="icon-list-alt"></i>
+        Suppliers
+    <% end %>
+  </li>
+
+  <li class="<%= action_active('index') %>">
+    <%= link_to '#' do %>
+        <i class="icon-list-alt"></i>
+        Bills
+    <% end %>
+  </li>
+ 
+  <li class="<%= action_active('balance_summary') %>">
+    <%= link_to '#' do %>
+        <i class="icon-list-alt"></i>
+        Unpaid Bills
+    <% end %>
+  </li>
+
+
+
+
+
+</ul>

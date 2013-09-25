@@ -1,0 +1,17 @@
+<%= simple_form_for([:admin, @folder],:html => {:multipart => true, class: 'form-horizontal' } ) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :name %>
+    <%= f.input :use_privacy %>
+    <% users = @folder.users.each{|user| user.name = "#{user.name} (#{user.email})"} %>
+    <%= f.input :user_tokens, label: "Users", class: "input-small",input_html: {"data-pre" => users.to_json(only: [:id, :name])} %>    
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit ,class: 'btn btn-primary' %>
+  </div>
+<% end %>
+
+
+

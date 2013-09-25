@@ -1,0 +1,71 @@
+<style>
+   ul li
+  {
+  display:inline;
+
+  }
+ 
+  </style>
+
+
+<%= render :partial => "menu" %>
+<%#= link_to 'New Meeting', new_meeting_path, class: 'btn btn btn-primary' %>
+<br/>
+<% if !@meetings.blank? %>
+<%= render :partial => "meetings/search_form", locals: {q: @q} %>
+<% end %>
+<% if @meetings.blank? %>
+  
+  <% if params[:upcomming] == "meets" %>
+  <div class="well">Currently,There Is No Upcomming Meetings.</div>
+  <% else %>
+   <div class="well">You don't currently have any meetings </div>
+  <% end %>
+
+<% else %>
+<h1>Meetings</h1>
+
+  <table class="table table-striped">
+
+    
+    <tr>
+    <th><%= sort_link(@q, :meeting_number, "Meet#") %></th>
+      <th><%= sort_link(@q, :subject, "Subject") %></th>
+      <th><%= sort_link(@q, :meeting_date, "Date") %></th>
+      <th><%= sort_link(@q, :meeting_type, "Type") %></th>
+      
+      <th><%= sort_link(@q, :meeting_time, "From") %></th>
+      <th><%= sort_link(@q, :meeting_time, "To") %></th>
+      <th><%= sort_link(@q, :meeting_location, "Location") %></th>
+      
+     
+       
+     
+      
+      <th></th>
+    </tr>
+
+  <% @meetings.each do |meeting| %>
+    <tr>
+    <td><%= meeting.meeting_number %></td>
+	  <td><%= meeting.subject %></td>
+			
+      <td><%= meeting.meeting_date.strftime("%b-%d-%Y") if !meeting.meeting_date.blank? %></td>
+      
+	 <td><%= meeting.meeting_type %></td>
+	  <td><%= meeting.meeting_time.strftime('%H:%M') if !meeting.meeting_time.blank? %></td>
+	  <td><%= meeting.to_meeting_time.strftime('%H:%M') if !meeting.to_meeting_time.blank? %></td>
+	  <td><%= meeting.meeting_location %></td>
+               
+ 
+	  
+          
+      <td>
+        
+        <%= link_to 'Show', meeting, class: 'btn btn-mini' %>
+        <%= link_to 'Edit', edit_meeting_path(meeting), class: 'btn btn-mini' %>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>

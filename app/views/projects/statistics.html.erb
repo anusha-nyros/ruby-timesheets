@@ -1,0 +1,106 @@
+<%#= render :partial => "menu1" if current_user.admin? %><br/>  
+    <%= render :partial => "menu" %>
+    <ul class="nav nav-tabs" id="myTab">
+    <li class="active"><a href="#home">Recap By Type</a></li>
+    <li><a href="#profile">Recap By Status</a></li>
+    
+    </ul>
+     
+    <div class="tab-content">
+    <div class="tab-pane active" id="home">
+    <table class="table table-striped">
+
+    <tr><th>Recap by Status</th>
+      <th> No of Records </th>
+      <th> Amount </th>     
+     </tr>
+
+   
+    <% cnt = (@projects.find(:all, :conditions => {:action_required => 'Estimate'})).count %>
+    
+      <% ecnt = (@projects.find(:all, :conditions => {:action_required => 'Estimate'})).count %>     <% if ecnt != 0  %>
+      <tr>     
+    	<td> Estimate </td>
+      <td> <%= ecnt %></td>
+<td><%= @projects.where(:action_required => 'Estimate').sum(:amount) %> </td>
+      </tr>      
+      <% end %>
+     
+     
+    <% recnt =(@projects.find(:all, :conditions => {:action_required => 'Review Estimate'})).count  %>
+      <% if recnt != 0  %>
+      <tr> 
+    	<td> Review Estimate </td>
+        <td><%= recnt %></td>
+        <td><%= @projects.where(:action_required => 'Review Estimate').sum(:amount) %> </td>
+     </tr>
+      <% end %>
+      
+<% acnt = (@projects.find(:all, :conditions => {:action_required => 'Approved'})).count %>
+      <% if acnt !=0 %>
+      <tr> 
+    	<td> Approved </td>
+      <td><%= acnt %></td>
+<td><%= @projects.where(:action_required => 'Approved').sum(:amount) %> </td>
+      </tr>
+      <% end %>
+
+<% pcnt = (@projects.find(:all, :conditions => {:action_required => 'In Progress'})).count %>
+      <% if pcnt !=0 %>
+      <tr> 
+    	<td> In Progress </td>
+        <td><%= pcnt %></td>
+<td> <%= @projects.where(:action_required => 'In Progress').sum(:amount) %></td>
+     </tr>
+      <% end %>
+<%qcnt = (@projects.find(:all, :conditions => {:action_required => 'QA'})).count %>
+      <% if qcnt !=0 %>
+      <tr> 
+    	<td> QA </td>
+        <td><%= qcnt %></td>
+<td><%= @projects.where(:action_required => 'QA').sum(:amount) %> </td>
+     </tr>
+      <% end %>
+  <% ccnt = (@projects.find(:all, :conditions => {:action_required => 'Completed'})).count %>
+      <% if ccnt !=0 %>
+      <tr> 
+    	<td> Completed </td>
+        <td><%= ccnt %></td>
+<td> <%= @projects.where(:action_required => 'Completed').sum(:amount) %></td>
+     </tr>
+      <% end %>
+
+ 
+    </table> 
+
+    </div>
+    <div class="tab-pane" id="profile">
+     <table class="table table-striped">
+      <tr></tr>
+      <tr>    
+        <td><b>Recap by Type</b></td>
+        <td><b>No Of Records</b></td>
+        <td><b>Amount </b></td>
+      </tr>
+      <% @projects.group(:project_name).each do |f| %>
+      <tr>
+        <td><%= f.project_name %></td> 
+        <td> <%= @projects.find(:all, :conditions => { :project_name => f.project_name} ).count %></td> 
+        <td >
+     <%= @projects.where(:project_name => f.project_name).sum(:amount) %>
+     </td>
+      </tr>
+      <% end %>
+      
+      </table>
+    </div>
+    <div class="tab-pane" id="messages">...</div>
+    <div class="tab-pane" id="settings">...</div>
+    </div>
+     
+    <script>
+       $('#myTab a').click(function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+    })
+    </script>

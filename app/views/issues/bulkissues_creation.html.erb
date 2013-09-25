@@ -1,0 +1,65 @@
+<head>
+<style type="text/css">
+.last span{
+  display:inline;
+}
+.last {
+  width:80px;
+}
+  ul li
+  {
+  display:inline;
+ 
+  }
+</style>
+</head>
+
+<%#= render :partial => "menu" %>
+<% if @issue_preview.blank? %>
+  <div class="well">You don't currently have any issues </div>
+<br/>
+<% else %>
+  
+<br/><br/>
+<div id="whole">
+<div style="float:left">
+<h3 style="padding:1px;"> <%=@issue_preview.count%> New Issues Created </h3>
+</div>
+<br/>
+<br/>
+<div style="float:right;margin-top:20px;"></div>
+
+  <table class="table table-striped">
+     <tr>  
+          <th>Title</th>
+          <th>Project </th>
+          <th>Task </th>
+	   <th>Description </th>
+          <th>Date</th>
+          <th>Owner</th>  
+  	   <th>ISSUE#</th> 
+ 
+	   <th></th>
+      </tr>
+
+  <% @issue_preview.each do |issue| %>
+    <tr>
+    <td><%= issue.title %></td>
+    <td><%= issue.project_type.type_name %></td>
+    <td><%= issue.project.title if !issue.project_id.blank?  %></td>
+    <td><%= issue.description %></td>
+	  <td><%= issue.date_created.strftime("%b-%d-%Y") if !issue.date_created.blank? %></td>   
+    <% if current_user.organization.contacts.find_by_contact(issue.owner) %>          
+    <td><%= current_user.organization.contacts.find_by_contact(issue.owner).contact %></td>
+    <% else %>
+   <td style=""> - </td>          
+    <% end %>
+        <%# end %>
+    <%# end %>
+    <td><%= issue.issue_number %></td>
+    </tr>
+  <% end %>
+  </table>
+  <% end %>
+<%= link_to "Back",bulkissues_new_path ,class: 'btn btn-primary preview ' %>
+</div>

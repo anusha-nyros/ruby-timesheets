@@ -1,0 +1,13 @@
+<%= render :partial => "menu" %>
+<h1> Accounts </h1>
+<% if @account_histories.blank? %>
+  <div class="well">
+    There are currently no Account Transactions!
+  </div>
+
+<% elsif current_user.admin? %>  
+<%=link_to "New Transaction" , new_account_history_path,:class=>"btn btn-primary" %> </br></br>
+<%= render :partial=>"result1" %>
+<%else%>
+<%= render :partial=>"result2" %>
+<%end%>

@@ -1,0 +1,210 @@
+<style type="text/css">
+.last span{
+  display:inline;
+}
+.last {
+  width:80px;
+}
+  ul li
+  {
+  display:inline;
+  #padding-left:10px;
+  }
+</style>
+<%#= render :partial => "menu1" if current_user.admin? %><br/>
+<%= render :partial => "menu" %>
+<% if !@projects.blank? %>
+<%= render :partial => "projects/search_forme", locals: {q: @q} %>
+<% end %>
+<% if @projects.blank? %>
+  
+ <% if params[:budget] == "over" %>
+  <div class="well"> currently there is no any Over-Budget tasks.</div>
+  <% else %>
+  <div class="well">You don't currently have any tasks </div>
+  <% end %>
+  
+<div id="whole">
+<% if !@projects.blank? %>
+<div style="float:left">
+<h1>Tasks</h1>
+</div>
+ <div style="float:left;margin-top:10px;">
+
+        <ul style="padding-left:50px;">
+        <form name="projectfilters" action="/projects" >
+        <li id="icon">
+   <%= radio_button_tag 'FILTER', 'CLOSED', @chosen == 'CLOSED' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Active
+           </li>
+                        
+          <li id="icon">
+  <%= radio_button_tag 'FILTER', 'OPEN', @chosen == 'OPEN' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Inactive
+            </li>
+           <li id="icon">
+  <%= radio_button_tag 'FILTER', 'ALL', @chosen == 'ALL' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;All
+           </li>
+          </form>
+        </ul>  
+		 
+      
+  </div>
+   <% end %>
+</div> 
+<% else %>
+  
+  
+ <div id="whole">
+<div style="float:left">
+<h1>Projects</h1>
+</div>
+<div style="float:left;margin-top:10px;">
+
+        <ul style="padding-left:50px;">
+        <form name="projectfilters" action="/estimate_actual" >
+        <li id="icon">
+   <%= radio_button_tag 'FILTER', 'CLOSED', @chosen == 'CLOSED' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Active
+           </li>
+                        
+          <li id="icon">
+  <%= radio_button_tag 'FILTER', 'OPEN', @chosen == 'OPEN' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;Inactive
+            </li>
+           <li id="icon">
+  <%= radio_button_tag 'FILTER', 'ALL', @chosen == 'ALL' ? true : false, :onclick=>"this.form.submit();" %>&nbsp;All
+           </li>
+          </form>
+        </ul>  
+		 
+      
+  </div>
+</div>
+<div style="float:right;">
+<% if @projects.blank? %>
+<b style="color:red;">No Records Found </b>
+<% end %>
+   
+</div>
+<div style="float:right;margin-top:20px;"></div>
+
+    <div id="side">
+
+<span class="pull-right">
+  
+<%= simple_form_for :my_threads , url: "/estimateactual?FILTER=#{@chosen}" do %>
+             
+              <select name="sel" onchange="this.form.submit();" id="paginatevalues" class="span1">
+                
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+              </select>
+     
+<% end %>  
+<input type="hidden" id="myid" value='<%= @choosed if !@choosed.blank? %>'>
+</span>
+<span class="pull-right" style="padding:5px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+</span>
+</div>
+
+
+
+  <table class="table table-striped">
+    
+    <tr>
+    <th><%= sort_link(@q, :project_name, "Project") %></th>
+     
+      <th><%= sort_link(@q, :title, "Task Title") %></th>
+      
+      <th><%= sort_link(@q, :action_required, "Status") %></th>
+      <th><%= sort_link(@q, :schedule_date, "Schedule Date") %></th>
+                 <th><%= sort_link(@q, :prq_number, "Task#") %></th>
+      <th><%= sort_link(@q, :amount, "Amount") %></th>
+
+     <th><%= sort_link(@q, :actual ,"Actual") %></th>
+
+     <th><%= sort_link(@q, :variance, "Variance") %></th>
+     <th><%= sort_link(@q, :percent_variance, "%Variance") %></th>
+     
+      
+      <th></th>
+    </tr>
+  <% amt_tot=act_tot=variance_tot=var_per_tot=0 %>
+  <% @projects.each do |project| %>
+    <tr>
+    <td><%= project.project_name %></td>
+       <td><p>
+          <span style="display:block" class="proj_title"><%= project.title %></span>
+          <span style="display:none;text-indent:10px" class="proj_notes"><%=  project.notes %></span>
+          </p>
+      </td>
+      
+	  <td><%= project.action_required %></td>
+	  <td><%= project.schedule_date.strftime("%b-%d-%Y") if !project.schedule_date.blank? %></td>
+         
+          <td><%= project.prq_number %></td>
+          <td><%= number_with_precision(project.amount,:precision => 1, :strip_insignificant_zeros => true) %></td>
+          <td><%= project.actual %></td>
+	  
+          <td><%= project.variance  %> </td>
+          <td>
+          <% if !project.percent_variance.blank? && project.percent_variance < 0 %>        
+            <%= number_to_percentage(project.percent_variance ,:precision => 0,:strip_insignificant_zeros => true) %>
+            <% var_per_tot=var_per_tot + project.percent_variance %>
+          <% end %>
+          <% if !project.actual.nil? %> 
+            <% act_tot=act_tot + project.actual %>
+          <% end %>
+          <% if !project.amount.nil? %> 
+            <% amt_tot=amt_tot + project.amount %>
+          <% end %>
+          <% if !project.variance.nil? %> 
+            <% variance_tot=variance_tot + project.variance %>
+          <% end %> 
+         </td>
+      <td>
+        <div class='last'>
+        <span><%= link_to 'Show', project, class: 'btn btn-mini' %> </span>
+        <span><%= link_to 'Edit', edit_project_path(project), class: 'btn btn-mini' %></span>
+        </div>
+      </td>
+    </tr>
+  <% end %>
+   
+    <tfoot>
+      <tr>
+        <td><b>Total</b></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+            <b><%= number_with_precision(amt_tot,:precision => 1,:strip_insignificant_zeros => true) %>    </b>
+        </td>
+        <td>
+            <b><%= number_with_precision(act_tot,:precision => 1,:strip_insignificant_zeros => true)%>     </b>
+        </td>
+        <td>
+            <b><%= number_with_precision(variance_tot,:precision => 1,:strip_insignificant_zeros => true)%>
+            </b>
+        </td>
+        <td>
+            <b><%= number_to_percentage(var_per_tot,:precision => 0) %>
+            </b>
+        </td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+
+<%= paginate @projects %> 
+<% end %>
+
+
+<script type="text/javascript">
+    $('document').ready(function(){
+        var n= $('#myid').val();        
+        $('#paginatevalues').val(n);
+        
+    });
+</script>

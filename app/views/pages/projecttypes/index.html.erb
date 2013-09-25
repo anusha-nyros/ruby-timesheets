@@ -1,0 +1,29 @@
+<%= render :partial => "menu" %>
+<%= link_to new_projecttype_path ,class: 'btn btn-success' do%>
+   <i class="icon-plus icon-white"> </i>New Project Type
+<% end %>
+<br/><br/>
+<% if @projecttypes.blank? %>
+<div class="well">you currently don't have project types</div>
+<% else %>
+<h1>Project Types</h1>
+
+<table class="table table-striped">
+  <tr>
+    <th>Project Type</th>
+    <th>Usage</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @projecttypes.each do |projecttype| %>
+  <tr>
+    <td><%= projecttype.projecttype %></td>
+    <td><%= projecttype.usage %></td>
+    <td><%= link_to 'Edit', edit_projecttype_path(projecttype) ,class:'btn btn-mini' %></td>
+    <td><%= link_to 'Delete', projecttype, confirm: 'Are you sure?', method: :delete ,class:'btn btn-mini btn-danger' %></td>
+  </tr>
+<% end %>
+</table>
+<% end %>
+

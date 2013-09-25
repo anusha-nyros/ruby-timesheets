@@ -1,0 +1,40 @@
+<script type="text/javascript">
+$(function(){
+// Datepicker
+$('#datepicker').datepicker({
+//inline: true
+dateFormat: 'mm/dd/yy'
+});				
+});
+</script>
+
+<%= simple_form_for(@time_record,  html: {class: 'form-horizontal'})  do |f| %>
+  <%= f.error_notification %>
+  <fieldset>
+    <legend>Time Record for <%= short_period(@pay_period) %></legend>
+    
+    <% if @time_record.activity_date.blank? %>
+    <%= f.input :activity_date, :as => :string, :input_html => { :id => 'datepicker' } %>
+    <% elsif !@time_record.activity_date.blank? %>
+    <%= f.input :activity_date, :as => :string, :input_html => { :id => 'datepicker', :value => change_date_format_for_edit_page(@time_record.activity_date) } %>
+    <% end %>
+
+    <% if current_user.organization.account_type == "Project" || current_user.organization.account_type == "project" %> 
+	<%= f.label "Select Task", :style => "font-weight:bold" %>
+ 	<% if params[:action] == "edit" && !@time_record.project_id.blank? %>
+	<%= f.collection_select :project_id, @projects, :id, :title, {:selected => (@time_record.project_id) },:style =>"margin-left:15px;margin-bottom:15px;width:300px;" %>
+    <% else %>
+	<%= f.collection_select :project_id, @projects, :id, :title, {:prompt => "Select Task"},:style =>"margin-left:15px;margin-bottom:15px;width:300px;" %>
+   <% end %>
+   <% end %>
+    <%= f.input :description, label: 'Activity', as: :text, input_html: { rows: 3, class: 'span10' } %>
+    <%= f.input :total_hours, input_html: { class: 'span1' } %>
+    <%= hidden_field_tag  :pay_period, @pay_period.id %>
+    <%#= hidden_field_tag  :project_id, @time_record.project_id if !@time_record.project_id.blank?  %>
+ 
+    <div class="form-actions">
+      <%= f.button :submit, class: 'btn-primary' %>
+      <%= submit_tag "Reset", class: 'btn', type: 'reset' %>
+    </div>
+  </fieldset>
+<% end %>

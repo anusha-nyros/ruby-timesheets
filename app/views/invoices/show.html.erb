@@ -1,0 +1,155 @@
+
+<script>
+$(function(){
+
+	$('.email-link').click(function(e){ 
+		 var lineid = $(this).attr('id');
+		 var invoiceid=$( "#invoiceid").val()
+                  $('.inv').fancybox();  
+                  
+		$.ajax({
+                          type: "POST",
+                          url: "/mailform",
+                          traditional: true,
+                          data: {ids: lineid, id2:invoiceid },
+                          success:function(data, textStatus, XMLHttpRequest){
+                                $('#data').html(data);   
+                                                           
+                               }  
+		});                  
+                  
+		
+	});
+});
+</script>
+<%=render :partial=>"menu"%>
+<div class="well">
+<input type="hidden" value="<%=@invoice.id%>" id="invoiceid">
+<p>
+  <b>Invoice:</b>
+  <%= @invoice.invoice %>
+</p>
+
+<p>
+  <b>Date:</b>
+  <%= @invoice.date.strftime("%b-%d-%Y") if  !@invoice.date.blank?  %>
+</p>
+
+<p>
+  <b>Client:</b>
+  <%= @invoice.client %>
+</p>
+
+<p> 
+  <b>Reference:</b>
+  <%= @invoice.reference %>
+</p> 
+
+<p>
+  <b>Amount:</b>
+  <%= @invoice.amount %>
+</p>
+
+<p>
+  <b>Paid:</b>
+  <%= @invoice.paid_convert %>
+</p>
+
+<p>
+  <b>Balance:</b>
+  <%= @invoice.balance %>
+</p>
+
+<p>
+  <b>Last payment:</b>
+  <%= @invoice.last_payment.strftime("%b-%d-%Y") if  !@invoice.last_payment.blank?  %>
+</p>
+
+<p>
+  <b>Days old:</b>
+  <%= @invoice.days_old %>
+</p>
+
+<p>
+  <b> Aging : </b>
+  <%= @invoice.aging %>
+</p>
+<%= link_to 'Destroy', @invoice, confirm: 'Are you sure?', method: :delete , class: 'btn btn-danger'%>
+<%= link_to 'Back', invoices_path,class: 'btn '%>
+</div>
+ 
+<% if @invoice.inv_line_items.blank? %>
+
+    <div class="well">You don't have any line Items </div> 
+    <br/><br/><br/>
+  <% else %>
+ <h3>Line Items </h3> <br/>
+<table class="table table-striped" >
+  <tr>
+    <th>Reference</th>
+    <th>Extended</th>
+    <th>Quantity</th>
+    <th>Units</th>
+    <th>Amount</th>
+    <th>Description</th>
+    <th>text Comment</th>
+    <th></th>    
+   </tr>
+<%total=0%>
+<% @invoice.inv_line_items.each do |inv| %>
+	
+  <tr>
+    <td><%= inv.reference %></td>
+    <td><%= inv.extended %></td>
+    <td><%= inv.quantity %></td>
+    <td><%= inv.unit %></td>
+    <td><%= number_with_delimiter(inv.amount) %></td>
+    <td><%= inv.description %></td> 
+    <td><%= inv.text_comment %></td>
+    <td> 
+     <div class	= "last">
+	  <span>  <%= link_to 'Edit', inv_line_item_edit_path(inv) ,class: 'btn btn-mini'%></span>
+       
+	 
+	 <span><%= link_to 'delete', inv_line_item_delete_path(:id =>inv) ,confirm: 'Delete this record ?',class: 'btn btn-mini btn-danger'%></span> <br />
+	 	<div style="float:left">
+<%= simple_form_for :invoice,:url => url_for(:action=>'generate_invoice_as_pdf',:controller=>'invoices'), :html => {method: :post,:onsubmit=>"return confirm('Do you want to create pdf report ?');",class: 'form-horizontal inl'}  do |f| %>
+        <input type="hidden" name="inv_id" value=" <%= inv.id %>"/>
+        <input type="hidden" name="invoice_id" value=" <%= @invoice.id %>"/>
+
+	<%= image_submit_tag("pdf_icon.png",:title=>"Get Pdf", :id =>"#{inv.id}",:style=>"width:25px;height:25px") %>	
+	<%#= submit_tag("Generate PDF", :class=> "btn btn-mini",:id =>"#{inv.id}") %>
+	
+
+	<% end %>
+	</div>	
+<!-- For Email	-->
+<div >	
+<a class="inv" href="#fbox" ><%= image_submit_tag("email_icon.png",:title=>"Send Email", :class=> "email-link",:id=>inv.id,:style=>"width:25px;height:25px")  %></a>	
+</div>
+    </div>
+   </td>
+  </tr>
+	<% total=total+inv.amount %>
+<% end %>
+
+<tr>
+<td colspan="3"></td> <td>Total : </td><td><%=number_with_delimiter(total)%></td><td colspan="3"></td>
+</tr>
+
+</table>
+
+	
+	
+<div style="display: none;">
+    
+		<div id="fbox" style="width:700px;height:400px;overflow:auto;">
+		
+		<div id="data"></div>
+   </div>
+	 </div>
+
+
+<% end %>
+
+

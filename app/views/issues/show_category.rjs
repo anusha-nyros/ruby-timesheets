@@ -1,0 +1,1 @@
+page[:related_category].replace_html :partial => "show_task"

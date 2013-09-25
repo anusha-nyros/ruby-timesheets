@@ -1,0 +1,108 @@
+<style>
+table.dataTable tr.odd td.sorting_1 {
+background-color: #F5F5F5;
+}
+table.dataTable tr.even td.sorting_1 {
+background-color: #F5F5F5;
+}
+#table_data_filter
+{
+ 	display:none;
+}
+</style>
+<script>
+  
+$(document).ready(function() {
+    $.fn.dataTableExt.afnFiltering.push(function(oSettings, aData, iDataIndex) {
+        var checked = $('#checkbox').is(':checked');
+
+        if (checked && aData[2] > 0) {
+            return true;
+        }
+        if (!checked && aData[2] >= 0) {
+            return true;
+        }
+        return false;
+    }); 
+    var oTable = $('#table_data').dataTable({"bPaginate": false,"bInfo": false,"aaSorting": [  [2,'desc'] ]});
+    $('#checkbox').on("click", function(e) {
+    	
+        console.log('click');
+        oTable.fnDraw();
+    }); 
+
+});    
+/*
+$(document).ready(function() {
+$("#table_data").dataTable().fnDestroy();
+
+    $('#table_data').dataTable( {
+        "bPaginate": false,
+        "bLengthChange": false,
+        "bFilter": false,
+        "bSort": true,
+        "bInfo": false,
+        "bAutoWidth": false,
+        "aaSorting": [  [2,'desc'] ],
+         "oLanguage": {
+        "sLengthMenu": 'Display <select style="margin-right:5px;"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option><option value="250">250</option><option value="-1">All</option></select>records&hellip;'
+        }
+    });
+});*/
+
+
+</script>
+
+<%= render :partial => "menu" %>
+<div class="pull-right">	
+		<span class="pull-right">
+			&nbsp;<input  id="checkbox" type="checkbox" checked="true">
+		</span>
+		<span class="pull-right" >
+			<a href="#" style="text-decoration:none"><b>Skip Zero balances</b></a>
+		</span>
+</div>
+<div id="side"  > 
+	<span style="text-transform:capitalize;font-size:24px">Balance Summary</span>
+
+</div>
+</br>
+
+   <table class="table table-striped" id="table_data">
+<thead>
+	<tr>
+		<th>Company Name</th>
+		<th>Contact</th> 		
+		<th >Ending Balance</th>
+	</tr>
+</thead>
+<tbody>   
+    <% total=0 %>	
+	<%@suppliers.each do|supp|%>
+	<tr>
+		<td><%=supp.company%></td>
+		
+		<td><%=supp.contact%></td>
+	<%bal=@accounts.where(:assign_to => supp.contact)%>
+	<%balance=0%> 
+	<%bal.each do |b|%> 
+		<%balance = b.type_of_account == "Invoice" ? balance.to_f + b.amount : balance.to_f - b.amount unless b.amount.blank? %> 
+	<%end%>
+			<td style="text-align:right"><%=put_parenthesis(balance,nil)%></td>
+	 
+	</tr> 
+			<% total=total+balance %>
+			
+    	<%end%>
+    	
+</tbody>
+<tfoot>
+	<tr>
+		<td></td>
+		<td><b>Total</b></td>
+		<td style="text-align:right"><%=put_parenthesis(total,nil)%></td>
+	</tr>
+</tfoot>    	
+	
+</table>  
+

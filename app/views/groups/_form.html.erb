@@ -1,0 +1,12 @@
+<%= render :partial => "menu" %>
+<%= simple_form_for @group, :html=>{:multipart => true, class: 'form-horizontal'}  do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs"><br>
+    <%= f.input :title %>
+  </div>
+  <br>
+  <div class="form-actions">
+    <%= link_to 'Back', groups_path, class: 'btn btn-mini-primary' %> &nbsp;&nbsp;<%= f.button :submit, class: 'btn btn-primary' %>
+  </div>
+<% end %>

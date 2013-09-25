@@ -1,0 +1,83 @@
+
+<%= render :partial => "menu" %>
+<% if !@contacts.blank? %>
+<%= render :partial => "contacts/search_form", locals: {q: @q} %>
+<% end %>
+<% if @contacts.blank? %>
+  <div class"well">Your Search Generated No Records.&nbsp;&nbsp;&nbsp;<%= link_to 'Reset',contacts_path, class: 'btn btn-info' %></div>
+<% else %>
+  
+   <div style="float:left;margin-bottom:10px;"><b><% unless @contacts.blank? %>(<%= @contacts.count %>) Records Found<% end %></b></div>
+   <% if controller.action_name != "index" %>     
+     <select name="sel" class="s <%= @secret if !@secret.blank? %> span1" id="up" >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+     </select>
+    <% end %>
+   <span class="pull-right" style="padding:5px 5px;"><a href="#" style="text-decoration:none"><b>Pagination Range</b></a>
+   </span>
+ 
+  <table class="table table-striped">
+    <tr>
+      <th>Image </th>	
+      <th>Contact type</th>
+      <th>Contact</th>
+      <th>Company</th>
+      <th>Email</th>
+      <th>IM Tool</th>
+      <th>User</th>
+      <th>Active</th>
+      <th class=""></th>
+    </tr>
+
+  <% @contacts.each do |contact| %>
+    <tr>
+  <td>
+  <%if !contact.photo.blank? %>
+  <%= image_tag(contact.photo_url(:thumb), :width => '60', :height => '40') if contact.photo_url %>
+  <% else %>
+  <img src="/assets/sample/business_man_blue.png" height="40" width="60"> </img>
+  <% end %>  
+  </td>
+      <td><%= contact.contact_type.capitalize %></td>
+      <td><%= contact.contact %></td>
+      <td><%= contact.company %></td>
+      <td><%= contact.email %></td>
+      <td><%= contact.chat_tool %></td>
+      <td><%= contact.user.try(:username) %></td>
+      <td>  <% if contact.active? %>
+           &nbsp;&nbsp;<%= image_tag("/assets/check-mark-md.png",:width => 18 , :height => 18) %>
+           <% else %>
+           &nbsp;&nbsp;<%= image_tag("/assets/wrong-icon.jpg",:width => 18 , :height => 18) %>
+           <% end %>
+     </td>
+      <td>
+        <%= link_to 'Show', contact, class: 'btn btn-mini' %>
+        <%= link_to 'Edit', edit_contact_path(contact), class: 'btn btn-mini' %>
+        <%= link_to 'Destroy', contact, confirm: 'Delete this record?', method: :delete, class: 'btn btn-danger btn-mini' %>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+<%= paginate @contacts %>
+<% end %>
+
+<script type="text/javascript">
+    $('document').ready(function(){
+        var n= $('#myid').val();        
+        $('#paginatevalues').val(n);
+    });
+</script>
+
+<style>
+#side li{
+  display:inline;
+  list-style:none;
+}
+#up {
+ float:right;
+}
+</style>
